@@ -1,5 +1,8 @@
+"use client"
+
 import React from 'react';
 import Link from "next/link"
+import { usePathname } from 'next/navigation';
 import {
   Home,
   FileText,
@@ -9,6 +12,7 @@ import {
   Search,
   Bell,
   HardHat,
+  FilePieChart,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -31,6 +35,8 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen">
@@ -46,27 +52,33 @@ export default function DashboardLayout({
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard" isActive={true} tooltip="لوحة التحكم">
+                <SidebarMenuButton href="/dashboard" isActive={pathname === '/dashboard'} tooltip="لوحة التحكم">
                   <Home />
                   <span>لوحة التحكم</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/blueprints" tooltip="المخططات">
+                <SidebarMenuButton href="/dashboard/blueprints" isActive={pathname === '/dashboard/blueprints'} tooltip="المخططات">
                   <FileText />
                   <span>المخططات</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/cost-estimation" tooltip="تقدير التكاليف">
+                <SidebarMenuButton href="/dashboard/cost-estimation" isActive={pathname === '/dashboard/cost-estimation'} tooltip="تقدير التكاليف">
                   <Calculator />
                   <span>تقدير التكاليف</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/boq" tooltip="جداول الكميات">
+                <SidebarMenuButton href="/dashboard/boq" isActive={pathname === '/dashboard/boq'} tooltip="جداول الكميات">
                   <ListChecks />
                   <span>جداول الكميات</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton href="/dashboard/reports" isActive={pathname === '/dashboard/reports'} tooltip="التقارير">
+                  <FilePieChart />
+                  <span>التقارير</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -74,7 +86,7 @@ export default function DashboardLayout({
           <SidebarFooter>
              <SidebarMenu>
               <SidebarMenuItem>
-                  <SidebarMenuButton href="/dashboard/settings" tooltip="الإعدادات">
+                  <SidebarMenuButton href="/dashboard/settings" isActive={pathname === '/dashboard/settings'} tooltip="الإعدادات">
                     <Settings />
                     <span>الإعدادات</span>
                   </SidebarMenuButton>

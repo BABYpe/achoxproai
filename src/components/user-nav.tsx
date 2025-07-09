@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,12 +15,19 @@ import {
 import { CreditCard, LogOut, Settings, User } from "lucide-react"
 
 export function UserNav() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // In a real app, you'd clear the user session here
+    router.push('/login');
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="https://placehold.co/40x40.png" alt="@user" />
+            <AvatarImage src="https://placehold.co/40x40.png" alt="@user" data-ai-hint="person face" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
         </Button>
@@ -35,21 +43,21 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => router.push('#')}>
             <User className="ml-2 h-4 w-4" />
             <span>الملف الشخصي</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => router.push('#')}>
             <CreditCard className="ml-2 h-4 w-4" />
             <span>الفواتير</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => router.push('/dashboard/settings')}>
             <Settings className="ml-2 h-4 w-4" />
             <span>الإعدادات</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleLogout}>
           <LogOut className="ml-2 h-4 w-4" />
           <span>تسجيل الخروج</span>
         </DropdownMenuItem>

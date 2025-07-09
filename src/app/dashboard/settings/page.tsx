@@ -5,6 +5,12 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 
 export default function SettingsPage() {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // In a real app, you would handle form submission here.
+    console.log("Form submitted");
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">الإعدادات</h1>
@@ -15,7 +21,7 @@ export default function SettingsPage() {
             <CardDescription>قم بتحديث معلومات ملفك الشخصي هنا.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
                     <Label htmlFor="first-name">الاسم الأول</Label>
@@ -35,7 +41,7 @@ export default function SettingsPage() {
                 <Input id="job-title" defaultValue="مهندس مشروع" />
               </div>
               <div className="flex justify-end">
-                <Button>حفظ التغييرات</Button>
+                <Button type="submit">حفظ التغييرات</Button>
               </div>
             </form>
           </CardContent>
@@ -47,9 +53,9 @@ export default function SettingsPage() {
             <CardDescription>
               تأكد من استخدام كلمة مرور قوية للحفاظ على أمان حسابك.
             </CardDescription>
-          </CardHeader>
+          </Header>
           <CardContent>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-2">
                 <Label htmlFor="current-password">كلمة المرور الحالية</Label>
                 <Input id="current-password" type="password" />
@@ -63,7 +69,7 @@ export default function SettingsPage() {
                 <Input id="confirm-password" type="password" />
               </div>
               <div className="flex justify-end">
-                <Button>تحديث كلمة المرور</Button>
+                <Button type="submit">تحديث كلمة المرور</Button>
               </div>
             </form>
           </CardContent>

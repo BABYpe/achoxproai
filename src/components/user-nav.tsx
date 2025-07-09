@@ -43,13 +43,13 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onSelect={() => router.push('#')}>
+          <DropdownMenuItem onSelect={() => router.push('/dashboard/settings')}>
             <User className="ml-2 h-4 w-4" />
             <span>الملف الشخصي</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => router.push('#')}>
+          <DropdownMenuItem disabled>
             <CreditCard className="ml-2 h-4 w-4" />
-            <span>الفواتير</span>
+            <span>الفواتير (قريباً)</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => router.push('/dashboard/settings')}>
             <Settings className="ml-2 h-4 w-4" />

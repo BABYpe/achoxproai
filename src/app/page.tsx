@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -196,7 +197,7 @@ export default function HomePage() {
                             </ul>
                         </CardContent>
                         <div className="p-6 pt-0">
-                            <Button className="w-full" variant="outline">ابدأ الآن</Button>
+                           <Button className="w-full" variant="outline" asChild><Link href="/register">ابدأ الآن</Link></Button>
                         </div>
                     </Card>
                     {/* Pro Plan */}
@@ -216,7 +217,7 @@ export default function HomePage() {
                             </ul>
                         </CardContent>
                         <div className="p-6 pt-0">
-                             <Button className="w-full">اختر الخطة الاحترافية</Button>
+                             <Button className="w-full" asChild><Link href="/register">اختر الخطة الاحترافية</Link></Button>
                         </div>
                     </Card>
                     {/* Enterprise Plan */}
@@ -235,7 +236,7 @@ export default function HomePage() {
                             </ul>
                         </CardContent>
                          <div className="p-6 pt-0">
-                            <Button className="w-full" variant="outline">تواصل مع المبيعات</Button>
+                            <Button className="w-full" variant="outline" asChild><Link href="/register">تواصل مع المبيعات</Link></Button>
                         </div>
                     </Card>
                 </div>
@@ -267,3 +268,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    

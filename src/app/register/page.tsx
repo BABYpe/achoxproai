@@ -1,3 +1,4 @@
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -61,9 +62,11 @@ export default function RegisterPage() {
               <Label htmlFor="password">كلمة المرور</Label>
               <Input id="password" type="password" />
             </div>
-            <Button type="submit" className="w-full font-bold text-lg py-6">
-              إنشاء حساب
-            </Button>
+            <Link href="/dashboard">
+                <Button type="submit" className="w-full font-bold text-lg py-6">
+                إنشاء حساب
+                </Button>
+            </Link>
           </div>
           <div className="mt-4 text-center text-sm">
             لديك حساب بالفعل؟{" "}
@@ -76,3 +79,5 @@ export default function RegisterPage() {
     </div>
   )
 }
+
+    

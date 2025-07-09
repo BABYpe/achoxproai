@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -12,10 +13,10 @@ import React from 'react';
 
 // Mock data, in a real app this would come from a database
 const projects = [
-  { id: "P-001", title: "مشروع فيلا سكنية بالرياض", status: "قيد التنفيذ", budget: "1,200,000 SAR", location: "الرياض" },
+  { id: "P-001", title: "مشروع فيلا سكنية فاخرة بالرياض", status: "قيد التنفيذ - 65% مكتمل", budget: "1,850,000 SAR", location: "الرياض" },
   { id: "P-002", title: "مبنى تجاري متعدد الطوابق بجدة", status: "مكتمل", budget: "5,500,000 SAR", location: "جدة" },
-  { id: "P-003", title: "تطوير مجمع سكني بالدمام", status: "مخطط له", budget: "25,000,000 SAR", location: "الدمام" },
-  { id: "P-004", title: "تجديد فندق فاخر بدبي", status: "متأخر", budget: "12,000,000 SAR", location: "دبي" },
+  { id: "P-003", title: "تطوير مجمع سكني (30 فيلا) بالدمام", status: "مخطط له - مرحلة التصاميم", budget: "25,000,000 SAR", location: "الدمام" },
+  { id: "P-004", title: "تجديد فندق 5 نجوم بدبي", status: "متأخر - بانتظار توريد المواد", budget: "12,000,000 SAR", location: "دبي" },
 ];
 
 const boqItems = [
@@ -24,9 +25,11 @@ const boqItems = [
     { id: "S-301", description: "حديد تسليح عالي المقاومة", quantity: 85, unit: "طن" },
     { id: "A-401", description: "أعمال المباني بالطوب الأسمنتي المعزول", quantity: 2500, unit: "م²" },
     { id: "F-501", description: "أعمال اللياسة الداخلية والخارجية", quantity: 6000, unit: "م²" },
-    { id: "P-601", description: "أعمال الدهانات الداخلية", quantity: 5500, unit: "م²" },
-    { id: "E-701", description: "تمديدات كهربائية كاملة", quantity: 1, unit: "مقطوعة" },
-    { id: "M-801", description: "أعمال السباكة والتغذية والصرف", quantity: 1, unit: "مقطوعة" },
+    { id: "P-601", description: "أعمال الدهانات الداخلية (جوتن)", quantity: 5500, unit: "م²" },
+    { id: "E-701", description: "تمديدات كهربائية كاملة (الفنار)", quantity: 1, unit: "مقطوعة" },
+    { id: "M-801", description: "أعمال السباكة والتغذية والصرف (نيبرو)", quantity: 1, unit: "مقطوعة" },
+    { id: "AC-803", description: "توريد وتركيب وحدات تكييف سبليت", quantity: 12, unit: "عدد" },
+    { id: "T-701", description: "توريد وتركيب بلاط بورسلان للأرضيات", quantity: 750, unit: "م²" },
 ];
 
 
@@ -77,16 +80,25 @@ export default function ReportsPage() {
 
     // A simple markdown to HTML renderer
     const MarkdownRenderer = ({ content }: { content: string }) => {
-        const htmlContent = content
-            .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>')
-            .replace(/^## (.*$)/gim, '<h2 class="text-xl font-semibold mt-3 mb-1">$1</h2>')
-            .replace(/^### (.*$)/gim, '<h3 class="text-lg font-medium mt-2 mb-1">$1</h3>')
-            .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-            .replace(/\*(.*)\*/gim, '<em>$1</em>')
-            .replace(/^- (.*$)/gim, '<li class="ml-4">$1</li>')
-            .replace(/(\r\n|\n|\r)/gm, '<br />')
-            // This regex finds list items and wraps them in a <ul> tag
-            .replace(/(<li.*<\/li>)/gs, (match) => `<ul>${match.replace(/<br \/>/g, '')}</ul>`);
+        let htmlContent = ` ${content} `; // Add spaces to handle edge cases
+        
+        // Process headings
+        htmlContent = htmlContent.replace(/\n# (.*$)/gim, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
+        htmlContent = htmlContent.replace(/\n## (.*$)/gim, '<h2 class="text-xl font-semibold mt-3 mb-1">$1</h2>');
+        htmlContent = htmlContent.replace(/\n### (.*$)/gim, '<h3 class="text-lg font-medium mt-2 mb-1">$1</h3>');
+
+        // Process bold and italics
+        htmlContent = htmlContent.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+        htmlContent = htmlContent.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+
+        // Process lists
+        htmlContent = htmlContent.replace(/(\n- .*)+/gim, (match) => {
+            const listItems = match.trim().split('\n').map(item => `<li class="ml-4">${item.substring(2)}</li>`).join('');
+            return `<ul class="list-disc list-outside space-y-1 my-3">${listItems}</ul>`;
+        });
+        
+        // Process newlines to <br>
+        htmlContent = htmlContent.replace(/(\r\n|\n|\r)/gm, '<br />');
 
         return <div className="space-y-4" dangerouslySetInnerHTML={{ __html: htmlContent }} />;
     };
@@ -147,7 +159,7 @@ export default function ReportsPage() {
                                 </div>
                              )}
                             {result ? (
-                                <div className="prose prose-sm dark:prose-invert max-w-none p-4 bg-secondary/30 rounded-lg text-right">
+                                <div className="p-4 bg-secondary/30 rounded-lg text-right">
                                     <MarkdownRenderer content={result.report} />
                                 </div>
                             ) : !isLoading && (
@@ -163,3 +175,5 @@ export default function ReportsPage() {
         </div>
     )
 }
+
+    

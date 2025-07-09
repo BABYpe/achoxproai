@@ -1,16 +1,16 @@
 
 "use client"
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Upload, Download, FilePlus2, X } from "lucide-react";
+import { PlusCircle, Upload, Download, FilePlus2, X, Bot } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const boqItems = [
+const initialBoqItems = [
   // 1. Earthworks
   { id: "B-101", category: "الأعمال الترابية", description: "أعمال الحفر والردم لموقع المشروع حسب المخططات", unit: "م³", quantity: 1250, unitPrice: 25, total: 31250 },
   { id: "B-102", category: "الأعمال الترابية", description: "توريد ورص طبقة بيسكورس سماكة 30 سم", unit: "م²", quantity: 850, unitPrice: 45, total: 38250 },
@@ -18,32 +18,31 @@ const boqItems = [
   // 2. Concrete Works
   { id: "C-201", category: "أعمال الخرسانة", description: "خرسانة عادية للنظافة أسفل القواعد", unit: "م³", quantity: 120, unitPrice: 280, total: 33600 },
   { id: "C-202", category: "أعمال الخرسانة", description: "خرسانة مسلحة للقواعد، مقاومة 35 نيوتن/مم²", unit: "م³", quantity: 450, unitPrice: 480, total: 216000 },
-  { id: "C-203", category: "أعمال الخرسانة", description: "خرسانة مسلحة للأعمدة الطابق الأرضي", unit: "م³", quantity: 150, unitPrice: 520, total: 78000 },
-  { id: "C-204", category: "أعمال الخرسانة", description: "خرسانة مسلحة للأسقف والأدراج", unit: "م³", quantity: 320, unitPrice: 500, total: 160000 },
   
   // 3. Steel Works
   { id: "S-301", category: "أعمال الحديد", description: "حديد تسليح عالي المقاومة (Grade 60)", unit: "طن", quantity: 85, unitPrice: 3100, total: 263500 },
 
   // 4. Masonry Works
   { id: "A-401", category: "أعمال المباني", description: "أعمال المباني بالطوب الأسمنتي المعزول للجدران الخارجية", unit: "م²", quantity: 2500, unitPrice: 65, total: 162500 },
-  { id: "A-402", category: "أعمال المباني", description: "أعمال المباني بالطوب الأحمر للقواطع الداخلية", unit: "م²", quantity: 1800, unitPrice: 55, total: 99000 },
   
-  // 5. Plastering & Painting
+  // 5. Finishing Works
   { id: "F-501", category: "التشطيبات", description: "أعمال اللياسة الداخلية والخارجية بسماكة 2 سم", unit: "م²", quantity: 6000, unitPrice: 28, total: 168000 },
   { id: "P-601", category: "التشطيبات", description: "أعمال الدهانات الداخلية (ثلاثة أوجه) - نوع جوتن", unit: "م²", quantity: 5500, unitPrice: 35, total: 192500 },
-  { id: "P-602", category: "التشطيبات", description: "أعمال الدهانات الخارجية (بروفايل) - نوع عسيب", unit: "م²", quantity: 1200, unitPrice: 60, total: 72000 },
-  
-  // 6. Tiling
   { id: "T-701", category: "التشطيبات", description: "توريد وتركيب بلاط بورسلان للأرضيات 60x60 سم", unit: "م²", quantity: 750, unitPrice: 120, total: 90000 },
-  { id: "T-702", category: "التشطيبات", description: "توريد وتركيب سيراميك لجدران دورات المياه", unit: "م²", quantity: 300, unitPrice: 95, total: 28500 },
 
-  // 7. MEP Works
+  // 6. MEP Works
   { id: "E-801", category: "الأعمال الكهروميكانيكية", description: "تمديدات كهربائية (أسلاك + مواسير) - نوع الفنار", unit: "مقطوعة", quantity: 1, unitPrice: 55000, total: 55000 },
   { id: "M-802", category: "الأعمال الكهروميكانيكية", description: "أعمال السباكة والتغذية والصرف - نوع نيبرو", unit: "مقطوعة", quantity: 1, unitPrice: 48000, total: 48000 },
-  { id: "AC-803", category: "الأعمال الكهروميكانيكية", description: "توريد وتركيب وحدات تكييف سبليت (24000 BTU)", unit: "عدد", quantity: 12, unitPrice: 2800, total: 33600 },
+
+  // 7. Event & Exhibition Works
+  { id: "EV-901", category: "تجهيز الفعاليات والمعارض", description: "تصنيع وتركيب منصة عرض رئيسية (Stage) مقاس 10x6 متر", unit: "مقطوعة", quantity: 1, unitPrice: 15000, total: 15000 },
+  { id: "EV-902", category: "تجهيز الفعاليات والمعارض", description: "توريد وتركيب نظام إضاءة احترافي (Trussing & Lighting)", unit: "مقطوعة", quantity: 1, unitPrice: 25000, total: 25000 },
+  { id: "EV-903", category: "تجهيز الفعاليات والمعارض", description: "بناء و تجهيز أجنحة عرض (Booths) مقاس 3x3 متر", unit: "عدد", quantity: 20, unitPrice: 2500, total: 50000 },
+  { id: "EV-904", category: "تجهيز الفعاليات والمعارض", description: "توريد وتركيب شاشات عرض LED P3", unit: "م²", quantity: 24, unitPrice: 1800, total: 43200 },
 ];
 
 export default function BoqPage() {
+  const [boqItems, setBoqItems] = useState(initialBoqItems);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const grandTotal = boqItems.reduce((acc, item) => acc + item.total, 0);
 
@@ -51,7 +50,7 @@ export default function BoqPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">جداول الكميات (BOQ)</h1>
           <div className="flex gap-2">
@@ -69,10 +68,11 @@ export default function BoqPage() {
               </Button>
           </div>
         </div>
+
         <Card className="shadow-xl rounded-2xl">
           <CardHeader>
-            <CardTitle>مشروع فيلا سكنية - الإصدار 1.2</CardTitle>
-            <CardDescription>قائمة بنود جدول الكميات للمشروع الحالي، مصنفة حسب فئات العمل.</CardDescription>
+            <CardTitle>قاعدة بيانات البنود</CardTitle>
+            <CardDescription>قائمة شاملة لبنود الأعمال للمشاريع الإنشائية والفعاليات.</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -179,5 +179,3 @@ export default function BoqPage() {
     </>
   )
 }
-
-    

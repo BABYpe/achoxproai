@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { HardHat, Cpu, FileText, BarChart, Users, CheckCircle, ArrowLeft } from 'lucide-react';
+import { HardHat, Cpu, FileText, BarChart, Users, CheckCircle, ArrowLeft, Bot, GanttChartSquare, FileScan } from 'lucide-react';
 import Image from 'next/image';
 
 export default function HomePage() {
@@ -48,17 +48,17 @@ export default function HomePage() {
                     منصة إدارة المشاريع الهندسية المدعومة بالذكاء الاصطناعي
                 </div>
                 <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl">
-                    حوّل مشاريعك الإنشائية إلى نجاحات باهرة
+                    من التخطيط إلى التسليم، أتمتة شاملة لمشاريعك
                 </h1>
-                <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-                    منصة AchoX Pro تمنحك الأدوات الذكية لتحليل المخططات، تقدير التكاليف بدقة، وإدارة مشاريعك بكفاءة لا مثيل لها.
+                <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground">
+                    AchoX Pro هو شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة. حوّل التعقيد إلى بساطة وكفاءة.
                 </p>
                 <div className="mt-8 flex justify-center gap-4">
                     <Button size="lg" asChild className="font-bold text-lg py-7 px-8 shadow-lg shadow-primary/40">
                         <Link href="/register">ابدأ تجربتك المجانية</Link>
                     </Button>
                     <Button size="lg" variant="outline" asChild className="font-bold text-lg py-7 px-8">
-                        <Link href="/login">طلب عرض توضيحي</Link>
+                        <Link href="/login">استكشف لوحة التحكم</Link>
                     </Button>
                 </div>
                 <div className="mt-12">
@@ -79,43 +79,43 @@ export default function HomePage() {
         <section id="features" className="py-20 md:py-24 bg-secondary/50">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold md:text-4xl">كل ما تحتاجه لإدارة مشاريعك الهندسية</h2>
+              <h2 className="text-3xl font-bold md:text-4xl">محركك الذكي لإدارة المشاريع المتكاملة</h2>
               <p className="mt-4 text-muted-foreground">
-                نقدم لك مجموعة متكاملة من الأدوات الذكية المصممة خصيصًا لشركات المقاولات والمهندسين.
+                نقدم لك مجموعة من الأدوات الثورية المصممة لقطاع المقاولات والفعاليات، لتحقيق دقة وسرعة لا مثيل لهما.
               </p>
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="text-center shadow-lg rounded-2xl">
+              <Card className="text-center shadow-lg rounded-2xl p-4">
                 <CardHeader>
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Cpu className="h-6 w-6" />
+                    <FileScan className="h-6 w-6" />
                   </div>
-                  <CardTitle className="mt-4">تحليل المخططات بالذكاء الاصطناعي</CardTitle>
+                  <CardTitle className="mt-4">قراءة المستندات والمخططات</CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
-                  قم برفع مخططاتك واحصل على تحليل فوري للكميات والمساحات وتعداد العناصر بدقة عالية.
+                  قم برفع كراسة الشروط أو المخططات الهندسية، وسيقوم الذكاء الاصطناعي باستخراج وتحليل البنود والكميات تلقائياً.
                 </CardContent>
               </Card>
-              <Card className="text-center shadow-lg rounded-2xl">
+              <Card className="text-center shadow-lg rounded-2xl p-4">
                 <CardHeader>
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <BarChart className="h-6 w-6" />
+                    <Bot className="h-6 w-6" />
                   </div>
-                  <CardTitle className="mt-4">تقدير التكاليف بدقة</CardTitle>
+                  <CardTitle className="mt-4">تسعير وتخطيط ذكي</CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
-                    استخدم أسعار السوق المحدثة لتقدير تكاليف المواد والعمالة لمشاريعك في أي مكان.
+                  أدخل تفاصيل المشروع واحصل على جدول كميات (BOQ) مفصل، خطة عمل (Gantt Chart)، وتوصيات لفريق العمل في ثوانٍ.
                 </CardContent>
               </Card>
-              <Card className="text-center shadow-lg rounded-2xl">
+              <Card className="text-center shadow-lg rounded-2xl p-4">
                 <CardHeader>
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <FileText className="h-6 w-6" />
+                    <GanttChartSquare className="h-6 w-6" />
                   </div>
-                  <CardTitle className="mt-4">توليد تقارير احترافية</CardTitle>
+                  <CardTitle className="mt-4">تقارير وإدارة متكاملة</CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
-                  أنشئ تقارير حالة المشروع وتقارير مالية مخصصة بضغطة زر، جاهزة للمشاركة مع فريقك وعملائك.
+                  أنشئ تقارير حالة المشروع، وتابع الإنجاز، وأدر جميع جوانب مشاريعك من لوحة تحكم واحدة متكاملة وسهلة الاستخدام.
                 </CardContent>
               </Card>
             </div>
@@ -126,7 +126,7 @@ export default function HomePage() {
         <section id="testimonials" className="py-20 md:py-24">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold md:text-4xl">يثق بنا قادة قطاع الإنشاءات</h2>
+              <h2 className="text-3xl font-bold md:text-4xl">يثق بنا قادة قطاع الإنشاءات والفعاليات</h2>
               <p className="mt-4 text-muted-foreground">
                 هذا ما يقوله عملاؤنا عن تجربتهم مع AchoX Pro.
               </p>
@@ -141,31 +141,31 @@ export default function HomePage() {
                                 <p className="text-sm text-muted-foreground">مدير مشاريع، شركة البناء الحديث</p>
                             </div>
                         </div>
-                        <p className="mt-4 text-muted-foreground">"منصة AchoX Pro غيرت طريقة عملنا تمامًا. أصبح تقدير التكاليف أسرع وأكثر دقة بنسبة 90%."</p>
+                        <p className="mt-4 text-muted-foreground">"منصة AchoX Pro غيرت طريقة عملنا تمامًا. أصبح تقدير التكاليف وتوليد جداول الكميات أسرع وأكثر دقة بنسبة 95%."</p>
                     </CardContent>
                 </Card>
                 <Card className="p-6 shadow-lg rounded-2xl">
                     <CardContent className="p-0">
                         <div className="flex items-center gap-4">
-                            <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User 2" className="rounded-full" data-ai-hint="person face" />
+                            <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User 2" className="rounded-full" data-ai-hint="woman face" />
                             <div>
-                                <p className="font-semibold">سارة عبدالله</p>
-                                <p className="text-sm text-muted-foreground">مهندسة معمارية مستقلة</p>
+                                <p className="font-semibold">نورة القحطاني</p>
+                                <p className="text-sm text-muted-foreground">منظمة فعاليات، شركة إبداع</p>
                             </div>
                         </div>
-                        <p className="mt-4 text-muted-foreground">"أداة تحليل المخططات مذهلة! توفر عليّ ساعات من العمل اليدوي في كل مشروع."</p>
+                        <p className="mt-4 text-muted-foreground">"أداة تخطيط المشاريع مذهلة! أصبح بإمكاني تجهيز خطة متكاملة لأي فعالية، من التكاليف إلى الجدول الزمني، في دقائق معدودة."</p>
                     </CardContent>
                 </Card>
                 <Card className="p-6 shadow-lg rounded-2xl">
                     <CardContent className="p-0">
                         <div className="flex items-center gap-4">
-                            <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User 3" className="rounded-full" data-ai-hint="person face" />
+                            <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User 3" className="rounded-full" data-ai-hint="man face" />
                             <div>
                                 <p className="font-semibold">عمر بن صالح</p>
                                 <p className="text-sm text-muted-foreground">الرئيس التنفيذي، مقاولات النخبة</p>
                             </div>
                         </div>
-                        <p className="mt-4 text-muted-foreground">"أفضل استثمار قمنا به هذا العام. التقارير التلقائية تساعدنا على اتخاذ قرارات أفضل وأسرع."</p>
+                        <p className="mt-4 text-muted-foreground">"أفضل استثمار قمنا به هذا العام. التقارير التلقائية والجداول الزمنية تساعدنا على اتخاذ قرارات أفضل وتتبع الإنجاز بدقة."</p>
                     </CardContent>
                 </Card>
             </div>
@@ -268,5 +268,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    

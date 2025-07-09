@@ -4,12 +4,13 @@ import { useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle } from "lucide-react"
+import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 import { Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 import ProjectMap from "@/components/project-map"
+import Link from "next/link"
 
 const projects = [
   {
@@ -106,9 +107,11 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">لوحة التحكم</h1>
-        <Button className="gap-1 text-lg py-6 px-6 shadow-md shadow-primary/30">
-          <PlusCircle className="h-5 w-5" />
-          إنشاء مشروع جديد
+        <Button asChild className="gap-1 text-lg py-6 px-6 shadow-md shadow-primary/30">
+          <Link href="/dashboard/projects">
+            <PlusCircle className="h-5 w-5" />
+            إنشاء مشروع جديد
+          </Link>
         </Button>
       </div>
       

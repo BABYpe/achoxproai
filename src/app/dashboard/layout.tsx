@@ -4,7 +4,7 @@ import React from 'react';
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import {
-  Home,
+  LayoutDashboard,
   FileText,
   Calculator,
   ListChecks,
@@ -13,6 +13,7 @@ import {
   Bell,
   HardHat,
   FilePieChart,
+  Briefcase,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -53,8 +54,14 @@ export default function DashboardLayout({
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton href="/dashboard" isActive={pathname === '/dashboard'} tooltip="لوحة التحكم">
-                  <Home />
+                  <LayoutDashboard />
                   <span>لوحة التحكم</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton href="/dashboard/projects" isActive={pathname === '/dashboard/projects'} tooltip="المشاريع">
+                  <Briefcase />
+                  <span>المشاريع</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>

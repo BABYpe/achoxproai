@@ -47,9 +47,11 @@ export default function LoginPage() {
               </div>
               <Input id="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full font-bold text-lg py-6">
-              تسجيل الدخول
-            </Button>
+            <Link href="/dashboard" className="w-full">
+              <Button type="submit" className="w-full font-bold text-lg py-6">
+                تسجيل الدخول
+              </Button>
+            </Link>
             <Button variant="outline" className="w-full">
               تسجيل الدخول باستخدام جوجل
             </Button>

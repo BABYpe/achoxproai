@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from '@/hooks/use-toast';
 import { generateReport, type GenerateReportOutput } from '@/ai/flows/generate-report';
 import { Loader, Wand2, FileText } from 'lucide-react';
@@ -13,18 +12,23 @@ import React from 'react';
 
 // Mock data, in a real app this would come from a database
 const projects = [
-  { id: "P-001", title: "مشروع فيلا سكنية", status: "قيد التنفيذ", budget: "1.2M SAR" },
-  { id: "P-002", title: "مبنى تجاري متعدد الطوابق", status: "مكتمل", budget: "5.5M SAR" },
-  { id: "P-003", title: "تطوير مجمع سكني", status: "مخطط له", budget: "25M SAR" },
-  { id: "P-004", title: "تجديد فندق فاخر", status: "متأخر", budget: "12M SAR" },
+  { id: "P-001", title: "مشروع فيلا سكنية بالرياض", status: "قيد التنفيذ", budget: "1,200,000 SAR", location: "الرياض" },
+  { id: "P-002", title: "مبنى تجاري متعدد الطوابق بجدة", status: "مكتمل", budget: "5,500,000 SAR", location: "جدة" },
+  { id: "P-003", title: "تطوير مجمع سكني بالدمام", status: "مخطط له", budget: "25,000,000 SAR", location: "الدمام" },
+  { id: "P-004", title: "تجديد فندق فاخر بدبي", status: "متأخر", budget: "12,000,000 SAR", location: "دبي" },
 ];
 
 const boqItems = [
-  { id: "B-101", description: "أعمال الحفر والردم", quantity: 1200, unit: "م³" },
-  { id: "C-201", description: "خرسانة مسلحة للقواعد", quantity: 450, unit: "م³" },
-  { id: "S-301", description: "حديد تسليح", quantity: 85, unit: "طن" },
-  { id: "A-401", description: "أعمال المباني بالطوب", quantity: 2500, unit: "م²" },
+    { id: "B-101", description: "أعمال الحفر والردم لموقع المشروع", quantity: 1250, unit: "م³" },
+    { id: "C-201", description: "خرسانة مسلحة للقواعد", quantity: 450, unit: "م³" },
+    { id: "S-301", description: "حديد تسليح عالي المقاومة", quantity: 85, unit: "طن" },
+    { id: "A-401", description: "أعمال المباني بالطوب الأسمنتي المعزول", quantity: 2500, unit: "م²" },
+    { id: "F-501", description: "أعمال اللياسة الداخلية والخارجية", quantity: 6000, unit: "م²" },
+    { id: "P-601", description: "أعمال الدهانات الداخلية", quantity: 5500, unit: "م²" },
+    { id: "E-701", description: "تمديدات كهربائية كاملة", quantity: 1, unit: "مقطوعة" },
+    { id: "M-801", description: "أعمال السباكة والتغذية والصرف", quantity: 1, unit: "مقطوعة" },
 ];
+
 
 export default function ReportsPage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -81,16 +85,17 @@ export default function ReportsPage() {
             .replace(/\*(.*)\*/gim, '<em>$1</em>')
             .replace(/^- (.*$)/gim, '<li class="ml-4">$1</li>')
             .replace(/(\r\n|\n|\r)/gm, '<br />')
-            .replace(/(<br\s*\/?>\s*){2,}/g, '<br /><br />'); // handle multiple newlines
+            // This regex finds list items and wraps them in a <ul> tag
+            .replace(/(<li.*<\/li>)/gs, (match) => `<ul>${match.replace(/<br \/>/g, '')}</ul>`);
 
-        return <div dangerouslySetInnerHTML={{ __html: htmlContent.replace(/(<li.*<\/li>)/g, '<ul>$1</ul>') }} />;
+        return <div className="space-y-4" dangerouslySetInnerHTML={{ __html: htmlContent }} />;
     };
 
 
     return (
         <div className="flex flex-col gap-4">
             <h1 className="text-2xl font-bold">توليد تقارير المشاريع</h1>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-8 items-start">
                 <div className="md:col-span-1">
                     <Card className="shadow-xl rounded-2xl sticky top-20">
                         <CardHeader>
@@ -142,7 +147,7 @@ export default function ReportsPage() {
                                 </div>
                              )}
                             {result ? (
-                                <div className="prose prose-sm dark:prose-invert max-w-none p-4 bg-secondary/30 rounded-lg">
+                                <div className="prose prose-sm dark:prose-invert max-w-none p-4 bg-secondary/30 rounded-lg text-right">
                                     <MarkdownRenderer content={result.report} />
                                 </div>
                             ) : !isLoading && (

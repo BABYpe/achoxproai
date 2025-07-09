@@ -53,7 +53,7 @@ export default function SettingsPage() {
             <CardDescription>
               تأكد من استخدام كلمة مرور قوية للحفاظ على أمان حسابك.
             </CardDescription>
-          </Header>
+          </CardHeader>
           <CardContent>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-2">

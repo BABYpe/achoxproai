@@ -5,40 +5,65 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Upload, Download, FilePlus2, X, Bot } from "lucide-react";
+import { PlusCircle, Upload, Download } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const initialBoqItems = [
-  // 1. Earthworks
-  { id: "B-101", category: "الأعمال الترابية", description: "أعمال الحفر والردم لموقع المشروع حسب المخططات", unit: "م³", quantity: 1250, unitPrice: 25, total: 31250 },
-  { id: "B-102", category: "الأعمال الترابية", description: "توريد ورص طبقة بيسكورس سماكة 30 سم", unit: "م²", quantity: 850, unitPrice: 45, total: 38250 },
-
-  // 2. Concrete Works
-  { id: "C-201", category: "أعمال الخرسانة", description: "خرسانة عادية للنظافة أسفل القواعد", unit: "م³", quantity: 120, unitPrice: 280, total: 33600 },
-  { id: "C-202", category: "أعمال الخرسانة", description: "خرسانة مسلحة للقواعد، مقاومة 35 نيوتن/مم²", unit: "م³", quantity: 450, unitPrice: 480, total: 216000 },
+  // --- أعمال المقاولات ---
+  // الأعمال الترابية
+  { id: "CW-101", category: "الأعمال الترابية", description: "حفر التربة لأنواع مختلفة من الأساسات", unit: "متر مكعب", quantity: 1500, unitPrice: 30, total: 45000 },
+  { id: "CW-102", category: "الأعمال الترابية", description: "ردم التربة على طبقات مع الدمك", unit: "متر مكعب", quantity: 1200, unitPrice: 25, total: 30000 },
+  { id: "CW-103", category: "الأعمال الترابية", description: "تسوية وتنظيف الموقع بالكامل", unit: "متر مربع", quantity: 5000, unitPrice: 5, total: 25000 },
   
-  // 3. Steel Works
-  { id: "S-301", category: "أعمال الحديد", description: "حديد تسليح عالي المقاومة (Grade 60)", unit: "طن", quantity: 85, unitPrice: 3100, total: 263500 },
+  // الأعمال الخرسانية
+  { id: "CW-201", category: "الأعمال الخرسانية", description: "صب خرسانة مسلحة للأساسات", unit: "متر مكعب", quantity: 450, unitPrice: 480, total: 216000 },
+  { id: "CW-202", category: "الأعمال الخرسانية", description: "صب خرسانة مسلحة للأعمدة", unit: "متر مكعب", quantity: 150, unitPrice: 550, total: 82500 },
+  { id: "CW-203", category: "الأعمال الخرسانية", description: "صب خرسانة مسلحة للأسقف", unit: "متر مكعب", quantity: 300, unitPrice: 520, total: 156000 },
+  { id: "CW-204", category: "الأعمال الخرسانية", description: "توريد وتركيب حديد التسليح (Grade 60)", unit: "طن", quantity: 85, unitPrice: 3200, total: 272000 },
+  { id: "CW-205", category: "الأعمال الخرسانية", description: "أعمال قوالب خشبية للأساسات والجدران", unit: "متر مربع", quantity: 1800, unitPrice: 60, total: 108000 },
 
-  // 4. Masonry Works
-  { id: "A-401", category: "أعمال المباني", description: "أعمال المباني بالطوب الأسمنتي المعزول للجدران الخارجية", unit: "م²", quantity: 2500, unitPrice: 65, total: 162500 },
+  // أعمال المباني
+  { id: "CW-301", category: "أعمال المباني", description: "بناء بلوك أسمنتي للجدران الخارجية", unit: "متر مربع", quantity: 2500, unitPrice: 65, total: 162500 },
+  { id: "CW-302", category: "أعمال المباني", description: "لياسة داخلية للأسقف والجدران", unit: "متر مربع", quantity: 7000, unitPrice: 28, total: 196000 },
+  { id: "CW-303", category: "أعمال المباني", description: "بلاط أرضيات بورسلان (60x60 سم)", unit: "متر مربع", quantity: 800, unitPrice: 120, total: 96000 },
+  { id: "CW-304", category: "أعمال المباني", description: "دهانات داخلية (جوتن) - 3 أوجه", unit: "متر مربع", quantity: 7000, unitPrice: 35, total: 245000 },
+  { id: "CW-305", category: "أعمال المباني", description: "توريد وتركيب أبواب خشبية داخلية", unit: "عدد", quantity: 30, unitPrice: 1200, total: 36000 },
+  { id: "CW-306", category: "أعمال المباني", description: "توريد وتركيب شبابيك ألمنيوم (دبل جلاس)", unit: "عدد", quantity: 25, unitPrice: 950, total: 23750 },
+  { id: "CW-307", category: "أعمال المباني", description: "عزل مائي للأسطح ودورات المياه", unit: "متر مربع", quantity: 1000, unitPrice: 55, total: 55000 },
+
+  // الأعمال الكهربائية
+  { id: "CW-401", category: "الأعمال الكهربائية", description: "تمديد كابلات وأسلاك (الفنار)", unit: "مقطوعة", quantity: 1, unitPrice: 55000, total: 55000 },
+  { id: "CW-402", category: "الأعمال الكهربائية", description: "تركيب مفاتيح ومآخذ كهربائية (باناسونيك)", unit: "عدد", quantity: 250, unitPrice: 45, total: 11250 },
+  { id: "CW-403", category: "الأعمال الكهربائية", description: "تركيب وحدات إضاءة LED", unit: "عدد", quantity: 180, unitPrice: 85, total: 15300 },
+  { id: "CW-404", category: "الأعمال الكهربائية", description: "تركيب لوحة توزيع كهربائية رئيسية", unit: "عدد", quantity: 1, unitPrice: 7500, total: 7500 },
+
+  // الأعمال الميكانيكية
+  { id: "CW-501", category: "الأعمال الميكانيكية", description: "أعمال السباكة والتغذية والصرف (نيبرو)", unit: "مقطوعة", quantity: 1, unitPrice: 48000, total: 48000 },
+  { id: "CW-502", category: "الأعمال الميكانيكية", description: "توريد وتركيب وحدات تكييف سبليت (24,000 BTU)", unit: "عدد", quantity: 12, unitPrice: 3200, total: 38400 },
   
-  // 5. Finishing Works
-  { id: "F-501", category: "التشطيبات", description: "أعمال اللياسة الداخلية والخارجية بسماكة 2 سم", unit: "م²", quantity: 6000, unitPrice: 28, total: 168000 },
-  { id: "P-601", category: "التشطيبات", description: "أعمال الدهانات الداخلية (ثلاثة أوجه) - نوع جوتن", unit: "م²", quantity: 5500, unitPrice: 35, total: 192500 },
-  { id: "T-701", category: "التشطيبات", description: "توريد وتركيب بلاط بورسلان للأرضيات 60x60 سم", unit: "م²", quantity: 750, unitPrice: 120, total: 90000 },
+  // --- تنظيم المؤتمرات والفعاليات ---
+  // الموقع واللوجستيات
+  { id: "EM-101", category: "الموقع واللوجستيات", description: "إيجار قاعة فعاليات فندقية (5 نجوم)", unit: "يوم", quantity: 2, unitPrice: 25000, total: 50000 },
+  { id: "EM-102", category: "الموقع واللوجستيات", description: "تأجير نظام صوتي متكامل مع فني", unit: "يوم", quantity: 2, unitPrice: 8000, total: 16000 },
+  { id: "EM-103", category: "الموقع واللوجستيات", description: "تأجير شاشة LED P3 مقاس 8x4 متر", unit: "يوم", quantity: 2, unitPrice: 12000, total: 24000 },
+  { id: "EM-104", category: "الموقع واللوجستيات", description: "بناء وتجهيز مسرح (Stage) مقاس 10x6 متر", unit: "وحدة", quantity: 1, unitPrice: 15000, total: 15000 },
+  { id: "EM-105", category: "الموقع واللوجستيات", description: "تصميم وتنفيذ ديكور وهوية المؤتمر", unit: "مشروع", quantity: 1, unitPrice: 35000, total: 35000 },
+  { id: "EM-106", category: "الموقع واللوجستيات", description: "توفير أفراد أمن وحراسة", unit: "فرد/يوم", quantity: 10, unitPrice: 400, total: 4000 },
 
-  // 6. MEP Works
-  { id: "E-801", category: "الأعمال الكهروميكانيكية", description: "تمديدات كهربائية (أسلاك + مواسير) - نوع الفنار", unit: "مقطوعة", quantity: 1, unitPrice: 55000, total: 55000 },
-  { id: "M-802", category: "الأعمال الكهروميكانيكية", description: "أعمال السباكة والتغذية والصرف - نوع نيبرو", unit: "مقطوعة", quantity: 1, unitPrice: 48000, total: 48000 },
-
-  // 7. Event & Exhibition Works
-  { id: "EV-901", category: "تجهيز الفعاليات والمعارض", description: "تصنيع وتركيب منصة عرض رئيسية (Stage) مقاس 10x6 متر", unit: "مقطوعة", quantity: 1, unitPrice: 15000, total: 15000 },
-  { id: "EV-902", category: "تجهيز الفعاليات والمعارض", description: "توريد وتركيب نظام إضاءة احترافي (Trussing & Lighting)", unit: "مقطوعة", quantity: 1, unitPrice: 25000, total: 25000 },
-  { id: "EV-903", category: "تجهيز الفعاليات والمعارض", description: "بناء و تجهيز أجنحة عرض (Booths) مقاس 3x3 متر", unit: "عدد", quantity: 20, unitPrice: 2500, total: 50000 },
-  { id: "EV-904", category: "تجهيز الفعاليات والمعارض", description: "توريد وتركيب شاشات عرض LED P3", unit: "م²", quantity: 24, unitPrice: 1800, total: 43200 },
+  // التنظيم والإدارة
+  { id: "EM-201", category: "التنظيم والإدارة", description: "خدمات تخطيط وتنسيق كاملة للمؤتمر", unit: "مشروع", quantity: 1, unitPrice: 45000, total: 45000 },
+  { id: "EM-202", category: "التنظيم والإدارة", description: "نظام تسجيل إلكتروني للمشاركين", unit: "مشروع", quantity: 1, unitPrice: 18000, total: 18000 },
+  { id: "EM-203", category: "التنظيم والإدارة", description: "توفير فريق استقبال وتنظيم (15 فرد)", unit: "فريق/يوم", quantity: 2, unitPrice: 7000, total: 14000 },
+  
+  // الإعاشة والضيافة
+  { id: "EM-301", category: "الإعاشة والضيافة", description: "وجبة غداء (بوفيه مفتوح) لعدد 200 شخص", unit: "شخص", quantity: 200, unitPrice: 180, total: 36000 },
+  { id: "EM-302", category: "الإعاشة والضيافة", description: "استراحة قهوة ومرطبات (مرتين في اليوم)", unit: "شخص/مرة", quantity: 400, unitPrice: 45, total: 18000 },
+  
+  // بنود أخرى
+  { id: "EM-401", category: "بنود أخرى", description: "خدمات تصوير فوتوغرافي وفيديو احترافي", unit: "مشروع", quantity: 1, unitPrice: 22000, total: 22000 },
+  { id: "EM-402", category: "بنود أخرى", description: "طباعة مواد المؤتمر (برامج، بطاقات تعريف)", unit: "مقطوعة", quantity: 1, unitPrice: 9500, total: 9500 }
 ];
 
 export default function BoqPage() {

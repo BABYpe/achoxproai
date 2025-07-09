@@ -1,0 +1,114 @@
+import React from 'react';
+import Link from "next/link"
+import {
+  Home,
+  FileText,
+  Calculator,
+  ListChecks,
+  Settings,
+  Search,
+  Bell,
+  HardHat,
+} from 'lucide-react';
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarFooter,
+  SidebarTrigger,
+  SidebarInset,
+} from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { UserNav } from '@/components/user-nav';
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen">
+        <Sidebar>
+          <SidebarHeader>
+            <div className="flex items-center gap-2 p-2">
+              <div className="bg-primary/20 p-2 rounded-lg">
+                <HardHat className="h-6 w-6 text-primary" />
+              </div>
+              <h1 className="text-xl font-bold font-headline">AchoX Pro</h1>
+            </div>
+          </SidebarHeader>
+          <SidebarContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton href="/dashboard" isActive={true} tooltip="لوحة التحكم">
+                  <Home />
+                  <span>لوحة التحكم</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton href="/dashboard/blueprints" tooltip="المخططات">
+                  <FileText />
+                  <span>المخططات</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton href="/dashboard/cost-estimation" tooltip="تقدير التكاليف">
+                  <Calculator />
+                  <span>تقدير التكاليف</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton href="/dashboard/boq" tooltip="جداول الكميات">
+                  <ListChecks />
+                  <span>جداول الكميات</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarContent>
+          <SidebarFooter>
+             <SidebarMenu>
+              <SidebarMenuItem>
+                  <SidebarMenuButton href="/dashboard/settings" tooltip="الإعدادات">
+                    <Settings />
+                    <span>الإعدادات</span>
+                  </SidebarMenuButton>
+              </SidebarMenuItem>
+             </SidebarMenu>
+          </SidebarFooter>
+        </Sidebar>
+
+        <SidebarInset>
+          <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+            <SidebarTrigger className="md:hidden"/>
+            <div className="relative flex-1 ml-auto md:grow-0">
+              <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="بحث..."
+                className="w-full rounded-lg bg-secondary pr-8 md:w-[200px] lg:w-[320px]"
+              />
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              aria-label="Notifications"
+            >
+              <Bell className="h-5 w-5" />
+            </Button>
+            <UserNav />
+          </header>
+          <main className="p-4 sm:px-6 sm:py-0">
+            {children}
+          </main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
+  );
+}

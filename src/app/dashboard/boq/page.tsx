@@ -9,10 +9,10 @@ import { PlusCircle, Upload, Download } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+
 
 const initialBoqItems = [
-  // Extracted from "Fatra's Vision" Project Report
-  
   // --- تكاليف المحتوى والتصميم والإنتاج ---
   { id: "CDP-001", category: "تكاليف المحتوى والتصميم والإنتاج", description: "أتعاب خبراء التصميم الإبداعي", unit: "مقطوعة", quantity: 1, unitPrice: 2000000, total: 2000000 },
   { id: "CDP-002", category: "تكاليف المحتوى والتصميم والإنتاج", description: "إنتاج المحتوى الرقمي (فيديوهات، برومو، 3D، مسرحيات)", unit: "مقطوعة", quantity: 1, unitPrice: 3000000, total: 3000000 },
@@ -61,9 +61,24 @@ const initialBoqItems = [
 export default function BoqPage() {
   const [boqItems, setBoqItems] = useState(initialBoqItems);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { toast } = useToast();
   const grandTotal = boqItems.reduce((acc, item) => acc + item.total, 0);
 
   const categories = [...new Set(boqItems.map(item => item.category))];
+  
+  const handleImport = () => {
+    toast({
+      title: "قيد التطوير",
+      description: "ميزة استيراد جداول الكميات قيد التطوير حاليًا.",
+    });
+  };
+
+  const handleExport = () => {
+    toast({
+      title: "قيد التطوير",
+      description: "ميزة تصدير جداول الكميات قيد التطوير حاليًا.",
+    });
+  };
 
   return (
     <>
@@ -71,11 +86,11 @@ export default function BoqPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">جداول الكميات (BOQ)</h1>
           <div className="flex gap-2">
-              <Button variant="outline" className="gap-1">
+              <Button variant="outline" className="gap-1" onClick={handleImport}>
                   <Upload className="h-4 w-4" />
                   استيراد
               </Button>
-              <Button variant="outline" className="gap-1">
+              <Button variant="outline" className="gap-1" onClick={handleExport}>
                   <Download className="h-4 w-4" />
                   تصدير
               </Button>

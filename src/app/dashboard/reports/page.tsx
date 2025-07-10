@@ -83,22 +83,22 @@ export default function ReportsPage() {
         let htmlContent = ` ${content} `; // Add spaces to handle edge cases
         
         // Process headings
-        htmlContent = htmlContent.replace(/\n# (.*$)/gim, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
-        htmlContent = htmlContent.replace(/\n## (.*$)/gim, '<h2 class="text-xl font-semibold mt-3 mb-1">$1</h2>');
-        htmlContent = htmlContent.replace(/\n### (.*$)/gim, '<h3 class="text-lg font-medium mt-2 mb-1">$1</h3>');
+        htmlContent = htmlContent.replace(/\\n# (.*$)/gim, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
+        htmlContent = htmlContent.replace(/\\n## (.*$)/gim, '<h2 class="text-xl font-semibold mt-3 mb-1">$1</h2>');
+        htmlContent = htmlContent.replace(/\\n### (.*$)/gim, '<h3 class="text-lg font-medium mt-2 mb-1">$1</h3>');
 
         // Process bold and italics
         htmlContent = htmlContent.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
         htmlContent = htmlContent.replace(/\*(.*?)\*/gim, '<em>$1</em>');
 
         // Process lists
-        htmlContent = htmlContent.replace(/(\n- .*)+/gim, (match) => {
-            const listItems = match.trim().split('\n').map(item => `<li class="ml-4">${item.substring(2)}</li>`).join('');
+        htmlContent = htmlContent.replace(/(\\n- .*)+/gim, (match) => {
+            const listItems = match.trim().split('\\n').map(item => `<li class="ml-4">${item.substring(2)}</li>`).join('');
             return `<ul class="list-disc list-outside space-y-1 my-3">${listItems}</ul>`;
         });
         
         // Process newlines to <br>
-        htmlContent = htmlContent.replace(/(\r\n|\n|\r)/gm, '<br />');
+        htmlContent = htmlContent.replace(/(\\r\\n|\\n|\\r)/gm, '<br />');
 
         return <div className="space-y-4" dangerouslySetInnerHTML={{ __html: htmlContent }} />;
     };
@@ -175,5 +175,3 @@ export default function ReportsPage() {
         </div>
     )
 }
-
-    

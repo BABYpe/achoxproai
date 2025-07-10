@@ -11,6 +11,7 @@ import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
 import dynamic from 'next/dynamic'
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
@@ -128,9 +129,11 @@ export default function ProjectsPage() {
                 <Map className="h-4 w-4" />
                 عرض على الخريطة
             </Button>
-            <Button className="gap-1 text-lg py-6 px-6 shadow-md shadow-primary/30">
-                <PlusCircle className="h-5 w-5" />
-                إضافة مشروع
+            <Button asChild className="gap-1 text-lg py-6 px-6 shadow-md shadow-primary/30">
+                <Link href="/dashboard/projects/new">
+                    <PlusCircle className="h-5 w-5" />
+                    إضافة مشروع
+                </Link>
             </Button>
         </div>
       </div>
@@ -194,5 +197,3 @@ export default function ProjectsPage() {
     </div>
   )
 }
-
-    

@@ -60,7 +60,7 @@ const getRealTimeMarketPrices = ai.defineTool(
         description: 'Gets real-time market prices for construction materials and labor for a specific location.',
         inputSchema: z.object({ location: z.string() }),
         outputSchema: z.object({
-            materials: z.record(z.number()).describe('A record of material names and their prices per unit.'),
+            materials: z.record(z.string(), z.number()).describe('A record of material names and their prices per unit.'),
             labor: z.number().describe('The average hourly wage for general construction labor.'),
             currency: z.string().describe('The currency of the prices (e.g., SAR, USD).'),
         }),

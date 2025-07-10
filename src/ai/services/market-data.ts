@@ -15,6 +15,9 @@ const priceData: Record<string, MarketPrices> = {
             "bricks": 0.8, // per brick
             "plaster": 25, // per square meter
             "paint": 30, // per square meter
+            "standard_finishing_materials": 250, // per sq meter
+            "premium_finishing_materials": 500, // per sq meter
+            "luxury_finishing_materials": 1200, // per sq meter
         },
         labor: 55, // per hour
         currency: "SAR",
@@ -26,6 +29,9 @@ const priceData: Record<string, MarketPrices> = {
             "bricks": 0.85,
             "plaster": 28,
             "paint": 32,
+            "standard_finishing_materials": 270,
+            "premium_finishing_materials": 550,
+            "luxury_finishing_materials": 1300,
         },
         labor: 60,
         currency: "SAR",
@@ -37,6 +43,9 @@ const priceData: Record<string, MarketPrices> = {
             "bricks": 0.78,
             "plaster": 24,
             "paint": 29,
+            "standard_finishing_materials": 245,
+            "premium_finishing_materials": 490,
+            "luxury_finishing_materials": 1150,
         },
         labor: 52,
         currency: "SAR",
@@ -48,6 +57,9 @@ const priceData: Record<string, MarketPrices> = {
             "bricks": 0.82,
             "plaster": 26,
             "paint": 31,
+            "standard_finishing_materials": 250,
+            "premium_finishing_materials": 500,
+            "luxury_finishing_materials": 1200,
         },
         labor: 58,
         currency: "SAR",

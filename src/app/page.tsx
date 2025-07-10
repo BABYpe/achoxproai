@@ -136,7 +136,7 @@ export default function HomePage() {
                         <div className="flex items-center gap-4">
                             <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User 1" className="rounded-full" data-ai-hint="person face" />
                             <div>
-                                <p className="font-semibold">م. خالد الأحمدي</p>
+                                <h3 className="font-semibold">م. خالد الأحمدي</h3>
                                 <p className="text-sm text-muted-foreground">مدير مشاريع، شركة البناء الحديث</p>
                             </div>
                         </div>
@@ -148,7 +148,7 @@ export default function HomePage() {
                         <div className="flex items-center gap-4">
                             <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User 2" className="rounded-full" data-ai-hint="woman face" />
                             <div>
-                                <p className="font-semibold">نورة القحطاني</p>
+                                <h3 className="font-semibold">نورة القحطاني</h3>
                                 <p className="text-sm text-muted-foreground">منظمة فعاليات، شركة إبداع</p>
                             </div>
                         </div>
@@ -160,7 +160,7 @@ export default function HomePage() {
                         <div className="flex items-center gap-4">
                             <Image src="https://placehold.co/40x40.png" width={40} height={40} alt="User 3" className="rounded-full" data-ai-hint="man face" />
                             <div>
-                                <p className="font-semibold">عمر بن صالح</p>
+                                <h3 className="font-semibold">عمر بن صالح</h3>
                                 <p className="text-sm text-muted-foreground">الرئيس التنفيذي، مقاولات النخبة</p>
                             </div>
                         </div>
@@ -185,7 +185,7 @@ export default function HomePage() {
                     <Card className="shadow-lg rounded-2xl border-2 flex flex-col">
                         <CardHeader>
                             <CardTitle className="text-xl">الخطة الأساسية</CardTitle>
-                            <p className="text-4xl font-bold">مجاناً</p>
+                            <h3 className="text-4xl font-bold">مجاناً</h3>
                             <p className="text-muted-foreground">للمهندسين الأفراد والفرق الصغيرة.</p>
                         </CardHeader>
                         <CardContent className="flex-1 space-y-4">
@@ -204,7 +204,7 @@ export default function HomePage() {
                         <div className="absolute top-0 right-4 -mt-3 rounded-full bg-primary px-3 py-1 text-sm font-semibold text-primary-foreground">الأكثر شيوعاً</div>
                         <CardHeader>
                             <CardTitle className="text-xl">الخطة الاحترافية</CardTitle>
-                            <p className="text-4xl font-bold">199 ر.س<span className="text-lg font-normal text-muted-foreground">/شهرياً</span></p>
+                            <h3 className="text-4xl font-bold">199 ر.س<span className="text-lg font-normal text-muted-foreground">/شهرياً</span></h3>
                             <p className="text-muted-foreground">للشركات النامية والفرق المحترفة.</p>
                         </CardHeader>
                         <CardContent className="flex-1 space-y-4">
@@ -223,7 +223,7 @@ export default function HomePage() {
                     <Card className="shadow-lg rounded-2xl border-2 flex flex-col">
                         <CardHeader>
                             <CardTitle className="text-xl">خطة الشركات</CardTitle>
-                            <p className="text-4xl font-bold">تواصل معنا</p>
+                            <h3 className="text-4xl font-bold">تواصل معنا</h3>
                             <p className="text-muted-foreground">للشركات الكبيرة والمتطلبات المخصصة.</p>
                         </CardHeader>
                         <CardContent className="flex-1 space-y-4">

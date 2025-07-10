@@ -50,6 +50,7 @@ export default function BlueprintsPage() {
         const base64File = reader.result as string;
         const result = await analyzeBlueprint({ blueprintDataUri: base64File });
         setAnalysisResult(result);
+        setIsLoading(false); // Set loading to false after analysis is complete
         toast({
           title: "نجاح",
           description: "تم تحليل المخطط بنجاح.",
@@ -77,6 +78,7 @@ export default function BlueprintsPage() {
 
   const handleUseForEstimation = () => {
     if (analysisResult?.quantities.area) {
+      // Extract only the numerical value from the area string
       const area = parseFloat(analysisResult.quantities.area.replace(/[^\d.-]/g, ''));
       if (!isNaN(area)) {
           router.push(`/dashboard/cost-estimation?area=${area}`);
@@ -123,7 +125,7 @@ export default function BlueprintsPage() {
                     </CardHeader>
                      <CardContent>
                         <div className="relative w-full h-96 bg-secondary rounded-lg overflow-hidden">
-                           <Image src={previewUrl} alt="معاينة المخطط" fill objectFit="contain" />
+                           <Image src={previewUrl} alt="معاينة المخطط" layout="fill" objectFit="contain" />
                         </div>
                     </CardContent>
                 </Card>
@@ -183,4 +185,3 @@ export default function BlueprintsPage() {
     </div>
   );
 }
-

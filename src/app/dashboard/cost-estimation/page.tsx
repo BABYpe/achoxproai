@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -12,11 +12,11 @@ import { useToast } from '@/hooks/use-toast'
 import { estimateProjectCost, type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost'
 import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 
-export default function CostEstimationPage() {
+function CostEstimationContent() {
     const [isLoading, setIsLoading] = useState(false)
     const [result, setResult] = useState<EstimateProjectCostOutput | null>(null)
     const { toast } = useToast()
@@ -241,5 +241,13 @@ export default function CostEstimationPage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function CostEstimationPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <CostEstimationContent />
+        </Suspense>
     )
 }

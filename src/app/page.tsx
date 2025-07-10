@@ -90,7 +90,7 @@ export default function HomePage() {
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <FileScan className="h-6 w-6" />
                   </div>
-                  <CardTitle className="mt-4">قراءة المستندات والمخططات</CardTitle>
+                  <CardTitle className="mt-4 text-xl">قراءة المستندات والمخططات</CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
                   قم برفع كراسة الشروط أو المخططات الهندسية، وسيقوم الذكاء الاصطناعي باستخراج وتحليل البنود والكميات تلقائياً.
@@ -101,7 +101,7 @@ export default function HomePage() {
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Bot className="h-6 w-6" />
                   </div>
-                  <CardTitle className="mt-4">تسعير وتخطيط ذكي</CardTitle>
+                  <CardTitle className="mt-4 text-xl">تسعير وتخطيط ذكي</CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
                   أدخل تفاصيل المشروع واحصل على جدول كميات (BOQ) مفصل، خطة عمل (Gantt Chart)، وتوصيات لفريق العمل في ثوانٍ.
@@ -112,7 +112,7 @@ export default function HomePage() {
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <GanttChartSquare className="h-6 w-6" />
                   </div>
-                  <CardTitle className="mt-4">تقارير وإدارة متكاملة</CardTitle>
+                  <CardTitle className="mt-4 text-xl">تقارير وإدارة متكاملة</CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
                   أنشئ تقارير حالة المشروع، وتابع الإنجاز، وأدر جميع جوانب مشاريعك من لوحة تحكم واحدة متكاملة وسهلة الاستخدام.
@@ -185,7 +185,7 @@ export default function HomePage() {
                     {/* Free Plan */}
                     <Card className="shadow-lg rounded-2xl border-2 flex flex-col">
                         <CardHeader>
-                            <CardTitle>الخطة الأساسية</CardTitle>
+                            <CardTitle className="text-xl">الخطة الأساسية</CardTitle>
                             <p className="text-4xl font-bold">مجاناً</p>
                             <p className="text-muted-foreground">للمهندسين الأفراد والفرق الصغيرة.</p>
                         </CardHeader>
@@ -204,7 +204,7 @@ export default function HomePage() {
                     <Card className="shadow-lg rounded-2xl border-2 border-primary relative flex flex-col">
                         <div className="absolute top-0 right-4 -mt-3 rounded-full bg-primary px-3 py-1 text-sm font-semibold text-primary-foreground">الأكثر شيوعاً</div>
                         <CardHeader>
-                            <CardTitle>الخطة الاحترافية</CardTitle>
+                            <CardTitle className="text-xl">الخطة الاحترافية</CardTitle>
                             <p className="text-4xl font-bold">199 ر.س<span className="text-lg font-normal text-muted-foreground">/شهرياً</span></p>
                             <p className="text-muted-foreground">للشركات النامية والفرق المحترفة.</p>
                         </CardHeader>
@@ -223,7 +223,7 @@ export default function HomePage() {
                     {/* Enterprise Plan */}
                     <Card className="shadow-lg rounded-2xl border-2 flex flex-col">
                         <CardHeader>
-                            <CardTitle>خطة الشركات</CardTitle>
+                            <CardTitle className="text-xl">خطة الشركات</CardTitle>
                             <p className="text-4xl font-bold">تواصل معنا</p>
                             <p className="text-muted-foreground">للشركات الكبيرة والمتطلبات المخصصة.</p>
                         </CardHeader>

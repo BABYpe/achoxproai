@@ -18,7 +18,7 @@ import {
   DropdownMenuPortal,
   DropdownMenuSubContent
 } from "@/components/ui/dropdown-menu"
-import { CreditCard, LogOut, Settings, User, Moon, Sun } from "lucide-react"
+import { CreditCard, LogOut, Settings, User, Moon, Sun, Globe } from "lucide-react"
 
 export function UserNav() {
   const router = useRouter();
@@ -64,6 +64,19 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+         <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+                <Globe className="ml-2 h-4 w-4" />
+                <span>تغيير اللغة</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                <DropdownMenuItem>العربية</DropdownMenuItem>
+                <DropdownMenuItem>English</DropdownMenuItem>
+                <DropdownMenuItem>Français</DropdownMenuItem>
+                </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+        </DropdownMenuSub>
          <DropdownMenuSub>
             <DropdownMenuSubTrigger>
                 <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 ml-2" />

@@ -20,7 +20,7 @@ export default function RegisterPage() {
           <div className="inline-block bg-primary/10 p-3 rounded-full mx-auto mb-4">
             <HardHat className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold">إنشاء حساب جديد</CardTitle>
+          <CardTitle className="text-2xl font-bold">إنشاء حساب جديد في AchoX Pro AI</CardTitle>
           <CardDescription>
             أدخل معلوماتك أدناه لإنشاء حساب
           </CardDescription>

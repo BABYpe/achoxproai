@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { HardHat, Cpu, FileText, BarChart, Users, CheckCircle, ArrowLeft, Bot, GanttChartSquare, FileScan } from 'lucide-react';
+import { HardHat, Bot, GanttChartSquare, FileScan, CheckCircle, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 
 export default function HomePage() {
@@ -13,7 +13,7 @@ export default function HomePage() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <HardHat className="h-7 w-7 text-primary" />
-            <span className="text-xl font-bold">AchoX Pro</span>
+            <span className="text-xl font-bold">AchoX Pro AI</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
             <Link href="#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
@@ -51,20 +51,20 @@ export default function HomePage() {
                     من التخطيط إلى التسليم، أتمتة شاملة لمشاريعك
                 </h1>
                 <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground">
-                    AchoX Pro هو شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة. حوّل التعقيد إلى بساطة وكفاءة.
+                    AchoX Pro AI هو شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة. حوّل التعقيد إلى بساطة وكفاءة.
                 </p>
                 <div className="mt-8 flex justify-center gap-4">
                     <Button size="lg" asChild className="font-bold text-lg py-7 px-8 shadow-lg shadow-primary/40">
                         <Link href="/register">ابدأ تجربتك المجانية</Link>
                     </Button>
                     <Button size="lg" variant="outline" asChild className="font-bold text-lg py-7 px-8">
-                        <Link href="/login">استكشف لوحة التحكم</Link>
+                        <Link href="/dashboard">استكشف لوحة التحكم</Link>
                     </Button>
                 </div>
                 <div className="mt-12">
                     <Image
                         src="https://placehold.co/1200x600.png"
-                        alt="لوحة تحكم AchoX Pro"
+                        alt="لوحة تحكم AchoX Pro AI"
                         width={1200}
                         height={600}
                         className="mx-auto rounded-2xl border bg-secondary shadow-2xl"
@@ -128,7 +128,7 @@ export default function HomePage() {
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold md:text-4xl">يثق بنا قادة قطاع الإنشاءات والفعاليات</h2>
               <p className="mt-4 text-muted-foreground">
-                هذا ما يقوله عملاؤنا عن تجربتهم مع AchoX Pro.
+                هذا ما يقوله عملاؤنا عن تجربتهم مع AchoX Pro AI.
               </p>
             </div>
             <div className="mt-12 grid gap-8 lg:grid-cols-3">
@@ -141,7 +141,7 @@ export default function HomePage() {
                                 <p className="text-sm text-muted-foreground">مدير مشاريع، شركة البناء الحديث</p>
                             </div>
                         </div>
-                        <p className="mt-4 text-muted-foreground">"منصة AchoX Pro غيرت طريقة عملنا تمامًا. أصبح تقدير التكاليف وتوليد جداول الكميات أسرع وأكثر دقة بنسبة 95%."</p>
+                        <p className="mt-4 text-muted-foreground">"منصة AchoX Pro AI غيرت طريقة عملنا تمامًا. أصبح تقدير التكاليف وتوليد جداول الكميات أسرع وأكثر دقة بنسبة 95%."</p>
                     </CardContent>
                 </Card>
                 <Card className="p-6 shadow-lg rounded-2xl">
@@ -236,7 +236,7 @@ export default function HomePage() {
                             </ul>
                         </CardContent>
                          <div className="p-6 pt-0">
-                            <Button className="w-full" variant="outline" asChild><Link href="/register">تواصل مع المبيعات</Link></Button>
+                            <Button className="w-full" variant="outline" asChild><Link href="/contact-sales">تواصل مع المبيعات</Link></Button>
                         </div>
                     </Card>
                 </div>
@@ -250,10 +250,10 @@ export default function HomePage() {
         <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 md:flex-row">
           <div className="flex items-center gap-2">
             <HardHat className="h-6 w-6 text-primary" />
-            <span className="font-bold">AchoX Pro</span>
+            <span className="font-bold">AchoX Pro AI</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} AchoX Pro. جميع الحقوق محفوظة.
+            © {new Date().getFullYear()} AchoX Pro AI. جميع الحقوق محفوظة.
           </p>
           <div className="flex items-center gap-4">
             <Link href="#" className="text-sm text-muted-foreground hover:text-primary">
@@ -268,3 +268,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    

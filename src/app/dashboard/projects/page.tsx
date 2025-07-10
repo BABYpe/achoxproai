@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Map, List } from "lucide-react";
+import { PlusCircle, MoreVertical, Building, DollarSign, Map, List, User } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
@@ -130,7 +130,7 @@ export default function ProjectsPage() {
       {viewMode === 'grid' && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {projects.map((project, index) => (
-            <Card key={index} className="shadow-lg rounded-2xl flex flex-col overflow-hidden">
+            <Card key={index} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50">
               <CardHeader className="p-0 relative">
                 <Image src={project.imageUrl} alt={project.title} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
                 <Badge variant={project.variant as any} className="absolute top-2 right-2">{project.status}</Badge>
@@ -158,7 +158,7 @@ export default function ProjectsPage() {
                         <DollarSign className="h-4 w-4" />
                         <span>{project.budget.toLocaleString()} {project.currency}</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                     <div className="flex items-center gap-2">
                         <User className="h-4 w-4" />
                         <span>{project.manager}</span>
                     </div>
@@ -187,5 +187,4 @@ export default function ProjectsPage() {
   )
 }
 
-// Add User icon to lucide-react imports if not already there
-import { User } from 'lucide-react';
+    

@@ -47,7 +47,7 @@ export default function DashboardLayout({
               <div className="bg-primary/20 p-2 rounded-lg">
                 <HardHat className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="text-xl font-bold font-headline">AchoX Pro</h1>
+              <h1 className="text-xl font-bold font-headline">AchoX Pro AI</h1>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -131,3 +131,5 @@ export default function DashboardLayout({
     </SidebarProvider>
   );
 }
+
+    

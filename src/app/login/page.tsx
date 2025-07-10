@@ -19,7 +19,7 @@ export default function LoginPage() {
             <div className="inline-block bg-primary/10 p-3 rounded-full mx-auto mb-4">
                <HardHat className="h-8 w-8 text-primary" />
             </div>
-          <CardTitle className="text-2xl font-bold">تسجيل الدخول إلى AchoX Pro</CardTitle>
+          <CardTitle className="text-2xl font-bold">تسجيل الدخول إلى AchoX Pro AI</CardTitle>
           <CardDescription>
             أدخل بريدك الإلكتروني أدناه لتسجيل الدخول إلى حسابك
           </CardDescription>
@@ -67,3 +67,5 @@ export default function LoginPage() {
     </div>
   )
 }
+
+    

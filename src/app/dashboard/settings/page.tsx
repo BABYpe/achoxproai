@@ -1,15 +1,34 @@
+
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+import { useToast } from "@/hooks/use-toast"
+
 
 export default function SettingsPage() {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { toast } = useToast()
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // In a real app, you would handle form submission here.
-    console.log("Form submitted");
+    toast({
+        title: "تم الحفظ بنجاح",
+        description: "تم تحديث معلومات ملفك الشخصي.",
+    })
   }
+
+  const handlePasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // In a real app, you would handle password change logic here.
+    toast({
+        title: "تم تحديث كلمة المرور",
+        description: "تم تغيير كلمة المرور الخاصة بك بنجاح.",
+    })
+  }
+
 
   return (
     <div className="flex flex-col gap-4">
@@ -55,7 +74,7 @@ export default function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handlePasswordChange}>
               <div className="space-y-2">
                 <Label htmlFor="current-password">كلمة المرور الحالية</Label>
                 <Input id="current-password" type="password" />
@@ -78,3 +97,5 @@ export default function SettingsPage() {
     </div>
   )
 }
+
+    

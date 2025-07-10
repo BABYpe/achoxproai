@@ -1,6 +1,8 @@
+
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,11 +13,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent
 } from "@/components/ui/dropdown-menu"
-import { CreditCard, LogOut, Settings, User } from "lucide-react"
+import { CreditCard, LogOut, Settings, User, Moon, Sun } from "lucide-react"
 
 export function UserNav() {
   const router = useRouter();
+  const { setTheme } = useTheme()
 
   const handleLogout = () => {
     // In a real app, you'd clear the user session here
@@ -57,6 +64,21 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+         <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 ml-2" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 ml-2" />
+                <span>تغيير المظهر</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                <DropdownMenuItem onClick={() => setTheme("light")}>فاتح</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>داكن</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("system")}>النظام</DropdownMenuItem>
+                </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+        </DropdownMenuSub>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={handleLogout}>
           <LogOut className="ml-2 h-4 w-4" />
           <span>تسجيل الخروج</span>
@@ -65,3 +87,5 @@ export function UserNav() {
     </DropdownMenu>
   )
 }
+
+    

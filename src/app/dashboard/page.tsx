@@ -13,76 +13,23 @@ import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 import Link from "next/link"
 import dynamic from 'next/dynamic'
 import { Skeleton } from "@/components/ui/skeleton"
+import { useProjectStore } from "@/hooks/use-project-store"
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
   ssr: false,
   loading: () => <Skeleton className="h-[600px] w-full rounded-2xl" />
 });
 
-
-const projects = [
-  {
-    title: "مشروع فيلا سكنية",
-    status: "قيد التنفيذ",
-    variant: "default",
-    location: "الرياض",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "modern villa",
-    progress: 65,
-    budget: 1200000,
-    currency: "SAR",
-    lat: 24.7136,
-    lng: 46.6753,
-  },
-  {
-    title: "مبنى تجاري متعدد الطوابق",
-    status: "مكتمل",
-    variant: "secondary",
-    location: "جدة",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "commercial building",
-    progress: 100,
-    budget: 5500000,
-    currency: "SAR",
-    lat: 21.4858,
-    lng: 39.1925,
-  },
-  {
-    title: "تطوير مجمع سكني",
-    status: "مخطط له",
-    variant: "outline",
-    location: "الدمام",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "residential complex",
-    progress: 0,
-    budget: 25000000,
-    currency: "SAR",
-    lat: 26.4207,
-    lng: 50.0888,
-  },
-  {
-    title: "تجديد فندق فاخر",
-    status: "متأخر",
-    variant: "destructive",
-    location: "دبي",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "luxury hotel",
-    progress: 40,
-    budget: 12000000,
-    currency: "SAR",
-    lat: 25.2048,
-    lng: 55.2708,
-  },
-];
-
 export default function DashboardPage() {
+  const { projects } = useProjectStore();
+
   const stats = useMemo(() => {
     const totalProjects = projects.length;
     const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
     const activeProjects = projects.filter(p => p.status === 'قيد التنفيذ' || p.status === 'متأخر').length;
     const completedProjects = projects.filter(p => p.status === 'مكتمل').length;
     return { totalProjects, totalBudget, activeProjects, completedProjects };
-  }, []);
+  }, [projects]);
 
   const projectStatusData = useMemo(() => {
     const statusCounts = projects.reduce((acc, project) => {
@@ -102,21 +49,21 @@ export default function DashboardPage() {
       value,
       fill: statusColors[name] || '#8884d8',
     }));
-  }, []);
+  }, [projects]);
 
   const projectBudgetData = useMemo(() => {
     return projects.map(p => ({
-        name: p.title.split(' ')[1], // Shorten name for chart
+        name: p.title.split(' ')[1] || p.title, // Shorten name for chart
         budget: p.budget / 1000000, // In millions
     }));
-  }, []);
+  }, [projects]);
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">لوحة التحكم</h1>
         <Button asChild className="gap-1 text-lg py-6 px-6 shadow-md shadow-primary/30">
-          <Link href="/dashboard/projects">
+          <Link href="/dashboard/projects/new">
             <PlusCircle className="h-5 w-5" />
             إنشاء مشروع جديد
           </Link>
@@ -207,7 +154,7 @@ export default function DashboardPage() {
                     <CardDescription>قائمة المشاريع ومواقعها على الخريطة.</CardDescription>
                  </CardHeader>
                  <CardContent className="grid gap-4">
-                    {projects.map((project, index) => (
+                    {projects.slice(0, 4).map((project, index) => (
                       <div key={index} className="flex items-center gap-4 p-2 rounded-lg hover:bg-secondary/50">
                           <Image src={project.imageUrl} alt={project.title} width={80} height={80} className="w-20 h-20 object-cover rounded-md" data-ai-hint={project.imageHint}/>
                           <div className="flex-1">
@@ -241,3 +188,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+    

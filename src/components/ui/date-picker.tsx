@@ -16,10 +16,11 @@ import {
 
 interface DatePickerProps {
     id?: string;
+    date?: Date;
+    onDateChange?: (date?: Date) => void;
 }
 
-export function DatePicker({ id }: DatePickerProps) {
-  const [date, setDate] = React.useState<Date>()
+export function DatePicker({ id, date, onDateChange }: DatePickerProps) {
 
   return (
     <Popover>
@@ -40,10 +41,12 @@ export function DatePicker({ id }: DatePickerProps) {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={onDateChange}
           initialFocus
         />
       </PopoverContent>
     </Popover>
   )
 }
+
+    

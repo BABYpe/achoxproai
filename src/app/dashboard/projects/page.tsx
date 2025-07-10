@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import dynamic from 'next/dynamic'
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
+import { useProjectStore } from "@/hooks/use-project-store";
 
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
@@ -19,102 +20,9 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
   loading: () => <Skeleton className="h-full w-full rounded-2xl" />
 });
 
-
-const projects = [
-  {
-    title: "مشروع فيلا سكنية",
-    status: "قيد التنفيذ",
-    variant: "default",
-    location: "الرياض",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "modern villa",
-    progress: 65,
-    budget: 1200000,
-    currency: "SAR",
-    lat: 24.7136,
-    lng: 46.6753,
-    manager: "خالد الأحمدي",
-    endDate: "2024-12-31"
-  },
-  {
-    title: "مبنى تجاري متعدد الطوابق",
-    status: "مكتمل",
-    variant: "secondary",
-    location: "جدة",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "commercial building",
-    progress: 100,
-    budget: 5500000,
-    currency: "SAR",
-    lat: 21.4858,
-    lng: 39.1925,
-    manager: "سارة عبدالله",
-    endDate: "2023-10-15"
-  },
-  {
-    title: "تطوير مجمع سكني",
-    status: "مخطط له",
-    variant: "outline",
-    location: "الدمام",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "residential complex",
-    progress: 0,
-    budget: 25000000,
-    currency: "SAR",
-    lat: 26.4207,
-    lng: 50.0888,
-    manager: "علي محمد",
-    endDate: "2026-06-01"
-  },
-  {
-    title: "تجديد فندق فاخر",
-    status: "متأخر",
-    variant: "destructive",
-    location: "دبي",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "luxury hotel",
-    progress: 40,
-    budget: 12000000,
-    currency: "SAR",
-    lat: 25.2048,
-    lng: 55.2708,
-    manager: "فاطمة الزهراء",
-    endDate: "2025-03-20"
-  },
-  {
-    title: "تجهيز مؤتمر التقنية الدولي",
-    status: "قيد التنفيذ",
-    variant: "default",
-    location: "الرياض",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "conference hall",
-    progress: 80,
-    budget: 750000,
-    currency: "SAR",
-    lat: 24.774265,
-    lng: 46.738586,
-    manager: "نورة القحطاني",
-    endDate: "2024-09-10"
-  },
-  {
-    title: "بناء مستودع لوجستي",
-    status: "مكتمل",
-    variant: "secondary",
-    location: "مدينة الملك عبدالله الاقتصادية",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageHint: "warehouse exterior",
-    progress: 100,
-    budget: 8200000,
-    currency: "SAR",
-    lat: 22.3833,
-    lng: 39.0956,
-    manager: "محمد الغامدي",
-    endDate: "2024-01-25"
-  }
-];
-
 export default function ProjectsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
+  const { projects } = useProjectStore();
 
   return (
     <div className="flex flex-col gap-8">
@@ -197,3 +105,5 @@ export default function ProjectsPage() {
     </div>
   )
 }
+
+    

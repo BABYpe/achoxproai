@@ -10,11 +10,13 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast'
 import { estimateProjectCost, type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost'
-import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone } from 'lucide-react'
+import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
+import { APIProvider, Map, DrawingManager } from '@vis.gl/react-google-maps'
+
 
 function CostEstimationContent() {
     const [isLoading, setIsLoading] = useState(false)
@@ -23,6 +25,8 @@ function CostEstimationContent() {
     const searchParams = useSearchParams()
 
     const [size, setSize] = useState('');
+    const [drawingMode, setDrawingMode] = useState<google.maps.drawing.OverlayType | null>(null);
+    const [drawnPolygons, setDrawnPolygons] = useState<google.maps.Polygon[]>([]);
 
     useEffect(() => {
         const areaParam = searchParams.get('area');
@@ -30,6 +34,23 @@ function CostEstimationContent() {
             setSize(areaParam);
         }
     }, [searchParams]);
+
+    const handlePolygonComplete = (polygon: google.maps.Polygon) => {
+        setDrawnPolygons(prev => [...prev, polygon]);
+        const areaInSquareMeters = google.maps.geometry.spherical.computeArea(polygon.getPath());
+        setSize(areaInSquareMeters.toFixed(2));
+        setDrawingMode(null); // Exit drawing mode
+        toast({
+            title: "تم حساب المساحة",
+            description: `تم تحديد مساحة المشروع: ${areaInSquareMeters.toFixed(2)} متر مربع.`,
+        });
+    };
+
+    const clearDrawing = () => {
+        drawnPolygons.forEach(p => p.setMap(null));
+        setDrawnPolygons([]);
+        setSize('');
+    }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -79,7 +100,7 @@ function CostEstimationContent() {
             <h1 className="text-2xl font-bold">مخطط المشاريع الذكي</h1>
             
             <div className="grid lg:grid-cols-3 gap-8 items-start">
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 flex flex-col gap-8">
                     <Card className="shadow-xl rounded-2xl sticky top-20">
                         <CardHeader>
                             <CardTitle>معلومات المشروع</CardTitle>
@@ -126,6 +147,53 @@ function CostEstimationContent() {
                                     {isLoading ? <><Loader className="ml-2 h-4 w-4 animate-spin" /> جاري التخطيط...</> : <><Wand2 className="ml-2 h-4 w-4" /> إنشاء خطة المشروع</>}
                                 </Button>
                             </form>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>تحديد المساحة من الخريطة</CardTitle>
+                            <CardDescription>ارسم حدود مشروعك على الخريطة لحساب المساحة تلقائيًا.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="h-64 w-full rounded-lg overflow-hidden border">
+                                <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+                                    <Map
+                                        mapId="cost-estimation-map"
+                                        style={{ width: '100%', height: '100%' }}
+                                        defaultCenter={{ lat: 24.7136, lng: 46.6753 }}
+                                        defaultZoom={12}
+                                        gestureHandling={'greedy'}
+                                        disableDefaultUI={true}
+                                    >
+                                        <DrawingManager
+                                            drawingMode={drawingMode}
+                                            onPolygonComplete={handlePolygonComplete}
+                                            options={{
+                                                drawingControl: false,
+                                                polygonOptions: {
+                                                    fillColor: "hsl(var(--primary))",
+                                                    strokeColor: "hsl(var(--primary))",
+                                                    fillOpacity: 0.3,
+                                                    strokeWeight: 2,
+                                                    clickable: false,
+                                                    editable: false,
+                                                    zIndex: 1
+                                                },
+                                            }}
+                                        />
+                                    </Map>
+                                </APIProvider>
+                            </div>
+                            <div className="flex gap-2 mt-4">
+                                <Button onClick={() => setDrawingMode(google.maps.drawing.OverlayType.POLYGON)} variant="outline" className="w-full">
+                                    <MapPin className="ml-2 h-4 w-4" />
+                                    ارسم حدود المشروع
+                                </Button>
+                                <Button onClick={clearDrawing} variant="destructive" size="icon">
+                                    <Eraser className="h-4 w-4" />
+                                </Button>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>

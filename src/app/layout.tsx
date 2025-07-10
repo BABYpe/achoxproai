@@ -7,9 +7,8 @@ import Script from 'next/script';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 import './i18n'; // Import i18n configuration
-import { I18nextProvider } from 'react-i18next';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { use } from 'react';
 
 const cairo = Cairo({
   subsets: ['latin'],
@@ -29,7 +28,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { language } = use(i18n);
+  const { i18n: i18nInstance } = useTranslation();
+  const language = i18nInstance.language;
 
   return (
     <html lang={language} dir={language === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>

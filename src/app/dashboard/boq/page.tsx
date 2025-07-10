@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState } from "react";
@@ -10,7 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 const initialBoqItems = [
   // --- تكاليف المحتوى والتصميم والإنتاج ---
@@ -57,6 +58,22 @@ const initialBoqItems = [
   { id: "ER-001", category: "احتياطي الطوارئ والمخاطر", description: "احتياطي لمواجهة المخاطر والطوارئ (2%)", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
 ];
 
+const boqItemSchema = z.object({
+  id: z.string().min(1, "رقم البند مطلوب"),
+  description: z.string().min(1, "الوصف مطلوب"),
+  category: z.string().min(1, "الفئة مطلوبة"),
+  unit: z.string().min(1, "الوحدة مطلوبة"),
+  quantity: z.preprocess(
+    (a) => parseFloat(z.string().parse(a)),
+    z.number().min(0, "الكمية يجب أن تكون رقمًا موجبًا")
+  ),
+  unitPrice: z.preprocess(
+    (a) => parseFloat(z.string().parse(a)),
+    z.number().min(0, "سعر الوحدة يجب أن يكون رقمًا موجبًا")
+  ),
+});
+
+type BoqItemForm = z.infer<typeof boqItemSchema>;
 
 export default function BoqPage() {
   const [boqItems, setBoqItems] = useState(initialBoqItems);
@@ -64,7 +81,40 @@ export default function BoqPage() {
   const { toast } = useToast();
   const grandTotal = boqItems.reduce((acc, item) => acc + item.total, 0);
 
-  const categories = [...new Set(boqItems.map(item => item.category))];
+  const { control, handleSubmit, reset } = useForm<BoqItemForm>({
+    resolver: zodResolver(boqItemSchema),
+    defaultValues: {
+      id: `E-${Math.floor(Math.random() * 900) + 100}`,
+      description: "",
+      category: "تكاليف متنوعة",
+      unit: "مقطوعة",
+      quantity: 1,
+      unitPrice: 0,
+    },
+  });
+
+  const onSubmit: SubmitHandler<BoqItemForm> = (data) => {
+    const newItem = {
+      ...data,
+      total: data.quantity * data.unitPrice,
+    };
+    setBoqItems((prevItems) => [...prevItems, newItem]);
+    toast({
+      title: "تمت الإضافة بنجاح",
+      description: `تمت إضافة البند "${data.description}" إلى جدول الكميات.`,
+    });
+    setIsDialogOpen(false);
+    reset({
+        id: `E-${Math.floor(Math.random() * 900) + 100}`,
+        description: "",
+        category: "تكاليف متنوعة",
+        unit: "مقطوعة",
+        quantity: 1,
+        unitPrice: 0,
+    });
+  };
+
+  const categories = [...new Set(boqItems.map(item => item.category))].sort();
   
   const handleImport = () => {
     toast({
@@ -159,53 +209,47 @@ export default function BoqPage() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>إضافة بند جديد</DialogTitle>
             <DialogDescription>
               أدخل تفاصيل البند الجديد في جدول الكميات. سيتم الحفظ عند الضغط على زر الحفظ.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="item-id" className="text-right">
-                رقم البند
-              </Label>
-              <Input id="item-id" defaultValue="E-804" className="col-span-3" />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="item-id" className="text-right">رقم البند</Label>
+                <Controller name="id" control={control} render={({ field }) => <Input id="item-id" className="col-span-3" {...field} />} />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="item-desc" className="text-right">الوصف</Label>
+                <Controller name="description" control={control} render={({ field }) => <Input id="item-desc" placeholder="وصف تفصيلي للبند" className="col-span-3" {...field} />} />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="item-category" className="text-right">الفئة</Label>
+                <Controller name="category" control={control} render={({ field }) => <Input id="item-category" placeholder="فئة البند" className="col-span-3" {...field} />} />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="item-unit" className="text-right">الوحدة</Label>
+                <Controller name="unit" control={control} render={({ field }) => <Input id="item-unit" className="col-span-3" {...field} />} />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="item-qty" className="text-right">الكمية</Label>
+                <Controller name="quantity" control={control} render={({ field }) => <Input id="item-qty" type="number" className="col-span-3" {...field} />} />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="item-price" className="text-right">سعر الوحدة</Label>
+                <Controller name="unitPrice" control={control} render={({ field }) => <Input id="item-price" type="number" placeholder="0.00" className="col-span-3" {...field} />} />
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="item-desc" className="text-right">
-                الوصف
-              </Label>
-              <Input id="item-desc" placeholder="وصف تفصيلي للبند" className="col-span-3" />
-            </div>
-             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="item-unit" className="text-right">
-                الوحدة
-              </Label>
-              <Input id="item-unit" defaultValue="مقطوعة" className="col-span-3" />
-            </div>
-             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="item-qty" className="text-right">
-                الكمية
-              </Label>
-              <Input id="item-qty" type="number" defaultValue="1" className="col-span-3" />
-            </div>
-             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="item-price" className="text-right">
-                سعر الوحدة
-              </Label>
-              <Input id="item-price" type="number" placeholder="0.00" className="col-span-3" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit" onClick={() => setIsDialogOpen(false)}>حفظ البند</Button>
-            <DialogClose asChild>
-                <Button type="button" variant="secondary">
-                إلغاء
-                </Button>
-            </DialogClose>
-          </DialogFooter>
+            <DialogFooter>
+              <Button type="submit">حفظ البند</Button>
+              <DialogClose asChild>
+                  <Button type="button" variant="secondary">إلغاء</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </>

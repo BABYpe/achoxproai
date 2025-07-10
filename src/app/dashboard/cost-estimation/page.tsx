@@ -1,7 +1,8 @@
 
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -19,6 +20,16 @@ export default function CostEstimationPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [result, setResult] = useState<EstimateProjectCostOutput | null>(null)
     const { toast } = useToast()
+    const searchParams = useSearchParams()
+
+    const [size, setSize] = useState('');
+
+    useEffect(() => {
+        const areaParam = searchParams.get('area');
+        if (areaParam) {
+            setSize(areaParam);
+        }
+    }, [searchParams]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -82,7 +93,7 @@ export default function CostEstimationPage() {
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="size">مساحة المشروع (متر مربع)</Label>
-                                    <Input id="size" name="size" type="number" placeholder="مثال: 500" />
+                                    <Input id="size" name="size" type="number" placeholder="مثال: 500" value={size} onChange={(e) => setSize(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="type">نوع المشروع</Label>
@@ -232,3 +243,4 @@ export default function CostEstimationPage() {
         </div>
     )
 }
+

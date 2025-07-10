@@ -30,7 +30,7 @@ export default function HomePage() {
             <Button variant="ghost" asChild>
                 <Link href="/login">تسجيل الدخول</Link>
             </Button>
-            <Button asChild className="shadow-lg shadow-primary/30">
+            <Button asChild>
                 <Link href="/register">
                     ابدأ الآن مجاناً <ArrowLeft className="mr-2 h-4 w-4" />
                 </Link>
@@ -54,10 +54,10 @@ export default function HomePage() {
                     AchoX Pro AI هو شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة. حوّل التعقيد إلى بساطة وكفاءة.
                 </p>
                 <div className="mt-8 flex justify-center gap-4">
-                    <Button size="lg" asChild className="font-bold text-lg py-7 px-8 shadow-lg shadow-primary/40">
+                    <Button size="lg" asChild>
                         <Link href="/register">ابدأ تجربتك المجانية</Link>
                     </Button>
-                    <Button size="lg" variant="outline" asChild className="font-bold text-lg py-7 px-8">
+                    <Button size="lg" variant="outline" asChild>
                         <Link href="/dashboard">استكشف لوحة التحكم</Link>
                     </Button>
                 </div>
@@ -268,5 +268,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    

@@ -1,12 +1,14 @@
+
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileUploader } from "@/components/file-uploader";
 import { analyzeBlueprint, type AnalyzeBlueprintOutput } from "@/ai/flows/analyze-blueprint";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, BarChart, Maximize, ListTree } from "lucide-react";
+import { Loader, BarChart, Maximize, ListTree, Calculator } from "lucide-react";
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
@@ -16,6 +18,7 @@ export default function BlueprintsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleFileSelect = (selectedFile: File) => {
     setFile(selectedFile);
@@ -52,6 +55,15 @@ export default function BlueprintsPage() {
           description: "تم تحليل المخطط بنجاح.",
         });
       };
+      reader.onerror = (error) => {
+        console.error("FileReader error:", error);
+        toast({
+            title: "فشل قراءة الملف",
+            description: "حدث خطأ أثناء قراءة الملف. الرجاء المحاولة مرة أخرى.",
+            variant: "destructive",
+        });
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("Analysis failed:", error);
       toast({
@@ -59,17 +71,32 @@ export default function BlueprintsPage() {
         description: "حدث خطأ أثناء تحليل المخطط. الرجاء المحاولة مرة أخرى.",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
 
+  const handleUseForEstimation = () => {
+    if (analysisResult?.quantities.area) {
+      const area = parseFloat(analysisResult.quantities.area.replace(/[^\d.-]/g, ''));
+      if (!isNaN(area)) {
+          router.push(`/dashboard/cost-estimation?area=${area}`);
+      } else {
+         toast({
+            title: "خطأ في البيانات",
+            description: "لا يمكن استخدام المساحة المستخرجة. الرجاء المحاولة مرة أخرى.",
+            variant: "destructive",
+        });
+      }
+    }
+  };
+
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">تحليل المخططات بالذكاء الاصطناعي</h1>
       </div>
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3 items-start">
         <div className="lg:col-span-2 flex flex-col gap-6">
             <Card className="shadow-lg rounded-2xl">
                 <CardHeader>
@@ -96,7 +123,7 @@ export default function BlueprintsPage() {
                     </CardHeader>
                      <CardContent>
                         <div className="relative w-full h-96 bg-secondary rounded-lg overflow-hidden">
-                           <Image src={previewUrl} alt="معاينة المخطط" layout="fill" objectFit="contain" />
+                           <Image src={previewUrl} alt="معاينة المخطط" fill objectFit="contain" />
                         </div>
                     </CardContent>
                 </Card>
@@ -107,7 +134,7 @@ export default function BlueprintsPage() {
                 <CardHeader>
                     <CardTitle>نتائج التحليل</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="min-h-[300px]">
                      {isLoading && (
                          <div className="flex flex-col items-center justify-center gap-4 py-10 text-muted-foreground">
                              <Loader className="h-10 w-10 animate-spin text-primary" />
@@ -115,27 +142,33 @@ export default function BlueprintsPage() {
                          </div>
                      )}
                     {analysisResult && (
-                       <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
-                          <AccordionItem value="item-1">
-                            <AccordionTrigger className="font-bold"><BarChart className="ml-2 h-5 w-5 text-accent"/>الكميات</AccordionTrigger>
-                            <AccordionContent>
-                               <div className="space-y-2 text-sm">
-                                  <div className="flex justify-between"><span>المساحة الإجمالية:</span> <span className="font-mono">{analysisResult.quantities.area}</span></div>
-                                   <div className="flex justify-between"><span>الطول الإجمالي للخطوط:</span> <span className="font-mono">{analysisResult.quantities.length}</span></div>
-                               </div>
-                            </AccordionContent>
-                          </AccordionItem>
-                          <AccordionItem value="item-2">
-                            <AccordionTrigger className="font-bold"><ListTree className="ml-2 h-5 w-5 text-accent"/>تعداد العناصر</AccordionTrigger>
-                            <AccordionContent>
-                                <div className="space-y-2 text-sm">
-                                {Object.entries(analysisResult.quantities.objectCounts).map(([key, value]) => (
-                                    <div className="flex justify-between" key={key}><span>{key}:</span> <span className="font-mono">{value}</span></div>
-                                ))}
+                        <div className="flex flex-col gap-4">
+                            <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="font-bold"><BarChart className="ml-2 h-5 w-5 text-accent"/>الكميات</AccordionTrigger>
+                                <AccordionContent>
+                                <div className="space-y-2 text-sm pr-2">
+                                    <div className="flex justify-between"><span>المساحة الإجمالية:</span> <span className="font-mono">{analysisResult.quantities.area}</span></div>
+                                        <div className="flex justify-between"><span>الطول الإجمالي للخطوط:</span> <span className="font-mono">{analysisResult.quantities.length}</span></div>
                                 </div>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-2">
+                                <AccordionTrigger className="font-bold"><ListTree className="ml-2 h-5 w-5 text-accent"/>تعداد العناصر</AccordionTrigger>
+                                <AccordionContent>
+                                    <div className="space-y-2 text-sm pr-2">
+                                    {Object.entries(analysisResult.quantities.objectCounts).map(([key, value]) => (
+                                        <div className="flex justify-between" key={key}><span>{key}:</span> <span className="font-mono">{value}</span></div>
+                                    ))}
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                            </Accordion>
+                            <Button onClick={handleUseForEstimation} className="w-full mt-4">
+                                <Calculator className="ml-2 h-4 w-4" />
+                                استخدام النتائج لتقدير التكلفة
+                            </Button>
+                       </div>
                     )}
                      {!isLoading && !analysisResult && (
                          <div className="flex flex-col items-center justify-center gap-4 py-10 text-muted-foreground">
@@ -150,3 +183,4 @@ export default function BlueprintsPage() {
     </div>
   );
 }
+

@@ -9,7 +9,15 @@ import { PlusCircle, MoreVertical, Building, DollarSign, Map, List, User } from 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
-import ProjectMap from "@/components/project-map";
+import dynamic from 'next/dynamic'
+import { Skeleton } from "@/components/ui/skeleton";
+
+
+const ProjectMap = dynamic(() => import('@/components/project-map'), {
+  ssr: false,
+  loading: () => <Skeleton className="h-full w-full rounded-2xl" />
+});
+
 
 const projects = [
   {

@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useMemo } from "react"
@@ -9,8 +10,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import Image from "next/image"
 import { Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
-import ProjectMap from "@/components/project-map"
 import Link from "next/link"
+import dynamic from 'next/dynamic'
+import { Skeleton } from "@/components/ui/skeleton"
+
+const ProjectMap = dynamic(() => import('@/components/project-map'), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[600px] w-full rounded-2xl" />
+});
+
 
 const projects = [
   {

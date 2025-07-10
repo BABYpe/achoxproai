@@ -13,7 +13,7 @@ import { HardHat } from "lucide-react"
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <main className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="mx-auto max-w-sm w-full shadow-xl rounded-2xl">
         <CardHeader className="text-center">
             <div className="inline-block bg-primary/10 p-3 rounded-full mx-auto mb-4">
@@ -64,8 +64,6 @@ export default function LoginPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </main>
   )
 }
-
-    

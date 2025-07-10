@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
+import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,12 +23,17 @@ import { CreditCard, LogOut, Settings, User, Moon, Sun, Globe } from "lucide-rea
 
 export function UserNav() {
   const router = useRouter();
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
+  const { i18n } = useTranslation();
 
   const handleLogout = () => {
     // In a real app, you'd clear the user session here
     router.push('/login');
   };
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  }
 
   return (
     <DropdownMenu>
@@ -71,9 +77,9 @@ export function UserNav() {
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
                 <DropdownMenuSubContent>
-                <DropdownMenuItem>العربية</DropdownMenuItem>
-                <DropdownMenuItem>English</DropdownMenuItem>
-                <DropdownMenuItem>Français</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeLanguage('ar')}>العربية</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeLanguage('en')}>English</DropdownMenuItem>
+                <DropdownMenuItem disabled>Français (soon)</DropdownMenuItem>
                 </DropdownMenuSubContent>
             </DropdownMenuPortal>
         </DropdownMenuSub>

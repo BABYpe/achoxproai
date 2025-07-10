@@ -11,60 +11,52 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const initialBoqItems = [
-  // --- أعمال المقاولات ---
-  // الأعمال الترابية
-  { id: "CW-101", category: "الأعمال الترابية", description: "حفر التربة لأنواع مختلفة من الأساسات", unit: "متر مكعب", quantity: 1500, unitPrice: 30, total: 45000 },
-  { id: "CW-102", category: "الأعمال الترابية", description: "ردم التربة على طبقات مع الدمك", unit: "متر مكعب", quantity: 1200, unitPrice: 25, total: 30000 },
-  { id: "CW-103", category: "الأعمال الترابية", description: "تسوية وتنظيف الموقع بالكامل", unit: "متر مربع", quantity: 5000, unitPrice: 5, total: 25000 },
+  // Extracted from "Fatra's Vision" Project Report
   
-  // الأعمال الخرسانية
-  { id: "CW-201", category: "الأعمال الخرسانية", description: "صب خرسانة مسلحة للأساسات", unit: "متر مكعب", quantity: 450, unitPrice: 480, total: 216000 },
-  { id: "CW-202", category: "الأعمال الخرسانية", description: "صب خرسانة مسلحة للأعمدة", unit: "متر مكعب", quantity: 150, unitPrice: 550, total: 82500 },
-  { id: "CW-203", category: "الأعمال الخرسانية", description: "صب خرسانة مسلحة للأسقف", unit: "متر مكعب", quantity: 300, unitPrice: 520, total: 156000 },
-  { id: "CW-204", category: "الأعمال الخرسانية", description: "توريد وتركيب حديد التسليح (Grade 60)", unit: "طن", quantity: 85, unitPrice: 3200, total: 272000 },
-  { id: "CW-205", category: "الأعمال الخرسانية", description: "أعمال قوالب خشبية للأساسات والجدران", unit: "متر مربع", quantity: 1800, unitPrice: 60, total: 108000 },
+  // --- تكاليف المحتوى والتصميم والإنتاج ---
+  { id: "CDP-001", category: "تكاليف المحتوى والتصميم والإنتاج", description: "أتعاب خبراء التصميم الإبداعي", unit: "مقطوعة", quantity: 1, unitPrice: 2000000, total: 2000000 },
+  { id: "CDP-002", category: "تكاليف المحتوى والتصميم والإنتاج", description: "إنتاج المحتوى الرقمي (فيديوهات، برومو، 3D، مسرحيات)", unit: "مقطوعة", quantity: 1, unitPrice: 3000000, total: 3000000 },
+  { id: "CDP-003", category: "تكاليف المحتوى والتصميم والإنتاج", description: "تكلفة تصميم وتصنيع أزياء الشخصيات", unit: "مقطوعة", quantity: 1, unitPrice: 500000, total: 500000 },
+  { id: "CDP-004", category: "تكاليف المحتوى والتصميم والإنتاج", description: "تكلفة تصميم وتصنيع الهدايا التذكارية المميزة", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
+  { id: "CDP-005", category: "تكاليف المحتوى والتصميم والإنتاج", description: "أتعاب خبراء المحتوى البيئي (استشاريين)", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
 
-  // أعمال المباني
-  { id: "CW-301", category: "أعمال المباني", description: "بناء بلوك أسمنتي للجدران الخارجية", unit: "متر مربع", quantity: 2500, unitPrice: 65, total: 162500 },
-  { id: "CW-302", category: "أعمال المباني", description: "لياسة داخلية للأسقف والجدران", unit: "متر مربع", quantity: 7000, unitPrice: 28, total: 196000 },
-  { id: "CW-303", category: "أعمال المباني", description: "بلاط أرضيات بورسلان (60x60 سم)", unit: "متر مربع", quantity: 800, unitPrice: 120, total: 96000 },
-  { id: "CW-304", category: "أعمال المباني", description: "دهانات داخلية (جوتن) - 3 أوجه", unit: "متر مربع", quantity: 7000, unitPrice: 35, total: 245000 },
-  { id: "CW-305", category: "أعمال المباني", description: "توريد وتركيب أبواب خشبية داخلية", unit: "عدد", quantity: 30, unitPrice: 1200, total: 36000 },
-  { id: "CW-306", category: "أعمال المباني", description: "توريد وتركيب شبابيك ألمنيوم (دبل جلاس)", unit: "عدد", quantity: 25, unitPrice: 950, total: 23750 },
-  { id: "CW-307", category: "أعمال المباني", description: "عزل مائي للأسطح ودورات المياه", unit: "متر مربع", quantity: 1000, unitPrice: 55, total: 55000 },
+  // --- تكاليف التقنيات والمعدات ---
+  { id: "TE-001", category: "تكاليف التقنيات والمعدات", description: "أجهزة الواقع الافتراضي والمعزز والممتد (VR/ER/XR/EL)", unit: "مقطوعة", quantity: 1, unitPrice: 4000000, total: 4000000 },
+  { id: "TE-002", category: "تكاليف التقنيات والمعدات", description: "شاشات العرض التفاعلية وغير التقليدية", unit: "مقطوعة", quantity: 1, unitPrice: 3000000, total: 3000000 },
+  { id: "TE-003", category: "تكاليف التقنيات والمعدات", description: "أنظمة الصوت والإضاءة الاحترافية", unit: "مقطوعة", quantity: 1, unitPrice: 2500000, total: 2500000 },
+  { id: "TE-004", category: "تكاليف التقنيات والمعدات", description: "أجهزة العرض الضوئي والـ Projection Mapping", unit: "مقطوعة", quantity: 1, unitPrice: 1500000, total: 1500000 },
+  { id: "TE-005", category: "تكاليف التقنيات والمعدات", description: "طابعات ثلاثية الأبعاد وموادها", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
+  { id: "TE-006", category: "تكاليف التقنيات والمعدات", description: "برمجيات التحكم والتشغيل", unit: "مقطوعة", quantity: 1, unitPrice: 500000, total: 500000 },
 
-  // الأعمال الكهربائية
-  { id: "CW-401", category: "الأعمال الكهربائية", description: "تمديد كابلات وأسلاك (الفنار)", unit: "مقطوعة", quantity: 1, unitPrice: 55000, total: 55000 },
-  { id: "CW-402", category: "الأعمال الكهربائية", description: "تركيب مفاتيح ومآخذ كهربائية (باناسونيك)", unit: "عدد", quantity: 250, unitPrice: 45, total: 11250 },
-  { id: "CW-403", category: "الأعمال الكهربائية", description: "تركيب وحدات إضاءة LED", unit: "عدد", quantity: 180, unitPrice: 85, total: 15300 },
-  { id: "CW-404", category: "الأعمال الكهربائية", description: "تركيب لوحة توزيع كهربائية رئيسية", unit: "عدد", quantity: 1, unitPrice: 7500, total: 7500 },
+  // --- تكاليف الإنشاءات والتجهيز والتركيب ---
+  { id: "CI-001", category: "تكاليف الإنشاءات والتجهيز والتركيب", description: "استئجار المواقع والقاعات", unit: "مقطوعة", quantity: 1, unitPrice: 4000000, total: 4000000 },
+  { id: "CI-002", category: "تكاليف الإنشاءات والتجهيز والتركيب", description: "تصميم وتصنيع وتركيب الأجنحة والديكورات", unit: "مقطوعة", quantity: 1, unitPrice: 4000000, total: 4000000 },
+  { id: "CI-003", category: "تكاليف الإنشاءات والتجهيز والتركيب", description: "تصميم وتوريد اللافتات والعلامات الإرشادية", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
+  { id: "CI-004", category: "تكاليف الإنشاءات والتجهيز والتركيب", description: "خدمات النقل والتركيب والفك", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
 
-  // الأعمال الميكانيكية
-  { id: "CW-501", category: "الأعمال الميكانيكية", description: "أعمال السباكة والتغذية والصرف (نيبرو)", unit: "مقطوعة", quantity: 1, unitPrice: 48000, total: 48000 },
-  { id: "CW-502", category: "الأعمال الميكانيكية", description: "توريد وتركيب وحدات تكييف سبليت (24,000 BTU)", unit: "عدد", quantity: 12, unitPrice: 3200, total: 38400 },
-  
-  // --- تنظيم المؤتمرات والفعاليات ---
-  // الموقع واللوجستيات
-  { id: "EM-101", category: "الموقع واللوجستيات", description: "إيجار قاعة فعاليات فندقية (5 نجوم)", unit: "يوم", quantity: 2, unitPrice: 25000, total: 50000 },
-  { id: "EM-102", category: "الموقع واللوجستيات", description: "تأجير نظام صوتي متكامل مع فني", unit: "يوم", quantity: 2, unitPrice: 8000, total: 16000 },
-  { id: "EM-103", category: "الموقع واللوجستيات", description: "تأجير شاشة LED P3 مقاس 8x4 متر", unit: "يوم", quantity: 2, unitPrice: 12000, total: 24000 },
-  { id: "EM-104", category: "الموقع واللوجستيات", description: "بناء وتجهيز مسرح (Stage) مقاس 10x6 متر", unit: "وحدة", quantity: 1, unitPrice: 15000, total: 15000 },
-  { id: "EM-105", category: "الموقع واللوجستيات", description: "تصميم وتنفيذ ديكور وهوية المؤتمر", unit: "مشروع", quantity: 1, unitPrice: 35000, total: 35000 },
-  { id: "EM-106", category: "الموقع واللوجستيات", description: "توفير أفراد أمن وحراسة", unit: "فرد/يوم", quantity: 10, unitPrice: 400, total: 4000 },
+  // --- تكاليف الموارد البشرية ---
+  { id: "HR-001", category: "تكاليف الموارد البشرية", description: "رواتب وأجور فريق إدارة المشروع", unit: "مقطوعة", quantity: 1, unitPrice: 4000000, total: 4000000 },
+  { id: "HR-002", category: "تكاليف الموارد البشرية", description: "رواتب وأجور فريق الدعم الفني الميداني", unit: "مقطوعة", quantity: 1, unitPrice: 3000000, total: 3000000 },
+  { id: "HR-003", category: "تكاليف الموارد البشرية", description: "رواتب وأجور فريق إدارة الحشود", unit: "مقطوعة", quantity: 1, unitPrice: 2500000, total: 2500000 },
+  { id: "HR-004", category: "تكاليف الموارد البشرية", description: "رواتب وأجور فريق التصوير والتصميم (أثناء التنفيذ)", unit: "مقطوعة", quantity: 1, unitPrice: 1500000, total: 1500000 },
+  { id: "HR-005", category: "تكاليف الموارد البشرية", description: "أجور خبراء قياس الأثر وإعداد التقارير", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
+  { id: "HR-006", category: "تكاليف الموارد البشرية", description: "تكاليف السفر والإقامة والمعيشة لفريق العمل", unit: "مقطوعة", quantity: 1, unitPrice: 500000, total: 500000 },
 
-  // التنظيم والإدارة
-  { id: "EM-201", category: "التنظيم والإدارة", description: "خدمات تخطيط وتنسيق كاملة للمؤتمر", unit: "مشروع", quantity: 1, unitPrice: 45000, total: 45000 },
-  { id: "EM-202", category: "التنظيم والإدارة", description: "نظام تسجيل إلكتروني للمشاركين", unit: "مشروع", quantity: 1, unitPrice: 18000, total: 18000 },
-  { id: "EM-203", category: "التنظيم والإدارة", description: "توفير فريق استقبال وتنظيم (15 فرد)", unit: "فريق/يوم", quantity: 2, unitPrice: 7000, total: 14000 },
-  
-  // الإعاشة والضيافة
-  { id: "EM-301", category: "الإعاشة والضيافة", description: "وجبة غداء (بوفيه مفتوح) لعدد 200 شخص", unit: "شخص", quantity: 200, unitPrice: 180, total: 36000 },
-  { id: "EM-302", category: "الإعاشة والضيافة", description: "استراحة قهوة ومرطبات (مرتين في اليوم)", unit: "شخص/مرة", quantity: 400, unitPrice: 45, total: 18000 },
-  
-  // بنود أخرى
-  { id: "EM-401", category: "بنود أخرى", description: "خدمات تصوير فوتوغرافي وفيديو احترافي", unit: "مشروع", quantity: 1, unitPrice: 22000, total: 22000 },
-  { id: "EM-402", category: "بنود أخرى", description: "طباعة مواد المؤتمر (برامج، بطاقات تعريف)", unit: "مقطوعة", quantity: 1, unitPrice: 9500, total: 9500 }
+  // --- تكاليف التشغيل والدعم اللوجستي ---
+  { id: "OLS-001", category: "تكاليف التشغيل والدعم اللوجستي", description: "الضيافة", unit: "مقطوعة", quantity: 1, unitPrice: 1500000, total: 1500000 },
+  { id: "OLS-002", category: "تكاليف التشغيل والدعم اللوجستي", description: "صيانة دورية للتقنيات والمعدات", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
+  { id: "OLS-003", category: "تكاليف التشغيل والدعم اللوجستي", description: "تأمين على الفعاليات والمعدات", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
+  { id: "OLS-004", category: "تكاليف التشغيل والدعم اللوجستي", description: "تكاليف إدارية وتشغيلية متنوعة", unit: "مقطوعة", quantity: 1, unitPrice: 1500000, total: 1500000 },
+
+  // --- تكاليف قياس الأثر والتقارير ---
+  { id: "IMR-001", category: "تكاليف قياس الأثر والتقارير", description: "برمجيات تحليل البيانات", unit: "مقطوعة", quantity: 1, unitPrice: 500000, total: 500000 },
+  { id: "IMR-002", category: "تكاليف قياس الأثر والتقارير", description: "أتعاب خبراء تقييم الأثر", unit: "مقطوعة", quantity: 1, unitPrice: 500000, total: 500000 },
+  { id: "IMR-003", category: "تكاليف قياس الأثر والتقارير", description: "إنتاج التقارير النهائية", unit: "مقطوعة", quantity: 1, unitPrice: 500000, total: 500000 },
+
+  // --- احتياطي الطوارئ والمخاطر ---
+  { id: "ER-001", category: "احتياطي الطوارئ والمخاطر", description: "احتياطي لمواجهة المخاطر والطوارئ (2%)", unit: "مقطوعة", quantity: 1, unitPrice: 1000000, total: 1000000 },
 ];
+
 
 export default function BoqPage() {
   const [boqItems, setBoqItems] = useState(initialBoqItems);
@@ -96,14 +88,14 @@ export default function BoqPage() {
 
         <Card className="shadow-xl rounded-2xl">
           <CardHeader>
-            <CardTitle>قاعدة بيانات البنود</CardTitle>
-            <CardDescription>قائمة شاملة لبنود الأعمال للمشاريع الإنشائية والفعاليات.</CardDescription>
+            <CardTitle>قاعدة بيانات بنود مشروع "رؤية الفطرة"</CardTitle>
+            <CardDescription>قائمة التكاليف المفصلة لمشروع تعزيز الوعي البيئي.</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">رقم البند</TableHead>
+                  <TableHead className="w-[120px]">رقم البند</TableHead>
                   <TableHead>الوصف</TableHead>
                   <TableHead>الوحدة</TableHead>
                   <TableHead className="text-right">الكمية</TableHead>

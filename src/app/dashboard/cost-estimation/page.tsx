@@ -120,13 +120,16 @@ function CostEstimationContent() {
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="type">نوع المشروع</Label>
-                                    <Select name="type" defaultValue="residential">
+                                    <Select name="type" defaultValue="residential_villa">
                                         <SelectTrigger id="type"><SelectValue placeholder="اختر نوع المشروع" /></SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="residential">فيلا سكنية</SelectItem>
-                                            <SelectItem value="commercial">مبنى تجاري</SelectItem>
+                                            <SelectItem value="residential_villa">فيلا سكنية</SelectItem>
+                                            <SelectItem value="commercial_building">مبنى تجاري</SelectItem>
                                             <SelectItem value="event_setup">تجهيز فعالية</SelectItem>
-                                            <SelectItem value="exhibition">تجهيز معرض</SelectItem>
+                                            <SelectItem value="interior_finishing">تشطيبات داخلية</SelectItem>
+                                            <SelectItem value="landscaping">تنسيق حدائق (لاندسكيب)</SelectItem>
+                                            <SelectItem value="restoration_project">مشروع ترميم</SelectItem>
+                                            <SelectItem value="exhibition_booth">تجهيز جناح معرض</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>

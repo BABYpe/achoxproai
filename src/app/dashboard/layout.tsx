@@ -14,6 +14,7 @@ import {
   Bell,
   FilePieChart,
   Briefcase,
+  ChevronDown,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -27,11 +28,15 @@ import {
   SidebarTrigger,
   SidebarInset,
   SidebarTitle,
+  SidebarSub,
+  SidebarSubContent,
+  SidebarSubTrigger,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
+import { useProjectStore } from '@/hooks/use-project-store';
 
 export default function DashboardLayout({
   children,
@@ -39,6 +44,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { projects } = useProjectStore();
+
+  const isActive = (path: string) => pathname === path;
+  const isProjectsActive = pathname.startsWith('/dashboard/projects');
 
   return (
     <SidebarProvider>
@@ -46,7 +55,7 @@ export default function DashboardLayout({
         <Sidebar>
           <SidebarHeader className="h-20 flex items-center justify-center text-center p-2">
               <div className="flex flex-col items-center gap-1 group-data-[collapsible=icon]:hidden">
-                <Logo className="w-10 h-10 text-primary" />
+                <Logo className="h-12 w-12 text-primary" />
                 <SidebarTitle className="text-lg font-bold">AchoX Pro AI</SidebarTitle>
               </div>
                <div className="hidden group-data-[collapsible=icon]:flex">
@@ -56,19 +65,31 @@ export default function DashboardLayout({
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard" isActive={pathname === '/dashboard'} tooltip="لوحة التحكم">
+                <SidebarMenuButton href="/dashboard" isActive={isActive('/dashboard')} tooltip="لوحة التحكم">
                   <LayoutDashboard />
                   <span>لوحة التحكم</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
                <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/projects" isActive={pathname === '/dashboard/projects'} tooltip="المشاريع">
-                  <Briefcase />
-                  <span>المشاريع</span>
+                <SidebarMenuButton asChild isActive={isProjectsActive} tooltip="المشاريع">
+                  <Link href="/dashboard/projects">
+                    <Briefcase />
+                    <span>المشاريع</span>
+                  </Link>
                 </SidebarMenuButton>
+                 {isProjectsActive && projects.length > 0 && (
+                    <div className="pl-8 pr-4 py-2 space-y-1 text-sm group-data-[collapsible=icon]:hidden">
+                      <p className="font-semibold text-sidebar-foreground/80 mb-2">المشاريع الحالية</p>
+                      {projects.slice(0, 5).map(p => (
+                         <Link key={p.id} href={`/dashboard/projects/${p.id}`} className={`block rounded-md p-1.5 hover:bg-sidebar-accent ${pathname.endsWith(p.id!) ? 'bg-sidebar-accent font-bold' : ''}`}>
+                            {p.title}
+                         </Link>
+                      ))}
+                    </div>
+                  )}
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/blueprints" isActive={pathname === '/dashboard/blueprints'} tooltip="المخططات">
+                <SidebarMenuButton href="/dashboard/blueprints" isActive={isActive('/dashboard/blueprints')} tooltip="المخططات">
                   <FileText />
                   <span>المخططات</span>
                 </SidebarMenuButton>
@@ -80,13 +101,13 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/boq" isActive={pathname === '/dashboard/boq'} tooltip="جداول الكميات">
+                <SidebarMenuButton href="/dashboard/boq" isActive={isActive('/dashboard/boq')} tooltip="جداول الكميات">
                   <ListChecks />
                   <span>جداول الكميات</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/reports" isActive={pathname === '/dashboard/reports'} tooltip="التقارير">
+                <SidebarMenuButton href="/dashboard/reports" isActive={isActive('/dashboard/reports')} tooltip="التقارير">
                   <FilePieChart />
                   <span>التقارير</span>
                 </SidebarMenuButton>
@@ -96,7 +117,7 @@ export default function DashboardLayout({
           <SidebarFooter>
              <SidebarMenu>
               <SidebarMenuItem>
-                  <SidebarMenuButton href="/dashboard/settings" isActive={pathname === '/dashboard/settings'} tooltip="الإعدادات">
+                  <SidebarMenuButton href="/dashboard/settings" isActive={isActive('/dashboard/settings')} tooltip="الإعدادات">
                     <Settings />
                     <span>الإعدادات</span>
                   </SidebarMenuButton>
@@ -105,8 +126,8 @@ export default function DashboardLayout({
           </SidebarFooter>
         </Sidebar>
 
-        <main className="flex-1">
-           <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+        <main className="flex-1 bg-secondary/50">
+           <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <SidebarTrigger className="md:hidden"/>
             <div className="relative flex-1 ml-auto md:grow-0">
               <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -126,7 +147,7 @@ export default function DashboardLayout({
             </Button>
             <UserNav />
           </header>
-          <div className="p-4 sm:px-6 sm:py-0">
+          <div className="p-4 sm:px-6 sm:py-4">
             {children}
           </div>
         </main>

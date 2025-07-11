@@ -9,6 +9,7 @@ import {
   query,
   orderBy,
   updateDoc,
+  getDoc
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
@@ -35,6 +36,7 @@ interface ProjectState {
   isLoading: boolean;
   unsubscribe: () => void;
   fetchProjects: () => void;
+  getProjectById: (projectId: string) => Promise<Project | null>;
   addProject: (project: Omit<Project, 'id' | 'createdAt'>) => Promise<void>;
   deleteProject: (projectId: string) => Promise<void>;
   updateProject: (projectId: string, updatedData: Partial<Project>) => Promise<void>;
@@ -46,6 +48,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   unsubscribe: () => {},
 
   fetchProjects: () => {
+    // Check if already subscribed to prevent memory leaks
+    if (get().unsubscribe) {
+        get().unsubscribe();
+    }
     set({ isLoading: true });
     try {
       const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
@@ -60,6 +66,22 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     } catch (error) {
         console.error("Failed to fetch projects:", error);
         set({ isLoading: false });
+    }
+  },
+
+  getProjectById: async (projectId: string) => {
+    try {
+        const docRef = doc(db, 'projects', projectId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return { id: docSnap.id, ...docSnap.data() } as Project;
+        } else {
+            console.log("No such document!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error getting document:", error);
+        return null;
     }
   },
 

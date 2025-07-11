@@ -56,10 +56,10 @@ export default function ProjectsPage() {
     }
   }
   
-  const handleNavigation = (path: string) => {
+  const handleEditNavigation = (id?: string) => {
     toast({
         title: "قيد التطوير",
-        description: `سيتم تفعيل صفحة تفاصيل المشروع قريبًا. المسار: ${path}`
+        description: `سيتم تفعيل صفحة تعديل المشروع قريبًا.`
     })
   }
 
@@ -87,13 +87,13 @@ export default function ProjectsPage() {
       
       {isLoading ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: 8 }).map((_, index) => (
             <Card key={index} className="shadow-lg rounded-2xl flex flex-col overflow-hidden">
                 <CardHeader className="p-0 relative">
                   <Skeleton className="w-full h-40" />
                 </CardHeader>
-                 <CardContent className="p-4 flex-grow">
-                  <Skeleton className="h-6 w-3/4 mb-2" />
+                 <CardContent className="p-4 flex-grow space-y-3">
+                  <Skeleton className="h-5 w-3/4" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-full" />
                     <Skeleton className="h-4 w-1/2" />
@@ -101,7 +101,10 @@ export default function ProjectsPage() {
                   </div>
                 </CardContent>
                 <CardFooter className="p-4 pt-0">
-                  <Skeleton className="h-4 w-full" />
+                  <div className="w-full space-y-2">
+                    <Skeleton className="h-2 w-1/4 ml-auto" />
+                    <Skeleton className="h-2 w-full" />
+                  </div>
                 </CardFooter>
             </Card>
           ))}
@@ -109,9 +112,11 @@ export default function ProjectsPage() {
       ) : viewMode === 'grid' && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {projects.map((project) => (
-            <Card key={project.id} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50">
+            <Card key={project.id} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="p-0 relative">
-                <Image src={project.imageUrl} alt={project.title} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
+                <Link href={`/dashboard/projects/${project.id}`}>
+                  <Image src={project.imageUrl} alt={project.title} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
+                </Link>
                 <Badge variant={project.variant as any} className="absolute top-2 right-2">{project.status}</Badge>
                  <AlertDialog>
                     <DropdownMenu>
@@ -121,8 +126,8 @@ export default function ProjectsPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/${project.id}`)}>عرض التفاصيل</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/edit/${project.id}`)}>تعديل المشروع</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => router.push(`/dashboard/projects/${project.id}`)}>عرض التفاصيل</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleEditNavigation(project.id)}>تعديل المشروع</DropdownMenuItem>
                         <AlertDialogTrigger asChild>
                           <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>حذف المشروع</DropdownMenuItem>
                         </AlertDialogTrigger>
@@ -143,7 +148,9 @@ export default function ProjectsPage() {
                 </AlertDialog>
               </CardHeader>
               <CardContent className="p-4 flex-grow">
-                <CardTitle className="text-lg font-bold mb-2">{project.title}</CardTitle>
+                <CardTitle className="text-lg font-bold mb-2">
+                    <Link href={`/dashboard/projects/${project.id}`} className="hover:text-primary transition-colors">{project.title}</Link>
+                </CardTitle>
                 <div className="text-sm text-muted-foreground space-y-2">
                     <div className="flex items-center gap-2">
                         <Building className="h-4 w-4" />
@@ -174,7 +181,7 @@ export default function ProjectsPage() {
       )}
 
       {viewMode === 'map' && (
-        <Card className="shadow-xl rounded-2xl overflow-hidden h-[70vh]">
+        <Card className="shadow-xl rounded-2xl overflow-hidden h-[calc(100vh-12rem)]">
           {isLoading ? <Skeleton className="h-full w-full" /> : <ProjectMap projects={projects} />}
         </Card>
       )}

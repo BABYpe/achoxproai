@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -26,6 +27,7 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
+  SidebarTitle,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,13 +44,16 @@ export default function DashboardLayout({
     <SidebarProvider>
       <div className="min-h-screen">
         <Sidebar>
-          <SidebarHeader>
-            <div className="flex items-center gap-2 p-2">
-              <div className="bg-primary/20 p-2 rounded-lg">
-                <HardHat className="h-6 w-6 text-primary" />
+          <SidebarHeader className="h-20 flex items-center justify-center text-center p-2">
+              <div className="flex flex-col items-center gap-1 group-data-[collapsible=icon]:hidden">
+                <div className="bg-primary/20 p-2 rounded-lg">
+                    <HardHat className="h-6 w-6 text-primary" />
+                </div>
+                <SidebarTitle className="text-lg font-bold">AchoX Pro AI</SidebarTitle>
               </div>
-              <h1 className="text-xl font-bold font-headline">AchoX Pro AI</h1>
-            </div>
+               <div className="hidden group-data-[collapsible=icon]:flex">
+                  <HardHat className="h-6 w-6 text-primary" />
+              </div>
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>

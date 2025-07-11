@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { APIProvider, Map, DrawingManager } from '@vis.gl/react-google-maps'
+import { format } from 'date-fns'
 
 
 function CostEstimationContent() {
@@ -64,6 +65,7 @@ function CostEstimationContent() {
             type: formData.get('type') as string,
             quality: formData.get('quality') as "standard" | "premium" | "luxury",
             scopeOfWork: formData.get('scopeOfWork') as string,
+            currentDate: format(new Date(), 'yyyy-MM-dd'),
         }
 
         if (!data.location || !data.size || !data.type || !data.quality || !data.scopeOfWork) {

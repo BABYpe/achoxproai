@@ -19,6 +19,7 @@ const EstimateProjectCostInputSchema = z.object({
   type: z.string().describe('The type of the project (e.g., residential villa, commercial building, event setup).'),
   quality: z.enum(['standard', 'premium', 'luxury']).describe('The desired quality level for finishing and materials.'),
   scopeOfWork: z.string().describe('A detailed description of the work to be done.'),
+  currentDate: z.string().optional().describe('The current date in YYYY-MM-DD format.'),
 });
 export type EstimateProjectCostInput = z.infer<typeof EstimateProjectCostInputSchema>;
 
@@ -84,7 +85,7 @@ Your task is to create a complete and professional project plan based on the use
 2.  **Analyze Inputs:** Carefully analyze all project details: location, size, type, quality, and scope of work. The quality level (standard, premium, luxury) significantly impacts material choices and costs.
 3.  **Generate Detailed BOQ:** Create a comprehensive Bill of Quantities (BOQ). Use the market data to assign realistic unit prices and calculate totals for each item. The BOQ should be detailed and relevant to the project type and scope.
 4.  **Recommend Crew:** Based on the project size and complexity, recommend a suitable team size and composition (e.g., project managers, engineers, laborers).
-5.  **Create Gantt Chart Data:** Develop a high-level project schedule (Gantt chart data). Break the project into logical phases/tasks. Estimate durations and provide start/end dates (assume the project starts next Monday from today, {{Date "YYYY-MM-DD"}}). Set initial progress for all tasks to 0.
+5.  **Create Gantt Chart Data:** Develop a high-level project schedule (Gantt chart data). Break the project into logical phases/tasks. Estimate durations and provide start/end dates (assume the project starts next Monday from today, {{currentDate}}). Set initial progress for all tasks to 0.
 6.  **Calculate Total Cost:** Sum up the total of all BOQ items to get the total estimated cost. Format it as a string with the currency (e.g., "1,500,000 SAR").
 7.  **Output:** Provide the entire plan in the required JSON format. Be thorough, professional, and realistic in your estimations.
 

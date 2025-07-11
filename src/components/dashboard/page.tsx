@@ -1,190 +1,154 @@
+"use client";
 
-"use client"
-
-import { useMemo } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import Image from "next/image"
-import { Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
-import Link from "next/link"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { PlusCircle, MoreVertical, Building, DollarSign, Map, List, User } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import Image from "next/image";
+import { Progress } from "@/components/ui/progress";
 import dynamic from 'next/dynamic'
-import { Skeleton } from "@/components/ui/skeleton"
-import { useProjectStore } from "@/hooks/use-project-store"
+import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useProjectStore, type Project } from "@/hooks/use-project-store";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
   ssr: false,
-  loading: () => <Skeleton className="h-[600px] w-full rounded-2xl" />
+  loading: () => <Skeleton className="h-full w-full rounded-2xl" />
 });
 
-export default function DashboardPage() {
-  const { projects } = useProjectStore();
+export default function ProjectsPage() {
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
+  const { projects, deleteProject } = useProjectStore();
+  const router = useRouter();
+  const { toast } = useToast();
 
-  const stats = useMemo(() => {
-    const totalProjects = projects.length;
-    const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
-    const activeProjects = projects.filter(p => p.status === 'قيد التنفيذ' || p.status === 'متأخر').length;
-    const completedProjects = projects.filter(p => p.status === 'مكتمل').length;
-    return { totalProjects, totalBudget, activeProjects, completedProjects };
-  }, [projects]);
-
-  const projectStatusData = useMemo(() => {
-    const statusCounts = projects.reduce((acc, project) => {
-      acc[project.status] = (acc[project.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    const statusColors: Record<string, string> = {
-        'قيد التنفيذ': 'hsl(var(--primary))',
-        'مكتمل': 'hsl(var(--accent))',
-        'مخطط له': 'hsl(var(--muted-foreground))',
-        'متأخر': 'hsl(var(--destructive))',
-    }
-
-    return Object.entries(statusCounts).map(([name, value]) => ({
-      name,
-      value,
-      fill: statusColors[name] || '#8884d8',
-    }));
-  }, [projects]);
-
-  const projectBudgetData = useMemo(() => {
-    return projects.map(p => ({
-        name: p.title.split(' ')[1] || p.title, // Shorten name for chart
-        budget: p.budget / 1000000, // In millions
-    }));
-  }, [projects]);
+  const handleDelete = (projectTitle: string) => {
+    deleteProject(projectTitle);
+    toast({
+      title: "تم الحذف",
+      description: `تم حذف مشروع "${projectTitle}" بنجاح.`,
+      variant: "destructive",
+    })
+  }
+  
+  const handleNavigation = (path: string) => {
+    // This can be expanded later to navigate to actual edit/details pages
+    toast({
+        title: "قيد التطوير",
+        description: `سيتم تفعيل صفحة تفاصيل المشروع قريبًا. المسار: ${path}`
+    })
+    // router.push(path);
+  }
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">لوحة التحكم</h1>
-        <Button asChild className="gap-1 text-lg py-6 px-6 shadow-md shadow-primary/30">
-          <Link href="/dashboard/projects/new">
-            <PlusCircle className="h-5 w-5" />
-            إنشاء مشروع جديد
-          </Link>
-        </Button>
+        <h1 className="text-3xl font-bold">إدارة المشاريع</h1>
+        <div className="flex gap-2">
+            <Button variant={viewMode === 'grid' ? 'default' : 'outline'} className="gap-1" onClick={() => setViewMode('grid')}>
+                <List className="h-4 w-4" />
+                عرض قائمة
+            </Button>
+            <Button variant={viewMode === 'map' ? 'default' : 'outline'} className="gap-1" onClick={() => setViewMode('map')}>
+                <Map className="h-4 w-4" />
+                عرض على الخريطة
+            </Button>
+            <Button asChild className="gap-1 text-lg py-6 px-6 shadow-md shadow-primary/30">
+                <Link href="/dashboard/projects/new">
+                    <PlusCircle className="h-5 w-5" />
+                    إضافة مشروع
+                </Link>
+            </Button>
+        </div>
       </div>
       
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">إجمالي المشاريع</CardTitle>
-            <Building className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProjects}</div>
-            <p className="text-xs text-muted-foreground">كل المشاريع المسجلة</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">إجمالي الميزانية</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalBudget.toLocaleString('en-US')} ر.س</div>
-            <p className="text-xs text-muted-foreground">ميزانية كل المشاريع</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">المشاريع النشطة</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+{stats.activeProjects}</div>
-             <p className="text-xs text-muted-foreground">المشاريع قيد التنفيذ حالياً</p>
-          </CardContent>
-        </Card>
-         <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">المشاريع المكتملة</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+{stats.completedProjects}</div>
-            <p className="text-xs text-muted-foreground">المشاريع التي تم إنجازها</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Charts */}
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
-        <Card className="shadow-xl rounded-2xl lg:col-span-2">
-          <CardHeader>
-            <CardTitle>حالة المشاريع</CardTitle>
-             <CardDescription>توزيع المشاريع حسب حالتها الحالية.</CardDescription>
-          </CardHeader>
-          <CardContent className="pb-8">
-            <ChartContainer config={{}} className="mx-auto aspect-square h-[250px]">
-                <PieChart>
-                    <Tooltip content={<ChartTooltipContent hideLabel nameKey="name" />} />
-                    <Pie data={projectStatusData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5} />
-                </PieChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        <Card className="shadow-xl rounded-2xl lg:col-span-3">
-            <CardHeader>
-                <CardTitle>ميزانيات المشاريع (بالمليون)</CardTitle>
-                <CardDescription>مقارنة بين ميزانيات المشاريع المختلفة.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                 <ChartContainer config={{ budget: { label: "الميزانية", color: "hsl(var(--primary))" } }} className="h-[250px] w-full">
-                    <BarChart accessibilityLayer data={projectBudgetData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
-                        <Tooltip content={<ChartTooltipContent indicator="dot" />} />
-                        <Bar dataKey="budget" radius={8} />
-                    </BarChart>
-                </ChartContainer>
-            </CardContent>
-        </Card>
-      </div>
-
-      {/* Projects Overview */}
-       <div className="grid gap-8 md:grid-cols-2">
-            <Card className="shadow-xl rounded-2xl">
-                 <CardHeader>
-                    <CardTitle>نظرة عامة على المشاريع</CardTitle>
-                    <CardDescription>قائمة المشاريع ومواقعها على الخريطة.</CardDescription>
-                 </CardHeader>
-                 <CardContent className="grid gap-4">
-                    {projects.slice(0, 4).map((project, index) => (
-                      <div key={index} className="flex items-center gap-4 p-2 rounded-lg hover:bg-secondary/50">
-                          <Image src={project.imageUrl} alt={project.title} width={80} height={80} className="w-20 h-20 object-cover rounded-md" data-ai-hint={project.imageHint}/>
-                          <div className="flex-1">
-                              <div className="flex justify-between items-start">
-                                <div>
-                                    <h3 className="font-bold">{project.title}</h3>
-                                    <div className="flex items-center text-xs text-muted-foreground gap-1">
-                                        <Building className="h-3 w-3" />
-                                        <span>{project.location}</span>
-                                    </div>
-                                </div>
-                                <Badge variant={project.variant as any}>{project.status}</Badge>
-                              </div>
-                               <div className="flex items-center gap-4 mt-2 text-xs">
-                                    <div className="flex items-center gap-1">
-                                        <DollarSign className="h-3 w-3 text-green-500"/> <span>{project.budget.toLocaleString()} {project.currency}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <TrendingUp className="h-3 w-3 text-primary"/> <span>{project.progress}%</span>
-                                    </div>
-                               </div>
-                          </div>
+      {viewMode === 'grid' && (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {projects.map((project, index) => (
+            <Card key={index} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50">
+              <CardHeader className="p-0 relative">
+                <Image src={project.imageUrl} alt={project.title} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
+                <Badge variant={project.variant as any} className="absolute top-2 right-2">{project.status}</Badge>
+                 <AlertDialog>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="absolute top-1 left-1 h-8 w-8 bg-black/30 hover:bg-black/50 text-white">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/${project.title.replace(/\s+/g, '-')}`)}>عرض التفاصيل</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/edit/${project.title.replace(/\s+/g, '-')}`)}>تعديل المشروع</DropdownMenuItem>
+                        <AlertDialogTrigger asChild>
+                          <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>حذف المشروع</DropdownMenuItem>
+                        </AlertDialogTrigger>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                        <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.title}" نهائيًا من خوادمنا.
+                        </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(project.title)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+              </CardHeader>
+              <CardContent className="p-4 flex-grow">
+                <CardTitle className="text-lg font-bold mb-2">{project.title}</CardTitle>
+                <div className="text-sm text-muted-foreground space-y-2">
+                    <div className="flex items-center gap-2">
+                        <Building className="h-4 w-4" />
+                        <span>{project.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4" />
+                        <span>{project.budget.toLocaleString()} {project.currency}</span>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        <span>{project.manager}</span>
+                    </div>
+                </div>
+              </CardContent>
+              <CardFooter className="p-4 pt-0">
+                  <div className="w-full">
+                      <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
+                          <span>تقدم الإنجاز</span>
+                          <span className="font-bold text-primary">{project.progress}%</span>
                       </div>
-                    ))}
-                 </CardContent>
+                      <Progress value={project.progress} className="h-2"/>
+                  </div>
+              </CardFooter>
             </Card>
-            <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
-                <ProjectMap projects={projects} />
-            </Card>
-       </div>
+          ))}
+        </div>
+      )}
+
+      {viewMode === 'map' && (
+        <Card className="shadow-xl rounded-2xl overflow-hidden h-[70vh]">
+            <ProjectMap projects={projects} />
+        </Card>
+      )}
     </div>
   )
 }

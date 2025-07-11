@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -12,8 +11,20 @@ import { Progress } from "@/components/ui/progress";
 import dynamic from 'next/dynamic'
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { useProjectStore } from "@/hooks/use-project-store";
-
+import { useRouter } from "next/navigation";
+import { useProjectStore, type Project } from "@/hooks/use-project-store";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
   ssr: false,
@@ -22,7 +33,27 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
 
 export default function ProjectsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
-  const { projects } = useProjectStore();
+  const { projects, deleteProject } = useProjectStore();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleDelete = (projectTitle: string) => {
+    deleteProject(projectTitle);
+    toast({
+      title: "تم الحذف",
+      description: `تم حذف مشروع "${projectTitle}" بنجاح.`,
+      variant: "destructive",
+    })
+  }
+  
+  const handleNavigation = (path: string) => {
+    // This can be expanded later to navigate to actual edit/details pages
+    toast({
+        title: "قيد التطوير",
+        description: `سيتم تفعيل صفحة تفاصيل المشروع قريبًا. المسار: ${path}`
+    })
+    // router.push(path);
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -53,18 +84,34 @@ export default function ProjectsPage() {
               <CardHeader className="p-0 relative">
                 <Image src={project.imageUrl} alt={project.title} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
                 <Badge variant={project.variant as any} className="absolute top-2 right-2">{project.status}</Badge>
-                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="absolute top-1 left-1 h-8 w-8 bg-black/30 hover:bg-black/50 text-white">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>عرض التفاصيل</DropdownMenuItem>
-                    <DropdownMenuItem>تعديل المشروع</DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">حذف المشروع</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                 <AlertDialog>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="absolute top-1 left-1 h-8 w-8 bg-black/30 hover:bg-black/50 text-white">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/${project.title.replace(/\s+/g, '-')}`)}>عرض التفاصيل</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/edit/${project.title.replace(/\s+/g, '-')}`)}>تعديل المشروع</DropdownMenuItem>
+                        <AlertDialogTrigger asChild>
+                          <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>حذف المشروع</DropdownMenuItem>
+                        </AlertDialogTrigger>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                        <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.title}" نهائيًا من خوادمنا.
+                        </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(project.title)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
               </CardHeader>
               <CardContent className="p-4 flex-grow">
                 <CardTitle className="text-lg font-bold mb-2">{project.title}</CardTitle>

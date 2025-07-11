@@ -76,7 +76,7 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/cost-estimation" isActive={pathname === '/dashboard/cost-estimation'} tooltip="تقدير التكاليف">
+                <SidebarMenuButton href="/dashboard/cost-estimation" isActive={pathname.startsWith('/dashboard/cost-estimation')} tooltip="تقدير التكاليف">
                   <Calculator />
                   <span>تقدير التكاليف</span>
                 </SidebarMenuButton>

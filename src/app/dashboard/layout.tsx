@@ -42,7 +42,7 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen">
+      <div className="min-h-screen flex">
         <Sidebar>
           <SidebarHeader className="h-20 flex items-center justify-center text-center p-2">
               <div className="flex flex-col items-center gap-1 group-data-[collapsible=icon]:hidden">
@@ -105,8 +105,8 @@ export default function DashboardLayout({
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset>
-          <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+        <main className="flex-1">
+           <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <SidebarTrigger className="md:hidden"/>
             <div className="relative flex-1 ml-auto md:grow-0">
               <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -126,10 +126,10 @@ export default function DashboardLayout({
             </Button>
             <UserNav />
           </header>
-          <main className="p-4 sm:px-6 sm:py-0">
+          <div className="p-4 sm:px-6 sm:py-0">
             {children}
-          </main>
-        </SidebarInset>
+          </div>
+        </main>
       </div>
     </SidebarProvider>
   );

@@ -20,7 +20,7 @@ body {
     --secondary-foreground: 224 71.4% 4.1%;
     --muted: 215 27.9% 93.9%;
     --muted-foreground: 215 20.2% 45.1%;
-    --accent: 215 20.2% 45.1%;
+    --accent: 142 76% 36%;
     --accent-foreground: 210 20% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -35,7 +35,7 @@ body {
     --radius: 0.5rem;
 
     /* Professional Sidebar Theme */
-    --sidebar-background: 224 71% 15%;
+    --sidebar-background: 224 71% 12%;
     --sidebar-foreground: 210 20% 85%;
     --sidebar-primary: 195 90% 50%;
     --sidebar-primary-foreground: 210 20% 98%;
@@ -58,7 +58,7 @@ body {
     --secondary-foreground: 210 20% 98%;
     --muted: 215 27.9% 13.9%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 215 27.9% 13.9%;
+    --accent: 142 76% 36%;
     --accent-foreground: 210 20% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -72,7 +72,7 @@ body {
     --chart-5: 340 75% 55%;
     
     /* Professional Sidebar Theme */
-    --sidebar-background: 224 71% 15%;
+    --sidebar-background: 224 71% 12%;
     --sidebar-foreground: 210 20% 85%;
     --sidebar-primary: 195 90% 50%;
     --sidebar-primary-foreground: 210 20% 98%;

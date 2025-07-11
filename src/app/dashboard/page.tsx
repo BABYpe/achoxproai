@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useMemo, useEffect } from "react"
+import { useMemo, useEffect, Suspense, lazy } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -15,10 +15,7 @@ import dynamic from 'next/dynamic'
 import { Skeleton } from "@/components/ui/skeleton"
 import { useProjectStore } from "@/hooks/use-project-store"
 
-const ProjectMap = dynamic(() => import('@/components/project-map'), {
-  ssr: false,
-  loading: () => <Skeleton className="h-[600px] w-full rounded-2xl" />
-});
+const ProjectMap = lazy(() => import('@/components/project-map'));
 
 export default function DashboardPage() {
   const { projects, isLoading } = useProjectStore();
@@ -190,7 +187,9 @@ export default function DashboardPage() {
                  </CardContent>
             </Card>
             <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
-                <ProjectMap projects={projects} />
+                <Suspense fallback={<Skeleton className="h-[600px] w-full rounded-2xl" />}>
+                   <ProjectMap projects={projects} />
+                </Suspense>
             </Card>
        </div>
     </div>

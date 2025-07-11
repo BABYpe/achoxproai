@@ -26,7 +26,6 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarTrigger,
-  SidebarInset,
   SidebarTitle,
   SidebarSub,
   SidebarSubContent,
@@ -48,6 +47,8 @@ export default function DashboardLayout({
 
   const isActive = (path: string) => pathname === path;
   const isProjectsActive = pathname.startsWith('/dashboard/projects');
+  const isProjectDetailsActive = /^\/dashboard\/projects\/[^/]+$/.test(pathname);
+
 
   return (
     <SidebarProvider>
@@ -71,13 +72,13 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
                <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isProjectsActive} tooltip="المشاريع">
+                <SidebarMenuButton asChild isActive={isProjectsActive || isProjectDetailsActive} tooltip="المشاريع">
                   <Link href="/dashboard/projects">
                     <Briefcase />
                     <span>المشاريع</span>
                   </Link>
                 </SidebarMenuButton>
-                 {isProjectsActive && projects.length > 0 && (
+                 {(isProjectsActive || isProjectDetailsActive) && projects.length > 0 && (
                     <div className="pl-8 pr-4 py-2 space-y-1 text-sm group-data-[collapsible=icon]:hidden">
                       <p className="font-semibold text-sidebar-foreground/80 mb-2">المشاريع الحالية</p>
                       {projects.slice(0, 5).map(p => (

@@ -195,8 +195,9 @@ const Sidebar = React.forwardRef<
 
     if (isMobile) {
       return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+        <Sheet open={openMobile} onOpenChange={setOpenMobile}>
           <SheetContent
+            ref={ref}
             data-sidebar="sidebar"
             data-mobile="true"
             className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
@@ -206,6 +207,7 @@ const Sidebar = React.forwardRef<
               } as React.CSSProperties
             }
             side={side}
+            {...props}
           >
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
@@ -221,6 +223,7 @@ const Sidebar = React.forwardRef<
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}
         data-side={side}
+        {...props}
       >
         {/* This is what handles the sidebar gap on desktop */}
         <div
@@ -247,7 +250,6 @@ const Sidebar = React.forwardRef<
               : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
             className
           )}
-          {...props}
         >
           <div
             data-sidebar="sidebar"
@@ -751,6 +753,38 @@ const SidebarMenuSubButton = React.forwardRef<
 })
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
 
+const SidebarSub = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("flex flex-col", className)} {...props} />
+));
+SidebarSub.displayName = "SidebarSub";
+
+const SidebarSubTrigger = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<"button"> & {
+    asChild?: boolean
+    isActive?: boolean
+    tooltip?: string | React.ComponentProps<typeof TooltipContent>
+  }
+>(({ children, ...props }, ref) => (
+    <SidebarMenuButton ref={ref} {...props}>
+        {children}
+    </SidebarMenuButton>
+));
+SidebarSubTrigger.displayName = "SidebarSubTrigger";
+
+
+const SidebarSubContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("pl-4", className)} {...props} />
+));
+SidebarSubContent.displayName = "SidebarSubContent";
+
+
 export {
   Sidebar,
   SidebarContent,
@@ -776,5 +810,8 @@ export {
   SidebarSeparator,
   SidebarTrigger,
   SidebarTitle,
+  SidebarSub,
+  SidebarSubTrigger,
+  SidebarSubContent,
   useSidebar,
 }

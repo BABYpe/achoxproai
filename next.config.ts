@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   experimental: {
       serverActions: {},
   },
+  productionBrowserSourceMaps: true, // Enable source maps in production
   allowedDevOrigins: ['*.cloudworkstations.dev'],
   typescript: {
     ignoreBuildErrors: true,

@@ -93,7 +93,7 @@ export default function HomePage() {
             <div className="mt-16 space-y-20">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl" data-ai-hint="document analysis interface"/>
+                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl" data-ai-hint="document analysis interface" priority/>
                     </div>
                     <div>
                         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">

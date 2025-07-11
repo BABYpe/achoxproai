@@ -20,11 +20,14 @@ import {
   DropdownMenuSubContent
 } from "@/components/ui/dropdown-menu"
 import { CreditCard, LogOut, Settings, User, Moon, Sun, Globe } from "lucide-react"
+import { useToast } from "@/hooks/use-toast";
 
 export function UserNav() {
   const router = useRouter();
   const { setTheme } = useTheme();
   const { i18n } = useTranslation();
+  const { toast } = useToast();
+
 
   const handleLogout = () => {
     // In a real app, you'd clear the user session here
@@ -33,6 +36,13 @@ export function UserNav() {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+  }
+  
+  const handleBillingClick = () => {
+    toast({
+        title: "قريباً",
+        description: "ستكون ميزة الفوترة متاحة في الإصدارات القادمة للخطط المدفوعة."
+    })
   }
 
   return (
@@ -60,9 +70,9 @@ export function UserNav() {
             <User className="ml-2 h-4 w-4" />
             <span>الملف الشخصي</span>
           </DropdownMenuItem>
-          <DropdownMenuItem disabled>
+          <DropdownMenuItem onClick={handleBillingClick}>
             <CreditCard className="ml-2 h-4 w-4" />
-            <span>الفواتير (قريباً)</span>
+            <span>الفواتير</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => router.push('/dashboard/settings')}>
             <Settings className="ml-2 h-4 w-4" />

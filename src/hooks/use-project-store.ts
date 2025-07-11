@@ -21,6 +21,7 @@ export interface Project {
 interface ProjectState {
   projects: Project[];
   addProject: (project: Project) => void;
+  deleteProject: (projectTitle: string) => void;
 }
 
 const initialProjects: Project[] = [
@@ -77,6 +78,7 @@ export const useProjectStore = create<ProjectState>()(
     (set) => ({
       projects: initialProjects,
       addProject: (project) => set((state) => ({ projects: [...state.projects, project] })),
+      deleteProject: (projectTitle) => set((state) => ({ projects: state.projects.filter(p => p.title !== projectTitle) })),
     }),
     {
       name: 'project-storage', // name of the item in the storage (must be unique)
@@ -84,5 +86,3 @@ export const useProjectStore = create<ProjectState>()(
     }
   )
 );
-
-    

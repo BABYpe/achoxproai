@@ -12,8 +12,9 @@ import { Progress } from "@/components/ui/progress";
 import dynamic from 'next/dynamic'
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { useProjectStore } from "@/hooks/use-project-store";
-
+import { useRouter } from "next/navigation";
+import { useProjectStore, type Project } from "@/hooks/use-project-store";
+import { useToast } from "@/hooks/use-toast";
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
   ssr: false,
@@ -22,7 +23,23 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
 
 export default function ProjectsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
-  const { projects } = useProjectStore();
+  const { projects, deleteProject } = useProjectStore();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleDelete = (projectTitle: string) => {
+    deleteProject(projectTitle);
+    toast({
+      title: "تم الحذف",
+      description: `تم حذف مشروع "${projectTitle}" بنجاح.`,
+      variant: "destructive",
+    })
+  }
+  
+  const handleNavigation = (path: string) => {
+    // This can be expanded later to navigate to actual edit/details pages
+    router.push(path);
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -60,9 +77,9 @@ export default function ProjectsPage() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>عرض التفاصيل</DropdownMenuItem>
-                    <DropdownMenuItem>تعديل المشروع</DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">حذف المشروع</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleNavigation(`/dashboard/projects/${project.title.replace(/\s+/g, '-')}`)}>عرض التفاصيل</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleNavigation(`/dashboard/projects/edit/${project.title.replace(/\s+/g, '-')}`)}>تعديل المشروع</DropdownMenuItem>
+                    <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(project.title)}>حذف المشروع</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </CardHeader>
@@ -105,5 +122,3 @@ export default function ProjectsPage() {
     </div>
   )
 }
-
-    

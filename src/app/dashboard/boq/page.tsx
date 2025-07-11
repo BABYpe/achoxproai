@@ -67,7 +67,7 @@ const boqItemSchema = z.object({
   ),
   unitPrice: z.preprocess(
     (a) => parseFloat(z.string().parse(a)),
-    z.number().min(0, "سعر الوحدة يجب أن يكون رقمًا موجبًا")
+    z.number().min(0, "سعر الوحدة يجب أن تكون رقمًا موجبًا")
   ),
 });
 
@@ -113,17 +113,10 @@ export default function BoqPage() {
 
   const categories = [...new Set(boqItems.map(item => item.category))].sort();
   
-  const handleImport = () => {
+  const handleImportExport = () => {
     toast({
-      title: "قيد التطوير",
-      description: "ميزة استيراد جداول الكميات قيد التطوير حاليًا.",
-    });
-  };
-
-  const handleExport = () => {
-    toast({
-      title: "قيد التطوير",
-      description: "ميزة تصدير جداول الكميات قيد التطوير حاليًا.",
+      title: "ميزة احترافية",
+      description: "استيراد وتصدير جداول الكميات متاح في الخطط المدفوعة.",
     });
   };
 
@@ -133,11 +126,11 @@ export default function BoqPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">قاعدة بيانات بنود الأعمال (Master BOQ)</h1>
           <div className="flex gap-2">
-              <Button variant="outline" className="gap-1" onClick={handleImport}>
+              <Button variant="outline" className="gap-1" onClick={handleImportExport}>
                   <Upload className="h-4 w-4" />
                   استيراد
               </Button>
-              <Button variant="outline" className="gap-1" onClick={handleExport}>
+              <Button variant="outline" className="gap-1" onClick={handleImportExport}>
                   <Download className="h-4 w-4" />
                   تصدير
               </Button>

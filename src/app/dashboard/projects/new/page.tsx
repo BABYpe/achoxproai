@@ -11,6 +11,7 @@ import { DatePicker } from "@/components/ui/date-picker"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { useProjectStore, type Project } from "@/hooks/use-project-store"
+import { Loader } from "lucide-react"
 
 export default function NewProjectPage() {
     const { toast } = useToast()
@@ -19,12 +20,14 @@ export default function NewProjectPage() {
     
     const [startDate, setStartDate] = useState<Date>();
     const [endDate, setEndDate] = useState<Date>();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
         const formData = new FormData(e.currentTarget);
         
-        const newProject: Project = {
+        const newProject: Omit<Project, 'id' | 'createdAt'> = {
             title: formData.get("projectName") as string,
             status: "مخطط له",
             variant: "outline",
@@ -38,16 +41,24 @@ export default function NewProjectPage() {
             lng: 46.6753,
             manager: "علي محمد", // Default manager
             endDate: endDate?.toISOString().split('T')[0] || "",
-            // Add other fields from your form
         };
 
-        addProject(newProject);
-        
-        toast({
-            title: "تم إنشاء المشروع بنجاح!",
-            description: "تمت إضافة المشروع الجديد إلى قائمة مشاريعك.",
-        })
-        router.push("/dashboard/projects")
+        try {
+            await addProject(newProject);
+            toast({
+                title: "تم إنشاء المشروع بنجاح!",
+                description: "تمت إضافة المشروع الجديد إلى قاعدة البيانات.",
+            })
+            router.push("/dashboard/projects")
+        } catch (error) {
+            toast({
+                title: "خطأ في إنشاء المشروع",
+                description: "لم نتمكن من حفظ المشروع. الرجاء المحاولة مرة أخرى.",
+                variant: "destructive",
+            })
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -56,7 +67,7 @@ export default function NewProjectPage() {
             <Card className="shadow-xl rounded-2xl">
                 <CardHeader>
                     <CardTitle>تفاصيل المشروع</CardTitle>
-                    <CardDescription>أدخل المعلومات الأساسية لمشروعك الجديد.</CardDescription>
+                    <CardDescription>أدخل المعلومات الأساسية لمشروعك الجديد ليتم حفظه في قاعدة البيانات.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -99,7 +110,9 @@ export default function NewProjectPage() {
                         </div>
 
                         <div className="flex justify-end pt-4">
-                            <Button type="submit" className="font-bold text-lg py-6 px-8">إنشاء المشروع</Button>
+                            <Button type="submit" disabled={isLoading} className="font-bold text-lg py-6 px-8">
+                                {isLoading ? <Loader className="ml-2 h-4 w-4 animate-spin" /> : 'إنشاء المشروع'}
+                            </Button>
                         </div>
                     </form>
                 </CardContent>
@@ -107,5 +120,3 @@ export default function NewProjectPage() {
         </div>
     )
 }
-
-    

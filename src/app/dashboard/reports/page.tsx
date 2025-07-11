@@ -28,14 +28,14 @@ const boqItems = [
 
 
 export default function ReportsPage() {
-    const { projects } = useProjectStore();
+    const { projects, isLoading: projectsLoading } = useProjectStore();
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<GenerateReportOutput | null>(null);
-    const [selectedProjectTitle, setSelectedProjectTitle] = useState<string | null>(null);
+    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const { toast } = useToast();
 
     const handleSubmit = async () => {
-        if (!selectedProjectTitle) {
+        if (!selectedProjectId) {
             toast({
                 title: 'خطأ',
                 description: 'الرجاء اختيار مشروع أولاً.',
@@ -47,8 +47,13 @@ export default function ReportsPage() {
         setIsLoading(true);
         setResult(null);
 
-        const project = projects.find(p => p.title === selectedProjectTitle);
+        const project = projects.find(p => p.id === selectedProjectId);
         if (!project) {
+            toast({
+                title: 'خطأ',
+                description: 'لم يتم العثور على المشروع المحدد.',
+                variant: 'destructive',
+            });
             setIsLoading(false);
             return;
         };
@@ -115,18 +120,22 @@ export default function ReportsPage() {
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="project">المشروع</Label>
-                                <Select onValueChange={setSelectedProjectTitle} name="project">
-                                    <SelectTrigger id="project">
-                                        <SelectValue placeholder="اختر مشروعاً" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {projects.map(p => (
-                                            <SelectItem key={p.title} value={p.title}>{p.title}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                {projectsLoading ? (
+                                    <Skeleton className="h-10 w-full" />
+                                ) : (
+                                    <Select onValueChange={setSelectedProjectId} name="project">
+                                        <SelectTrigger id="project">
+                                            <SelectValue placeholder="اختر مشروعاً" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {projects.map(p => (
+                                                <SelectItem key={p.id} value={p.id!}>{p.title}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
                             </div>
-                            <Button onClick={handleSubmit} disabled={isLoading || !selectedProjectTitle} className="w-full font-bold text-lg py-6">
+                            <Button onClick={handleSubmit} disabled={isLoading || !selectedProjectId} className="w-full font-bold text-lg py-6">
                                 {isLoading ? (
                                     <>
                                         <Loader className="ml-2 h-4 w-4 animate-spin" />

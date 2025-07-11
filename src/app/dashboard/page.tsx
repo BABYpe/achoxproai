@@ -1,11 +1,11 @@
 
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard } from "lucide-react"
+import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard, Loader } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 import { Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
@@ -21,7 +21,7 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
 });
 
 export default function DashboardPage() {
-  const { projects } = useProjectStore();
+  const { projects, isLoading } = useProjectStore();
 
   const stats = useMemo(() => {
     const totalProjects = projects.length;
@@ -57,6 +57,14 @@ export default function DashboardPage() {
         budget: p.budget / 1000000, // In millions
     }));
   }, [projects]);
+  
+  if (isLoading) {
+    return (
+        <div className="flex items-center justify-center h-[80vh]">
+            <Loader className="h-12 w-12 animate-spin text-primary" />
+        </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -188,5 +196,3 @@ export default function DashboardPage() {
     </div>
   )
 }
-
-    

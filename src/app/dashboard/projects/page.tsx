@@ -1,11 +1,11 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, MoreVertical, Building, DollarSign, Map, List, User } from "lucide-react";
+import { PlusCircle, MoreVertical, Building, DollarSign, Map, List, User, Loader } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useProjectStore, type Project } from "@/hooks/use-project-store";
+import { useProjectStore } from "@/hooks/use-project-store";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -34,26 +34,33 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
 
 export default function ProjectsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
-  const { projects, deleteProject } = useProjectStore();
+  const { projects, isLoading, deleteProject } = useProjectStore();
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleDelete = (projectTitle: string) => {
-    deleteProject(projectTitle);
-    toast({
-      title: "تم الحذف",
-      description: `تم حذف مشروع "${projectTitle}" بنجاح.`,
-      variant: "destructive",
-    })
+  const handleDelete = async (projectId?: string) => {
+    if (!projectId) return;
+    try {
+      await deleteProject(projectId);
+      toast({
+        title: "تم الحذف",
+        description: `تم حذف المشروع بنجاح.`,
+        variant: "destructive",
+      })
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: "فشل حذف المشروع. الرجاء المحاولة مرة أخرى.",
+        variant: "destructive",
+      });
+    }
   }
   
   const handleNavigation = (path: string) => {
-    // This can be expanded later to navigate to actual edit/details pages
     toast({
         title: "قيد التطوير",
         description: `سيتم تفعيل صفحة تفاصيل المشروع قريبًا. المسار: ${path}`
     })
-    // router.push(path);
   }
 
   return (
@@ -78,10 +85,31 @@ export default function ProjectsPage() {
         </div>
       </div>
       
-      {viewMode === 'grid' && (
+      {isLoading ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {projects.map((project, index) => (
-            <Card key={index} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Card key={index} className="shadow-lg rounded-2xl flex flex-col overflow-hidden">
+                <CardHeader className="p-0 relative">
+                  <Skeleton className="w-full h-40" />
+                </CardHeader>
+                 <CardContent className="p-4 flex-grow">
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                </CardContent>
+                <CardFooter className="p-4 pt-0">
+                  <Skeleton className="h-4 w-full" />
+                </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : viewMode === 'grid' && (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {projects.map((project) => (
+            <Card key={project.id} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50">
               <CardHeader className="p-0 relative">
                 <Image src={project.imageUrl} alt={project.title} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
                 <Badge variant={project.variant as any} className="absolute top-2 right-2">{project.status}</Badge>
@@ -93,8 +121,8 @@ export default function ProjectsPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/${project.title.replace(/\s+/g, '-')}`)}>عرض التفاصيل</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/edit/${project.title.replace(/\s+/g, '-')}`)}>تعديل المشروع</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/${project.id}`)}>عرض التفاصيل</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/edit/${project.id}`)}>تعديل المشروع</DropdownMenuItem>
                         <AlertDialogTrigger asChild>
                           <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>حذف المشروع</DropdownMenuItem>
                         </AlertDialogTrigger>
@@ -104,12 +132,12 @@ export default function ProjectsPage() {
                         <AlertDialogHeader>
                         <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
                         <AlertDialogDescription>
-                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.title}" نهائيًا من خوادمنا.
+                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.title}" نهائيًا من قاعدة البيانات.
                         </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                         <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(project.title)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction>
+                        <AlertDialogAction onClick={() => handleDelete(project.id)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
@@ -147,7 +175,7 @@ export default function ProjectsPage() {
 
       {viewMode === 'map' && (
         <Card className="shadow-xl rounded-2xl overflow-hidden h-[70vh]">
-            <ProjectMap projects={projects} />
+          {isLoading ? <Skeleton className="h-full w-full" /> : <ProjectMap projects={projects} />}
         </Card>
       )}
     </div>

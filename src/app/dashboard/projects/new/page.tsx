@@ -3,7 +3,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -11,7 +11,8 @@ import { DatePicker } from "@/components/ui/date-picker"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { useProjectStore, type Project } from "@/hooks/use-project-store"
-import { Loader } from "lucide-react"
+import { Loader, ArrowLeft, PlusCircle } from "lucide-react"
+import Link from "next/link"
 
 export default function NewProjectPage() {
     const { toast } = useToast()
@@ -63,14 +64,22 @@ export default function NewProjectPage() {
 
     return (
         <div className="flex flex-col gap-8">
-            <h1 className="text-2xl font-bold">إنشاء مشروع جديد</h1>
+             <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold">إنشاء مشروع جديد</h1>
+                <Button variant="outline" asChild>
+                    <Link href="/dashboard/projects">
+                        <ArrowLeft className="ml-2 h-4 w-4" />
+                        العودة إلى قائمة المشاريع
+                    </Link>
+                </Button>
+            </div>
             <Card className="shadow-xl rounded-2xl">
-                <CardHeader>
-                    <CardTitle>تفاصيل المشروع</CardTitle>
-                    <CardDescription>أدخل المعلومات الأساسية لمشروعك الجديد ليتم حفظه في قاعدة البيانات.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                 <form onSubmit={handleSubmit}>
+                    <CardHeader>
+                        <CardTitle>تفاصيل المشروع</CardTitle>
+                        <CardDescription>أدخل المعلومات الأساسية لمشروعك الجديد ليتم حفظه في قاعدة البيانات.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <Label htmlFor="projectName">اسم المشروع</Label>
@@ -84,7 +93,12 @@ export default function NewProjectPage() {
 
                         <div className="space-y-2">
                             <Label htmlFor="projectDescription">وصف المشروع</Label>
-                            <Textarea id="projectDescription" name="projectDescription" placeholder="وصف موجز لنطاق العمل والأهداف الرئيسية للمشروع." />
+                            <Textarea 
+                                id="projectDescription" 
+                                name="projectDescription" 
+                                placeholder="وصف موجز لنطاق العمل والأهداف الرئيسية للمشروع."
+                                rows={4}
+                            />
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -108,14 +122,13 @@ export default function NewProjectPage() {
                                 <DatePicker id="endDate" date={endDate} onDateChange={setEndDate} />
                             </div>
                         </div>
-
-                        <div className="flex justify-end pt-4">
-                            <Button type="submit" disabled={isLoading} className="font-bold text-lg py-6 px-8">
-                                {isLoading ? <Loader className="ml-2 h-4 w-4 animate-spin" /> : 'إنشاء المشروع'}
-                            </Button>
-                        </div>
-                    </form>
-                </CardContent>
+                    </CardContent>
+                    <CardFooter className="flex justify-end pt-4">
+                        <Button type="submit" disabled={isLoading} className="font-bold text-lg py-6 px-8">
+                            {isLoading ? <Loader className="ml-2 h-4 w-4 animate-spin" /> : 'إنشاء المشروع'}
+                        </Button>
+                    </CardFooter>
+                 </form>
             </Card>
         </div>
     )

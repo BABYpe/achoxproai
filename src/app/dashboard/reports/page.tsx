@@ -10,15 +10,9 @@ import { useToast } from '@/hooks/use-toast';
 import { generateReport, type GenerateReportOutput } from '@/ai/flows/generate-report';
 import { Loader, Wand2, FileText } from 'lucide-react';
 import React from 'react';
+import { useProjectStore } from '@/hooks/use-project-store';
 
-// Mock data, in a real app this would come from a database
-const projects = [
-  { id: "P-001", title: "مشروع فيلا سكنية فاخرة بالرياض", status: "قيد التنفيذ - 65% مكتمل", budget: "1,850,000 SAR", location: "الرياض" },
-  { id: "P-002", title: "مبنى تجاري متعدد الطوابق بجدة", status: "مكتمل", budget: "5,500,000 SAR", location: "جدة" },
-  { id: "P-003", title: "تطوير مجمع سكني (30 فيلا) بالدمام", status: "مخطط له - مرحلة التصاميم", budget: "25,000,000 SAR", location: "الدمام" },
-  { id: "P-004", title: "تجديد فندق 5 نجوم بدبي", status: "متأخر - بانتظار توريد المواد", budget: "12,000,000 SAR", location: "دبي" },
-];
-
+// Mock data, in a real app this would come from a database or be generated.
 const boqItems = [
     { id: "B-101", description: "أعمال الحفر والردم لموقع المشروع", quantity: 1250, unit: "م³" },
     { id: "C-201", description: "خرسانة مسلحة للقواعد", quantity: 450, unit: "م³" },
@@ -34,13 +28,14 @@ const boqItems = [
 
 
 export default function ReportsPage() {
+    const { projects } = useProjectStore();
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<GenerateReportOutput | null>(null);
-    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const [selectedProjectTitle, setSelectedProjectTitle] = useState<string | null>(null);
     const { toast } = useToast();
 
     const handleSubmit = async () => {
-        if (!selectedProjectId) {
+        if (!selectedProjectTitle) {
             toast({
                 title: 'خطأ',
                 description: 'الرجاء اختيار مشروع أولاً.',
@@ -52,8 +47,11 @@ export default function ReportsPage() {
         setIsLoading(true);
         setResult(null);
 
-        const project = projects.find(p => p.id === selectedProjectId);
-        if (!project) return;
+        const project = projects.find(p => p.title === selectedProjectTitle);
+        if (!project) {
+            setIsLoading(false);
+            return;
+        };
 
         // For demo, we'll stringify the mock BOQ data.
         const boqSummary = boqItems.map(item => `- ${item.description}: ${item.quantity} ${item.unit}`).join('\n');
@@ -61,8 +59,8 @@ export default function ReportsPage() {
         try {
             const report = await generateReport({
                 projectTitle: project.title,
-                projectStatus: project.status,
-                projectBudget: project.budget,
+                projectStatus: `${project.status} - ${project.progress}% مكتمل`,
+                projectBudget: `${project.budget.toLocaleString()} ${project.currency}`,
                 boqSummary: boqSummary,
             });
             setResult(report);
@@ -117,18 +115,18 @@ export default function ReportsPage() {
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="project">المشروع</Label>
-                                <Select onValueChange={setSelectedProjectId} name="project">
+                                <Select onValueChange={setSelectedProjectTitle} name="project">
                                     <SelectTrigger id="project">
                                         <SelectValue placeholder="اختر مشروعاً" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {projects.map(p => (
-                                            <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>
+                                            <SelectItem key={p.title} value={p.title}>{p.title}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <Button onClick={handleSubmit} disabled={isLoading || !selectedProjectId} className="w-full font-bold text-lg py-6">
+                            <Button onClick={handleSubmit} disabled={isLoading || !selectedProjectTitle} className="w-full font-bold text-lg py-6">
                                 {isLoading ? (
                                     <>
                                         <Loader className="ml-2 h-4 w-4 animate-spin" />

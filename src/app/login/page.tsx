@@ -53,9 +53,9 @@ export default function LoginPage() {
               </div>
               <Input id="password" type="password" required />
             </div>
-            <Link href="/dashboard" className="w-full">
-              <Button type="submit" className="w-full font-bold text-lg py-6">
-                {t('تسجيل الدخول')}
+            <Link href="/dashboard" passHref>
+              <Button asChild type="submit" className="w-full font-bold text-lg py-6">
+                <a>{t('تسجيل الدخول')}</a>
               </Button>
             </Link>
             <Button variant="outline" className="w-full">

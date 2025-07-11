@@ -62,9 +62,9 @@ export default function RegisterPage() {
               <Label htmlFor="password">كلمة المرور</Label>
               <Input id="password" type="password" />
             </div>
-            <Link href="/dashboard">
-                <Button type="submit" className="w-full font-bold text-lg py-6">
-                إنشاء حساب
+            <Link href="/dashboard" passHref>
+                <Button asChild type="submit" className="w-full font-bold text-lg py-6">
+                  <a>إنشاء حساب</a>
                 </Button>
             </Link>
           </div>

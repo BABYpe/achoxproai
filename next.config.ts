@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
   },
   experimental: {
-      serverActions: true,
+      serverActions: {},
   },
   allowedDevOrigins: ['*.cloudworkstations.dev'],
   typescript: {

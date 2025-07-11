@@ -12,7 +12,6 @@ import {
   Settings,
   Search,
   Bell,
-  HardHat,
   FilePieChart,
   Briefcase,
 } from 'lucide-react';
@@ -32,6 +31,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserNav } from '@/components/user-nav';
+import { Logo } from '@/components/logo';
 
 export default function DashboardLayout({
   children,
@@ -46,13 +46,11 @@ export default function DashboardLayout({
         <Sidebar>
           <SidebarHeader className="h-20 flex items-center justify-center text-center p-2">
               <div className="flex flex-col items-center gap-1 group-data-[collapsible=icon]:hidden">
-                <div className="bg-primary/20 p-2 rounded-lg">
-                    <HardHat className="h-6 w-6 text-primary" />
-                </div>
+                <Logo className="w-10 h-10 text-primary" />
                 <SidebarTitle className="text-lg font-bold">AchoX Pro AI</SidebarTitle>
               </div>
                <div className="hidden group-data-[collapsible=icon]:flex">
-                  <HardHat className="h-6 w-6 text-primary" />
+                  <Logo className="w-8 h-8 text-primary" />
               </div>
           </SidebarHeader>
           <SidebarContent>

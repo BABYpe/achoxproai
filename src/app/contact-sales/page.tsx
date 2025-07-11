@@ -11,7 +11,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { HardHat, ArrowLeft } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
+import { Logo } from "@/components/logo"
 
 export default function ContactSalesPage() {
   return (
@@ -26,8 +27,8 @@ export default function ContactSalesPage() {
       </div>
       <Card className="mx-auto max-w-xl w-full shadow-xl rounded-2xl">
         <CardHeader className="text-center">
-          <div className="inline-block bg-primary/10 p-3 rounded-full mx-auto mb-4">
-            <HardHat className="h-8 w-8 text-primary" />
+          <div className="mx-auto mb-4">
+            <Logo className="h-12 w-12 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold">تواصل مع فريق المبيعات</CardTitle>
           <CardDescription>

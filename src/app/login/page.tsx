@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { HardHat } from "lucide-react"
+import { Logo } from "@/components/logo";
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -22,8 +22,8 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="mx-auto max-w-sm w-full shadow-xl rounded-2xl">
         <CardHeader className="text-center">
-            <div className="inline-block bg-primary/10 p-3 rounded-full mx-auto mb-4">
-               <HardHat className="h-8 w-8 text-primary" />
+            <div className="mx-auto mb-4">
+               <Logo className="h-12 w-12 text-primary" />
             </div>
           <CardTitle className="text-2xl font-bold">{t('تسجيل الدخول إلى AchoX Pro AI')}</CardTitle>
           <CardDescription>

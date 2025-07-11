@@ -2,10 +2,10 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { HardHat, Bot, GanttChartSquare, FileScan, CheckCircle, ArrowLeft, ChevronDown } from 'lucide-react';
+import { Bot, GanttChartSquare, FileScan, CheckCircle, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-
+import { Logo } from '@/components/logo';
 
 export default function HomePage() {
   return (
@@ -14,7 +14,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <HardHat className="h-7 w-7 text-primary" />
+            <Logo className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold">AchoX Pro AI</span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm md:flex">
@@ -303,7 +303,7 @@ export default function HomePage() {
             <div className="grid md:grid-cols-4 gap-8">
                 <div>
                      <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-                        <HardHat className="h-7 w-7 text-primary" />
+                        <Logo className="h-8 w-8 text-primary" />
                         <span className="text-xl font-bold">AchoX Pro AI</span>
                     </Link>
                     <p className="text-muted-foreground mt-2">شريكك الذكي في إدارة المشاريع الهندسية والفعاليات.</p>
@@ -340,5 +340,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    

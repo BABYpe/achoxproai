@@ -9,6 +9,7 @@ import './globals.css';
 import './i18n'; // Import i18n configuration
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from './i18n';
+import { CookieBanner } from '@/components/cookie-banner';
 
 const cairo = Cairo({
   subsets: ['latin'],
@@ -54,6 +55,7 @@ export default function RootLayout({
           >
             {children}
             <Toaster />
+            <CookieBanner />
           </ThemeProvider>
         </I18nextProvider>
       </body>

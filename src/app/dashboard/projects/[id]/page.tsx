@@ -30,7 +30,7 @@ const mockTeam = [
 export default function ProjectDetailsPage() {
     const params = useParams();
     const router = useRouter();
-    const { getProjectById } = useProjectStore();
+    const { getProjectById } = useProjectStore.getState(); // Get function from state without subscribing
     const [project, setProject] = useState<Project | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -177,3 +177,4 @@ export default function ProjectDetailsPage() {
     );
 }
 
+    

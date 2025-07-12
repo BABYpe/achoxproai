@@ -16,12 +16,19 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
+// Initialize Firebase for client-side
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// Initialize Analytics if supported
-const analytics = isSupported().then(yes => yes ? getAnalytics(app) : null);
+// Initialize Analytics only on the client and if supported
+let analytics;
+if (typeof window !== 'undefined') {
+  isSupported().then(yes => {
+    if (yes) {
+      analytics = getAnalytics(app);
+    }
+  });
+}
 
 export { app, db, storage, analytics };

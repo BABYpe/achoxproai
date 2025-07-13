@@ -22,25 +22,23 @@ export default function ProjectMap({ projects }: ProjectMapProps) {
         : { lat: 24.7136, lng: 46.6753 }; // Default to Riyadh
 
     return (
-        <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
-            <Map
-                mapId="achox-pro-map"
-                style={{ width: '100%', height: '100%' }}
-                defaultCenter={center}
-                defaultZoom={5}
-                gestureHandling={'greedy'}
-                disableDefaultUI={true}
-            >
-                {projects.map((project, index) => (
-                    <AdvancedMarker key={index} position={{ lat: project.lat, lng: project.lng }} title={project.title}>
-                        <Pin 
-                            background={'hsl(var(--primary))'} 
-                            borderColor={'hsl(var(--primary))'} 
-                            glyphColor={'hsl(var(--primary-foreground))'}
-                        />
-                    </AdvancedMarker>
-                ))}
-            </Map>
-        </APIProvider>
+        <Map
+            mapId="achox-pro-map"
+            style={{ width: '100%', height: '100%' }}
+            defaultCenter={center}
+            defaultZoom={5}
+            gestureHandling={'greedy'}
+            disableDefaultUI={true}
+        >
+            {projects.map((project, index) => (
+                <AdvancedMarker key={index} position={{ lat: project.lat, lng: project.lng }} title={project.title}>
+                    <Pin
+                        background={'hsl(var(--primary))'}
+                        borderColor={'hsl(var(--primary))'}
+                        glyphColor={'hsl(var(--primary-foreground))'}
+                    />
+                </AdvancedMarker>
+            ))}
+        </Map>
     );
 }

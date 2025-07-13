@@ -66,9 +66,11 @@ export default function DashboardLayout({
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard" isActive={isActive('/dashboard')} tooltip="لوحة التحكم">
-                  <LayoutDashboard />
-                  <span>لوحة التحكم</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard')} tooltip="لوحة التحكم">
+                  <Link href="/dashboard">
+                    <LayoutDashboard />
+                    <span>لوحة التحكم</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
@@ -85,15 +87,19 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/blueprints" isActive={isActive('/dashboard/blueprints')} tooltip="تحليل المخططات">
-                  <FileText />
-                  <span>تحليل المخططات</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/blueprints')} tooltip="تحليل المخططات">
+                  <Link href="/dashboard/blueprints">
+                    <FileText />
+                    <span>تحليل المخططات</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/cost-estimation" isActive={pathname.startsWith('/dashboard/cost-estimation')} tooltip="تقدير التكاليف">
-                  <Calculator />
-                  <span>تقدير التكاليف</span>
+                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/cost-estimation')} tooltip="تقدير التكاليف">
+                  <Link href="/dashboard/cost-estimation">
+                    <Calculator />
+                    <span>تقدير التكاليف</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
@@ -102,27 +108,35 @@ export default function DashboardLayout({
               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">إدارة وتشغيل</p>
               
                <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/financial-intelligence" isActive={isActive('/dashboard/financial-intelligence')} tooltip="الذكاء المالي">
-                  <CircleDollarSign />
-                  <span>الذكاء المالي</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/financial-intelligence')} tooltip="الذكاء المالي">
+                  <Link href="/dashboard/financial-intelligence">
+                    <CircleDollarSign />
+                    <span>الذكاء المالي</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/procurement" isActive={isActive('/dashboard/procurement')} tooltip="المشتريات والموردون">
-                  <ShoppingCart />
-                  <span>المشتريات</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/procurement')} tooltip="المشتريات والموردون">
+                  <Link href="/dashboard/procurement">
+                    <ShoppingCart />
+                    <span>المشتريات</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/inventory" isActive={isActive('/dashboard/inventory')} tooltip="المخزون والمستودعات">
-                  <Warehouse />
-                  <span>المخزون</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/inventory')} tooltip="المخزون والمستودعات">
+                  <Link href="/dashboard/inventory">
+                    <Warehouse />
+                    <span>المخزون</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
                <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/assets" isActive={isActive('/dashboard/assets')} tooltip="الأصول والموارد">
-                  <Wrench />
-                  <span>الأصول والموارد</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/assets')} tooltip="الأصول والموارد">
+                  <Link href="/dashboard/assets">
+                    <Wrench />
+                    <span>الأصول والموارد</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
@@ -130,15 +144,19 @@ export default function DashboardLayout({
                <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">أدوات مساعدة</p>
 
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/boq" isActive={isActive('/dashboard/boq')} tooltip="جداول الكميات">
-                  <ListChecks />
-                  <span>جداول الكميات</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/boq')} tooltip="جداول الكميات">
+                  <Link href="/dashboard/boq">
+                    <ListChecks />
+                    <span>جداول الكميات</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/reports" isActive={isActive('/dashboard/reports')} tooltip="التقارير">
-                  <FilePieChart />
-                  <span>التقارير</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/reports')} tooltip="التقارير">
+                  <Link href="/dashboard/reports">
+                    <FilePieChart />
+                    <span>التقارير</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -146,9 +164,11 @@ export default function DashboardLayout({
           <SidebarFooter>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/dashboard/settings" isActive={isActive('/dashboard/settings')} tooltip="الإعدادات">
-                  <Settings />
-                  <span>الإعدادات</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/settings')} tooltip="الإعدادات">
+                  <Link href="/dashboard/settings">
+                    <Settings />
+                    <span>الإعدادات</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

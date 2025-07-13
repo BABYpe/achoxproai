@@ -10,7 +10,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 import { getMarketPrices } from '@/ai/services/market-data';
 
 const EstimateProjectCostInputSchema = z.object({
@@ -58,8 +58,11 @@ export async function estimateProjectCost(input: EstimateProjectCostInput): Prom
 const getRealTimeMarketPrices = ai.defineTool(
     {
         name: 'getRealTimeMarketPrices',
-        description: 'Gets real-time market prices for construction materials and labor for a specific location.',
-        inputSchema: z.object({ location: z.string() }),
+        description: 'Gets real-time market prices for construction materials and labor for a specific location and quality level.',
+        inputSchema: z.object({ 
+            location: z.string(),
+            quality: z.enum(['standard', 'premium', 'luxury']) 
+        }),
         outputSchema: z.object({
             materials: z.record(z.string(), z.number()).describe('A record of material names and their prices per unit.'),
             labor: z.number().describe('The average hourly wage for general construction labor.'),
@@ -67,7 +70,7 @@ const getRealTimeMarketPrices = ai.defineTool(
         }),
     },
     async (input) => {
-        return getMarketPrices(input.location);
+        return getMarketPrices(input.location, input.quality);
     }
 );
 
@@ -82,7 +85,7 @@ const prompt = ai.definePrompt({
 Your task is to create a complete and professional project plan based on the user's input.
 
 **CRITICAL INSTRUCTIONS:**
-1.  **Use Market Data:** You **MUST** start by calling the 'getRealTimeMarketPrices' tool to fetch current prices for the specified location. This is mandatory.
+1.  **Use Market Data:** You **MUST** start by calling the 'getRealTimeMarketPrices' tool to fetch current prices for the specified location and quality. This is mandatory.
 2.  **Analyze Inputs:** Carefully analyze all project details: location, size, type, quality, and scope of work. The quality level (standard, premium, luxury) and the project type (e.g., residential_villa, interior_finishing, event_setup) are critical. They determine the specific materials, tasks, and costs involved.
 3.  **Generate Dynamic & Relevant BOQ:** Create a comprehensive Bill of Quantities (BOQ) that is **highly specific** to the project type. For example:
     *   If the type is 'residential_villa', include items for excavation, concrete, masonry, plumbing, electrical, etc.

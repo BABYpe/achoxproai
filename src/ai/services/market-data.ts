@@ -1,13 +1,15 @@
 // This is a mock service that simulates fetching real-time market data.
 // In a real application, you would replace this with actual API calls to a data provider.
 
+type Quality = 'standard' | 'premium' | 'luxury';
+
 interface MarketPrices {
     materials: Record<string, number>;
     labor: number;
     currency: string;
 }
 
-const priceData: Record<string, MarketPrices> = {
+const priceData: Record<string, Omit<MarketPrices, 'materials'> & { materials: Record<string, number | Record<Quality, number>> }> = {
     "riyadh": {
         materials: {
             "concrete": 450, // per cubic meter
@@ -15,9 +17,11 @@ const priceData: Record<string, MarketPrices> = {
             "bricks": 0.8, // per brick
             "plaster": 25, // per square meter
             "paint": 30, // per square meter
-            "standard_finishing_materials": 250, // per sq meter
-            "premium_finishing_materials": 500, // per sq meter
-            "luxury_finishing_materials": 1200, // per sq meter
+            "finishing_materials": { // This is now quality-dependent
+                "standard": 250, // per sq meter
+                "premium": 500, // per sq meter
+                "luxury": 1200, // per sq meter
+            }
         },
         labor: 55, // per hour
         currency: "SAR",
@@ -29,9 +33,11 @@ const priceData: Record<string, MarketPrices> = {
             "bricks": 0.85,
             "plaster": 28,
             "paint": 32,
-            "standard_finishing_materials": 270,
-            "premium_finishing_materials": 550,
-            "luxury_finishing_materials": 1300,
+             "finishing_materials": {
+                "standard": 270,
+                "premium": 550,
+                "luxury": 1300,
+            }
         },
         labor: 60,
         currency: "SAR",
@@ -43,9 +49,11 @@ const priceData: Record<string, MarketPrices> = {
             "bricks": 0.78,
             "plaster": 24,
             "paint": 29,
-            "standard_finishing_materials": 245,
-            "premium_finishing_materials": 490,
-            "luxury_finishing_materials": 1150,
+            "finishing_materials": {
+                "standard": 245,
+                "premium": 490,
+                "luxury": 1150,
+            }
         },
         labor: 52,
         currency: "SAR",
@@ -57,16 +65,41 @@ const priceData: Record<string, MarketPrices> = {
             "bricks": 0.82,
             "plaster": 26,
             "paint": 31,
-            "standard_finishing_materials": 250,
-            "premium_finishing_materials": 500,
-            "luxury_finishing_materials": 1200,
+            "finishing_materials": {
+                "standard": 250,
+                "premium": 500,
+                "luxury": 1200,
+            }
         },
         labor: 58,
         currency: "SAR",
     }
 };
 
-export function getMarketPrices(location: string): MarketPrices {
+/**
+ * Gets market prices for a given location and quality.
+ * @param location The project location (e.g., "Riyadh").
+ * @param quality The desired quality level.
+ * @returns An object with material prices, labor costs, and currency.
+ */
+export function getMarketPrices(location: string, quality: Quality): MarketPrices {
     const locationKey = location.toLowerCase().split(',')[0].trim();
-    return priceData[locationKey] || priceData["default"];
+    const data = priceData[locationKey] || priceData["default"];
+
+    const resolvedMaterials: Record<string, number> = {};
+
+    for (const key in data.materials) {
+        const value = data.materials[key];
+        if (typeof value === 'number') {
+            resolvedMaterials[key] = value;
+        } else if (typeof value === 'object' && quality in value) {
+            resolvedMaterials[key] = value[quality];
+        }
+    }
+
+    return {
+        materials: resolvedMaterials,
+        labor: data.labor,
+        currency: data.currency,
+    };
 }

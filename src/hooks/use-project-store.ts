@@ -13,6 +13,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { initialProjects } from '@/lib/initial-projects';
 
 export interface Project {
     id?: string; // Firestore ID
@@ -44,7 +45,7 @@ interface ProjectState {
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
-  projects: [],
+  projects: initialProjects, // Use initial data
   isLoading: true,
   unsubscribe: null,
 
@@ -58,20 +59,24 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
-        set({ projects, isLoading: false });
+        set({ projects: projects.length > 0 ? projects : initialProjects, isLoading: false });
       }, (error) => {
         console.error("Error fetching projects:", error);
-        set({ isLoading: false });
+        set({ isLoading: false, projects: initialProjects }); // Fallback to initial data on error
       });
       set({ unsubscribe });
     } catch (error) {
         console.error("Failed to fetch projects:", error);
-        set({ isLoading: false });
+        set({ isLoading: false, projects: initialProjects }); // Fallback to initial data on error
     }
   },
 
   getProjectById: async (projectId: string) => {
     try {
+        // First, check local initial data for a match, useful for dev before db is populated
+        const localProject = initialProjects.find(p => p.id === projectId);
+        if (localProject) return localProject;
+        
         const docRef = doc(db, 'projects', projectId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -82,8 +87,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             }
             return { id: docSnap.id, ...data } as Project;
         } else {
-            console.log("No such document!");
-            return null;
+            console.log("No such document in Firestore, checking initial data again.");
+            return null; // The project is not in firestore
         }
     } catch (error) {
         console.error("Error getting document:", error);
@@ -121,7 +126,3 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     }
   }
 }));
-
-// We will no longer fetch projects automatically on app load.
-// Instead, we will trigger this from the main dashboard component.
-// useProjectStore.getState().fetchProjects();

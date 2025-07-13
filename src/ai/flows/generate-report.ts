@@ -38,6 +38,7 @@ export async function generateReport(
 
 const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
+  model: 'gemini-1.5-flash-latest',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
   prompt: `You are a professional Senior Project Manager in a major construction company in Saudi Arabia. Your task is to generate a comprehensive and well-structured project status report in Arabic.

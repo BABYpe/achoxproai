@@ -37,6 +37,7 @@ export async function analyzeBlueprint(input: AnalyzeBlueprintInput): Promise<An
 
 const prompt = ai.definePrompt({
   name: 'analyzeBlueprintPrompt',
+  model: 'gemini-1.5-flash-latest',
   input: {schema: AnalyzeBlueprintInputSchema},
   output: {schema: AnalyzeBlueprintOutputSchema},
   prompt: `You are an expert project engineer specializing in blueprint analysis.

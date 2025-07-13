@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,63 +8,63 @@ body {
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
+    --background: 0 0% 98%;
     --foreground: 224 71.4% 4.1%;
-    --card: 210 20% 98%;
+    --card: 0 0% 100%;
     --card-foreground: 224 71.4% 4.1%;
-    --popover: 210 20% 98%;
+    --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-    --primary: 196 84% 44%; /* Deep Sky Blue */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 215 28% 95%;
-    --secondary-foreground: 224 71% 4%;
-    --muted: 215 28% 93%;
-    --muted-foreground: 215 20% 45%;
-    --accent: 152 47% 47%; /* Sea Green */
-    --accent-foreground: 0 0% 100%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 38 92% 50%; /* Gold/Amber */
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 215 20% 88%;
-    --input: 215 20% 88%;
-    --ring: 196 84% 44%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.8rem;
-
+    
     /* Sidebar Theme */
-    --sidebar-background: 228 10% 12%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 196 84% 60%;
-    --sidebar-primary-foreground: 228 10% 15%;
-    --sidebar-accent: 228 10% 18%;
+    --sidebar-background: 224 71% 12%; /* Dark Slate */
+    --sidebar-foreground: 210 40% 85%;
+    --sidebar-primary: 217 91% 65%; /* Brighter Blue for sidebar */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 224 71% 18%; /* Slightly lighter slate for hover */
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 228 10% 15%;
-    --sidebar-ring: 196 84% 60%;
+    --sidebar-border: 224 71% 15%;
+    --sidebar-ring: 217 91% 65%;
   }
 
   .dark {
-    --background: 228 10% 10%;
+    --background: 224 71% 12%; /* Dark Slate */
     --foreground: 210 40% 98%;
-    --card: 228 10% 12%;
+    --card: 224 71% 15%; /* Slightly Lighter Slate */
     --card-foreground: 210 40% 98%;
-    --popover: 228 10% 8%;
+    --popover: 224 71% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 196 84% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 228 10% 18%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 224 71% 18%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 228 10% 18%;
+    --muted: 224 71% 18%;
     --muted-foreground: 215 20% 65%;
-    --accent: 152 47% 47%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 38 92% 50%; /* Gold/Amber */
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 228 10% 18%;
-    --input: 228 10% 18%;
-    --ring: 196 84% 50%;
+    --border: 224 71% 20%;
+    --input: 224 71% 20%;
+    --ring: 217 91% 60%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -73,14 +72,14 @@ body {
     --chart-5: 340 75% 55%;
     
     /* Sidebar Theme */
-    --sidebar-background: 228 10% 12%;
-    --sidebar-foreground: 210 20% 90%; /* Increased lightness for better contrast */
-    --sidebar-primary: 196 84% 60%; 
-    --sidebar-primary-foreground: 228 10% 15%;
-    --sidebar-accent: 228 10% 22%; /* Increased lightness */
+    --sidebar-background: 224 71% 12%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 217 91% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 224 71% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 228 10% 18%;
-    --sidebar-ring: 196 84% 60%;
+    --sidebar-border: 224 71% 15%;
+    --sidebar-ring: 217 91% 65%;
   }
 }
 

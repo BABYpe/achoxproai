@@ -5,10 +5,10 @@ import { useMemo, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard, Loader } from "lucide-react"
+import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard, Loader, ListChecks } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
-import { Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
+import { AreaChart, Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip, Area } from "recharts"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -47,13 +47,19 @@ export default function DashboardPage() {
       fill: statusColors[name] || '#8884d8',
     }));
   }, [projects]);
+  
+  const weeklyProgressData = useMemo(() => {
+    return [
+      { name: "Week 1", progress: 15, budget: 30 },
+      { name: "Week 2", progress: 25, budget: 45 },
+      { name: "Week 3", progress: 40, budget: 60 },
+      { name: "Week 4", progress: 55, budget: 70 },
+      { name: "Week 5", progress: 70, budget: 85 },
+      { name: "Week 6", progress: 85, budget: 95 },
+      { name: "Week 7", progress: 100, budget: 100 },
+    ]
+  }, []);
 
-  const projectBudgetData = useMemo(() => {
-    return projects.map(p => ({
-        name: p.title.split(' ')[1] || p.title, // Shorten name for chart
-        budget: p.budget / 1000000, // In millions
-    }));
-  }, [projects]);
   
   if (isLoading) {
     return (
@@ -66,8 +72,8 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">لوحة التحكم</h1>
-        <Button asChild className="gap-1 text-lg py-6 px-6 shadow-md shadow-primary/30">
+        <h1 className="text-3xl font-bold">لوحة التحكم الرئيسية</h1>
+        <Button asChild className="gap-1 text-lg py-6 px-6 shadow-lg shadow-primary/30">
           <Link href="/dashboard/projects/new">
             <PlusCircle className="h-5 w-5" />
             إنشاء مشروع جديد
@@ -75,56 +81,84 @@ export default function DashboardPage() {
         </Button>
       </div>
       
-      {/* Stats Cards */}
+      {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">إجمالي المشاريع</CardTitle>
-            <Building className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProjects}</div>
-            <p className="text-xs text-muted-foreground">كل المشاريع المسجلة</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg rounded-2xl">
+        <Card className="shadow-lg rounded-2xl border-l-4 border-primary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">إجمالي الميزانية</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalBudget.toLocaleString('en-US')} ر.س</div>
-            <p className="text-xs text-muted-foreground">ميزانية كل المشاريع</p>
+            <p className="text-xs text-muted-foreground">لـ {stats.totalProjects} مشروع</p>
           </CardContent>
         </Card>
-        <Card className="shadow-lg rounded-2xl">
+        <Card className="shadow-lg rounded-2xl border-l-4 border-accent">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">المشاريع النشطة</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+{stats.activeProjects}</div>
+            <div className="text-2xl font-bold">{stats.activeProjects}</div>
              <p className="text-xs text-muted-foreground">المشاريع قيد التنفيذ حالياً</p>
           </CardContent>
         </Card>
-         <Card className="shadow-lg rounded-2xl">
+        <Card className="shadow-lg rounded-2xl">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">مهام مكتملة هذا الأسبوع</CardTitle>
+            <ListChecks className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+12</div>
+             <p className="text-xs text-muted-foreground">+5.2% عن الأسبوع الماضي</p>
+          </CardContent>
+        </Card>
+        <Card className="shadow-lg rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">المشاريع المكتملة</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+{stats.completedProjects}</div>
-            <p className="text-xs text-muted-foreground">المشاريع التي تم إنجازها</p>
+            <div className="text-2xl font-bold">{stats.completedProjects}</div>
+            <p className="text-xs text-muted-foreground">إجمالي المشاريع المنجزة</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Charts */}
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
+         <Card className="shadow-xl rounded-2xl lg:col-span-3">
+            <CardHeader>
+                <CardTitle>نظرة عامة على تقدم المشاريع</CardTitle>
+                <CardDescription>مقارنة بين التقدم الفعلي والميزانية المستهلكة.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <ChartContainer config={{ 
+                     progress: { label: "التقدم", color: "hsl(var(--primary))" },
+                     budget: { label: "الميزانية", color: "hsl(var(--accent))" }
+                    }} className="h-[250px] w-full">
+                    <AreaChart accessibilityLayer data={weeklyProgressData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+                        <defs>
+                            <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                            </linearGradient>
+                            <linearGradient id="colorBudget" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <Tooltip content={<ChartTooltipContent indicator="dot" />} />
+                        <Area type="monotone" dataKey="progress" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorProgress)" />
+                        <Area type="monotone" dataKey="budget" stroke="hsl(var(--accent))" fillOpacity={1} fill="url(#colorBudget)" />
+                    </AreaChart>
+                </ChartContainer>
+            </CardContent>
+        </Card>
         <Card className="shadow-xl rounded-2xl lg:col-span-2">
           <CardHeader>
-            <CardTitle>حالة المشاريع</CardTitle>
-             <CardDescription>توزيع المشاريع حسب حالتها الحالية.</CardDescription>
+            <CardTitle>توزيع المشاريع حسب الحالة</CardTitle>
+             <CardDescription>نظرة سريعة على حالة جميع المشاريع.</CardDescription>
           </CardHeader>
           <CardContent className="pb-8">
             <ChartContainer config={{}} className="mx-auto aspect-square h-[250px]">
@@ -135,20 +169,6 @@ export default function DashboardPage() {
             </ChartContainer>
           </CardContent>
         </Card>
-        <Card className="shadow-xl rounded-2xl lg:col-span-3">
-            <CardHeader>
-                <CardTitle>ميزانيات المشاريع (بالمليون)</CardTitle>
-                <CardDescription>مقارنة بين ميزانيات المشاريع المختلفة.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                 <ChartContainer config={{ budget: { label: "الميزانية", color: "hsl(var(--primary))" } }} className="h-[250px] w-full">
-                    <BarChart accessibilityLayer data={projectBudgetData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
-                        <Tooltip content={<ChartTooltipContent indicator="dot" />} />
-                        <Bar dataKey="budget" radius={8} />
-                    </BarChart>
-                </ChartContainer>
-            </CardContent>
-        </Card>
       </div>
 
       {/* Projects Overview */}
@@ -156,7 +176,7 @@ export default function DashboardPage() {
             <Card className="shadow-xl rounded-2xl">
                  <CardHeader>
                     <CardTitle>نظرة عامة على المشاريع</CardTitle>
-                    <CardDescription>قائمة المشاريع ومواقعها على الخريطة.</CardDescription>
+                    <CardDescription>آخر تحديثات المشاريع ومواقعها على الخريطة.</CardDescription>
                  </CardHeader>
                  <CardContent className="grid gap-4">
                     {projects.slice(0, 4).map((project, index) => (

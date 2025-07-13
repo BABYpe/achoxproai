@@ -30,7 +30,6 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
          <link rel="sitemap" href="/sitemap.xml" />
-        <link rel="icon" href="/icon.png" type="image/png" sizes="any" />
         <meta name="description" content={metadata.description!} />
         <Script
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places,marker,drawing,geometry`}

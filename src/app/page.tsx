@@ -79,12 +79,13 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="relative pt-20 pb-16 md:pt-32 md:pb-24 text-center overflow-hidden">
              <Image
-                src="https://firebasestorage.googleapis.com/v0/b/gen-prod.appspot.com/o/prototyper%2F1721833509176_construction-helmet.jpg?alt=media&token=e9f4a9b2-3e28-4033-a3d5-6b5797f3747f"
+                src="https://placehold.co/1920x1080.png"
                 alt="Construction site background"
                 fill
                 style={{objectFit: "cover", objectPosition: "center"}}
                 className="absolute inset-0 z-0"
                 priority
+                data-ai-hint="construction site"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-10"></div>
             <div className="absolute inset-0 bg-black/30 z-0"></div>

@@ -15,9 +15,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox";
 import { Logo } from "@/components/logo";
+import { useTranslation } from "react-i18next";
 
 export default function RegisterPage() {
   const [agreed, setAgreed] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -26,9 +28,9 @@ export default function RegisterPage() {
           <div className="mx-auto mb-4">
             <Logo className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold">إنشاء حساب جديد في AchoX Pro AI</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('register.title')}</CardTitle>
           <CardDescription>
-            أدخل معلوماتك أدناه لإنشاء حساب
+            {t('register.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -36,16 +38,16 @@ export default function RegisterPage() {
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="first-name">الاسم الأول</Label>
-                  <Input id="first-name" placeholder="أحمد" required />
+                  <Label htmlFor="first-name">{t('register.firstName')}</Label>
+                  <Input id="first-name" placeholder={t('register.firstNamePlaceholder')} required />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="last-name">الاسم الأخير</Label>
-                  <Input id="last-name" placeholder="علي" required />
+                  <Label htmlFor="last-name">{t('register.lastName')}</Label>
+                  <Input id="last-name" placeholder={t('register.lastNamePlaceholder')} required />
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="email">البريد الإلكتروني</Label>
+                <Label htmlFor="email">{t('login.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -54,7 +56,7 @@ export default function RegisterPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="password">كلمة المرور</Label>
+                <Label htmlFor="password">{t('login.password')}</Label>
                 <Input id="password" type="password" required />
               </div>
 
@@ -64,28 +66,28 @@ export default function RegisterPage() {
                   htmlFor="terms"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  أوافق على{" "}
+                  {t('register.agree')}{" "}
                   <Link href="/terms" className="underline text-primary hover:text-primary/80">
-                    شروط الخدمة
+                    {t('register.terms')}
                   </Link>{" "}
-                  و{" "}
+                  {t('register.and')}{" "}
                   <Link href="/privacy" className="underline text-primary hover:text-primary/80">
-                    سياسة الخصوصية
+                    {t('register.privacy')}
                   </Link>
                 </label>
               </div>
 
               <Link href="/dashboard" passHref>
                   <Button asChild type="submit" className="w-full font-bold text-lg py-6" disabled={!agreed}>
-                    <a>إنشاء حساب</a>
+                    <a>{t('register.createAccount')}</a>
                   </Button>
               </Link>
             </div>
           </form>
           <div className="mt-4 text-center text-sm">
-            لديك حساب بالفعل؟{" "}
+            {t('register.hasAccount')}{" "}
             <Link href="/login" className="underline font-bold">
-              تسجيل الدخول
+              {t('login.button')}
             </Link>
           </div>
         </CardContent>

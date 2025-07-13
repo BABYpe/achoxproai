@@ -25,15 +25,15 @@ export default function LoginPage() {
             <div className="mx-auto mb-4">
                <Logo className="h-12 w-12 text-primary" />
             </div>
-          <CardTitle className="text-2xl font-bold">{t('تسجيل الدخول إلى AchoX Pro AI')}</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('login.title')}</CardTitle>
           <CardDescription>
-            {t('أدخل بريدك الإلكتروني أدناه لتسجيل الدخول إلى حسابك')}
+            {t('login.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">{t('البريد الإلكتروني')}</Label>
+              <Label htmlFor="email">{t('login.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -43,29 +43,29 @@ export default function LoginPage() {
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="password">{t('كلمة المرور')}</Label>
+                <Label htmlFor="password">{t('login.password')}</Label>
                 <Link
                   href="#"
                   className="mr-auto inline-block text-sm underline"
                 >
-                  {t('هل نسيت كلمة المرور؟')}
+                  {t('login.forgotPassword')}
                 </Link>
               </div>
               <Input id="password" type="password" required />
             </div>
             <Link href="/dashboard" passHref>
               <Button asChild type="submit" className="w-full font-bold text-lg py-6">
-                <a>{t('تسجيل الدخول')}</a>
+                <a>{t('login.button')}</a>
               </Button>
             </Link>
             <Button variant="outline" className="w-full">
-              {t('تسجيل الدخول باستخدام جوجل')}
+              {t('login.google')}
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
-            {t('ليس لديك حساب؟')}{" "}
+            {t('login.noAccount')}{" "}
             <Link href="/register" className="underline font-bold">
-              {t('إنشاء حساب')}
+              {t('login.signup')}
             </Link>
           </div>
         </CardContent>

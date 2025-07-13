@@ -1,4 +1,6 @@
 
+"use client";
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,15 +15,18 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft } from "lucide-react"
 import { Logo } from "@/components/logo"
+import { useTranslation } from "react-i18next";
+
 
 export default function ContactSalesPage() {
+  const { t } = useTranslation();
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="absolute top-4 left-4">
         <Button variant="ghost" asChild>
           <Link href="/">
              <ArrowLeft className="ml-2 h-4 w-4" />
-             العودة إلى الرئيسية
+             {t('returnToHome')}
           </Link>
         </Button>
       </div>
@@ -30,25 +35,25 @@ export default function ContactSalesPage() {
           <div className="mx-auto mb-4">
             <Logo className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold">تواصل مع فريق المبيعات</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('contactSales.title')}</CardTitle>
           <CardDescription>
-            هل أنت مستعد للارتقاء بأعمالك؟ املأ النموذج أدناه وسيتواصل معك أحد خبرائنا.
+            {t('contactSales.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="first-name">الاسم الأول</Label>
-                <Input id="first-name" placeholder="أحمد" required />
+                <Label htmlFor="first-name">{t('contactSales.firstName')}</Label>
+                <Input id="first-name" placeholder={t('contactSales.firstNamePlaceholder')} required />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="last-name">الاسم الأخير</Label>
-                <Input id="last-name" placeholder="علي" required />
+                <Label htmlFor="last-name">{t('contactSales.lastName')}</Label>
+                <Input id="last-name" placeholder={t('contactSales.lastNamePlaceholder')} required />
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="email">البريد الإلكتروني للعمل</Label>
+              <Label htmlFor="email">{t('contactSales.workEmail')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -58,24 +63,24 @@ export default function ContactSalesPage() {
             </div>
              <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                    <Label htmlFor="company">اسم الشركة</Label>
-                    <Input id="company" placeholder="شركة الإنشاءات الحديثة" />
+                    <Label htmlFor="company">{t('contactSales.companyName')}</Label>
+                    <Input id="company" placeholder={t('contactSales.companyNamePlaceholder')} />
                 </div>
                  <div className="grid gap-2">
-                    <Label htmlFor="company-size">حجم الشركة</Label>
-                    <Input id="company-size" placeholder="50-100 موظف" />
+                    <Label htmlFor="company-size">{t('contactSales.companySize')}</Label>
+                    <Input id="company-size" placeholder={t('contactSales.companySizePlaceholder')} />
                 </div>
              </div>
              <div className="grid gap-2">
-              <Label htmlFor="phone">رقم الهاتف</Label>
+              <Label htmlFor="phone">{t('contactSales.phoneNumber')}</Label>
               <Input id="phone" type="tel" placeholder="05xxxxxxxx" required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="message">كيف يمكننا مساعدتك؟</Label>
-              <Textarea id="message" placeholder="أخبرنا عن احتياجاتك أو استفساراتك..." />
+              <Label htmlFor="message">{t('contactSales.helpMessage')}</Label>
+              <Textarea id="message" placeholder={t('contactSales.helpMessagePlaceholder')} />
             </div>
             <Button type="submit" className="w-full font-bold text-lg py-6">
-              إرسال الطلب
+              {t('contactSales.submitButton')}
             </Button>
           </form>
         </CardContent>

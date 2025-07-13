@@ -18,6 +18,7 @@ import {
   ShoppingCart,
   Warehouse,
   Wrench,
+  ClipboardType,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -160,6 +161,14 @@ export default function DashboardLayout({
                   <Link href="/dashboard/reports">
                     <FilePieChart />
                     <span>التقارير</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/templates')} tooltip="مكتبة القوالب">
+                  <Link href="/dashboard/templates">
+                    <ClipboardType />
+                    <span>مكتبة القوالب</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

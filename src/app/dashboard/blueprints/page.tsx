@@ -126,7 +126,7 @@ export default function BlueprintsPage() {
                     </CardHeader>
                      <CardContent>
                         <div className="relative w-full h-96 bg-secondary rounded-lg overflow-hidden border">
-                           <Image src={previewUrl} alt="معاينة المخطط" layout="fill" objectFit="contain" />
+                           <Image src={previewUrl} alt="معاينة المخطط" fill style={{ objectFit: 'contain' }} />
                         </div>
                     </CardContent>
                 </Card>

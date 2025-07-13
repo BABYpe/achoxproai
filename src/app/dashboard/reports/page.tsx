@@ -11,20 +11,23 @@ import { generateReport, type GenerateReportOutput } from '@/ai/flows/generate-r
 import { Loader, Wand2, FileText } from 'lucide-react';
 import React from 'react';
 import { useProjectStore } from '@/hooks/use-project-store';
+import { Skeleton } from '@/components/ui/skeleton';
 
-// Mock data, in a real app this would come from a database or be generated.
-const boqItems = [
-    { id: "B-101", description: "أعمال الحفر والردم لموقع المشروع", quantity: 1250, unit: "م³" },
-    { id: "C-201", description: "خرسانة مسلحة للقواعد", quantity: 450, unit: "م³" },
-    { id: "S-301", description: "حديد تسليح عالي المقاومة", quantity: 85, unit: "طن" },
-    { id: "A-401", description: "أعمال المباني بالطوب الأسمنتي المعزول", quantity: 2500, unit: "م²" },
-    { id: "F-501", description: "أعمال اللياسة الداخلية والخارجية", quantity: 6000, unit: "م²" },
-    { id: "P-601", description: "أعمال الدهانات الداخلية (جوتن)", quantity: 5500, unit: "م²" },
-    { id: "E-701", description: "تمديدات كهربائية كاملة (الفنار)", quantity: 1, unit: "مقطوعة" },
-    { id: "M-801", description: "أعمال السباكة والتغذية والصرف (نيبرو)", quantity: 1, unit: "مقطوعة" },
-    { id: "AC-803", description: "توريد وتركيب وحدات تكييف سبليت", quantity: 12, unit: "عدد" },
-    { id: "T-701", description: "توريد وتركيب بلاط بورسلان للأرضيات", quantity: 750, unit: "م²" },
-];
+// A simple markdown to HTML renderer
+const MarkdownRenderer = ({ content }: { content: string }) => {
+    // Basic replacements for Markdown features. For a more robust solution, a library like 'marked' or 'react-markdown' would be better.
+    let htmlContent = content
+      .replace(/^### (.*$)/gim, '<h3 class="text-xl font-semibold mt-4 mb-2">$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold mt-5 mb-3 border-b pb-2">$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mt-6 mb-4 border-b pb-3">$1</h1>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/^- (.*$)/gim, '<li class="ml-4">$1</li>')
+      .replace(/(\<li\>.*?\<\/li\>)/gim, '<ul class="list-disc list-outside space-y-1 my-3">$1</ul>')
+      .replace(/\\n/g, '<br />');
+
+    return <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: htmlContent }} />;
+};
 
 
 export default function ReportsPage() {
@@ -58,17 +61,13 @@ export default function ReportsPage() {
             return;
         };
 
-        // For demo, we'll stringify the mock BOQ data.
-        const boqSummary = boqItems.map(item => `- ${item.description}: ${item.quantity} ${item.unit}`).join('\n');
-
         try {
-            const report = await generateReport({
-                projectTitle: project.title,
-                projectStatus: `${project.status} - ${project.progress}% مكتمل`,
-                projectBudget: `${project.budget.toLocaleString()} ${project.currency}`,
-                boqSummary: boqSummary,
-            });
+            const report = await generateReport({ project });
             setResult(report);
+            toast({
+                title: 'نجاح!',
+                description: 'تم توليد التقرير بنجاح.',
+            })
         } catch (error) {
             console.error(error);
             toast({
@@ -80,32 +79,6 @@ export default function ReportsPage() {
             setIsLoading(false);
         }
     };
-
-    // A simple markdown to HTML renderer
-    const MarkdownRenderer = ({ content }: { content: string }) => {
-        let htmlContent = ` ${content} `; // Add spaces to handle edge cases
-        
-        // Process headings
-        htmlContent = htmlContent.replace(/\\n# (.*$)/gim, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
-        htmlContent = htmlContent.replace(/\\n## (.*$)/gim, '<h2 class="text-xl font-semibold mt-3 mb-1">$1</h2>');
-        htmlContent = htmlContent.replace(/\\n### (.*$)/gim, '<h3 class="text-lg font-medium mt-2 mb-1">$1</h3>');
-
-        // Process bold and italics
-        htmlContent = htmlContent.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-        htmlContent = htmlContent.replace(/\*(.*?)\*/gim, '<em>$1</em>');
-
-        // Process lists
-        htmlContent = htmlContent.replace(/(\\n- .*)+/gim, (match) => {
-            const listItems = match.trim().split('\\n').map(item => `<li class="ml-4">${item.substring(2)}</li>`).join('');
-            return `<ul class="list-disc list-outside space-y-1 my-3">${listItems}</ul>`;
-        });
-        
-        // Process newlines to <br>
-        htmlContent = htmlContent.replace(/(\\r\\n|\\n|\\r)/gm, '<br />');
-
-        return <div className="space-y-4" dangerouslySetInnerHTML={{ __html: htmlContent }} />;
-    };
-
 
     return (
         <div className="flex flex-col gap-4">
@@ -166,7 +139,7 @@ export default function ReportsPage() {
                                 </div>
                              )}
                             {result ? (
-                                <div className="p-4 bg-secondary/30 rounded-lg text-right">
+                                <div className="p-4 bg-secondary/30 rounded-lg">
                                     <MarkdownRenderer content={result.report} />
                                 </div>
                             ) : !isLoading && (

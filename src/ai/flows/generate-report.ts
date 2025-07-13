@@ -10,14 +10,18 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { type Project } from '@/hooks/use-project-store';
 
 const GenerateReportInputSchema = z.object({
-  projectTitle: z.string().describe('The title of the project.'),
-  projectStatus: z.string().describe('The current status of the project.'),
-  projectBudget: z.string().describe('The total budget of the project.'),
-  boqSummary: z
-    .string()
-    .describe('A summary of the Bill of Quantities (BOQ) for the project.'),
+  project: z.object({
+    title: z.string().describe('The title of the project.'),
+    status: z.string().describe('The current status of the project.'),
+    progress: z.number().describe('The completion progress percentage.'),
+    budget: z.number().describe('The total budget of the project.'),
+    currency: z.string().describe('The currency of the budget (e.g., SAR).'),
+    endDate: z.string().describe('The planned end date of the project.'),
+    manager: z.string().describe('The name of the project manager.'),
+  }).describe("The project data object containing all necessary details.")
 });
 export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
 
@@ -36,16 +40,19 @@ const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
-  prompt: `You are a professional Senior Project Manager in a major construction company. Your task is to generate a comprehensive and well-structured project status report.
+  prompt: `You are a professional Senior Project Manager in a major construction company in Saudi Arabia. Your task is to generate a comprehensive and well-structured project status report in Arabic.
 
-Use the following project data to create the report. The report should be in Markdown format, easy to read, and professional in tone. It should include sections for Introduction, Current Status, Budget Overview, and a summary of the Bill of Quantities.
+Use the following project data object to create the report. The report must be in Markdown format, easy to read, and professional in tone. It should include an introduction, a summary of the current status with progress, a budget overview, key achievements, potential risks or challenges, and a concluding summary.
 
 **Project Data:**
-- **Project Title:** {{{projectTitle}}}
-- **Current Status:** {{{projectStatus}}}
-- **Total Budget:** {{{projectBudget}}}
-- **Bill of Quantities Summary:**
-{{{boqSummary}}}
+- **Project Title:** {{{project.title}}}
+- **Current Status:** {{{project.status}}}
+- **Progress:** {{{project.progress}}}%
+- **Total Budget:** {{{project.budget}}} {{{project.currency}}}
+- **Planned End Date:** {{{project.endDate}}}
+- **Project Manager:** {{{project.manager}}}
+
+Structure the report clearly with appropriate headings. Be concise but thorough.
 
 Generate the report now.
 `,

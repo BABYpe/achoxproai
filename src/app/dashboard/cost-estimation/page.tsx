@@ -19,16 +19,23 @@ import { APIProvider, Map, useMap, useMapsLibrary } from '@vis.gl/react-google-m
 import { format } from 'date-fns'
 
 
-function DrawingMap({ onPolygonComplete, onClear }: { onPolygonComplete: (polygon: google.maps.Polygon) => void, onClear: () => void}) {
+function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygonComplete: (polygon: google.maps.Polygon) => void, onClear: () => void, onLocationDetect: (location: string) => void }) {
     const map = useMap();
-    const drawing = useMapsLibrary('drawing');
+    const mapsLibrary = useMapsLibrary('maps');
+    const drawingLibrary = useMapsLibrary('drawing');
     const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
     const [currentPolygons, setCurrentPolygons] = useState<google.maps.Polygon[]>([]);
+    const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null);
+
 
     useEffect(() => {
-        if (!map || !drawing) return;
+        if (!map || !drawingLibrary || !mapsLibrary) return;
+        
+        if (!geocoder) {
+            setGeocoder(new mapsLibrary.Geocoder());
+        }
 
-        const newDrawingManager = new drawing.DrawingManager({
+        const newDrawingManager = new drawingLibrary.DrawingManager({
             drawingMode: null,
             drawingControl: false,
             polygonOptions: {
@@ -52,6 +59,22 @@ function DrawingMap({ onPolygonComplete, onClear }: { onPolygonComplete: (polygo
                 onPolygonComplete(polygon);
                 setCurrentPolygons(prev => [...prev, polygon]);
                 newDrawingManager.setDrawingMode(null);
+
+                // Geocoding logic
+                const bounds = new google.maps.LatLngBounds();
+                polygon.getPath().forEach(latLng => bounds.extend(latLng));
+                const center = bounds.getCenter();
+
+                if (geocoder) {
+                    geocoder.geocode({ location: center }, (results, status) => {
+                        if (status === 'OK' && results?.[0]) {
+                           const address = results[0].formatted_address;
+                           onLocationDetect(address);
+                        } else {
+                            console.error('Geocoder failed due to: ' + status);
+                        }
+                    });
+                }
             }
         );
 
@@ -59,7 +82,7 @@ function DrawingMap({ onPolygonComplete, onClear }: { onPolygonComplete: (polygo
             google.maps.event.removeListener(polygonCompleteListener);
             newDrawingManager.setMap(null);
         };
-    }, [map, drawing, onPolygonComplete]);
+    }, [map, drawingLibrary, mapsLibrary, onPolygonComplete, onLocationDetect, geocoder]);
 
     const handleDrawClick = () => {
        if (drawingManager) {
@@ -77,27 +100,33 @@ function DrawingMap({ onPolygonComplete, onClear }: { onPolygonComplete: (polygo
     }
 
     return (
-        <>
-            <div className="h-64 w-full rounded-lg overflow-hidden border">
-                <Map
-                    mapId="cost-estimation-map"
-                    style={{ width: '100%', height: '100%' }}
-                    defaultCenter={{ lat: 24.7136, lng: 46.6753 }}
-                    defaultZoom={12}
-                    gestureHandling={'greedy'}
-                    disableDefaultUI={true}
-                />
-            </div>
-            <div className="flex gap-2 mt-4">
-                <Button onClick={handleDrawClick} variant="outline" className="w-full" disabled={!drawingManager}>
-                    <MapPin className="ml-2 h-4 w-4" />
-                    ارسم حدود المشروع
-                </Button>
-                <Button onClick={handleClearClick} variant="destructive" size="icon" disabled={!drawingManager}>
-                    <Eraser className="h-4 w-4" />
-                </Button>
-            </div>
-        </>
+        <Card className="shadow-xl rounded-2xl">
+            <CardHeader>
+                <CardTitle>تحديد المساحة والموقع من الخريطة</CardTitle>
+                <CardDescription>ارسم حدود مشروعك على الخريطة لحساب المساحة وتحديد الموقع تلقائيًا.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="h-64 w-full rounded-lg overflow-hidden border">
+                    <Map
+                        mapId="cost-estimation-map"
+                        style={{ width: '100%', height: '100%' }}
+                        defaultCenter={{ lat: 24.7136, lng: 46.6753 }}
+                        defaultZoom={12}
+                        gestureHandling={'greedy'}
+                        disableDefaultUI={true}
+                    />
+                </div>
+                <div className="flex gap-2 mt-4">
+                    <Button onClick={handleDrawClick} variant="outline" className="w-full" disabled={!drawingManager}>
+                        <MapPin className="ml-2 h-4 w-4" />
+                        ارسم حدود المشروع
+                    </Button>
+                    <Button onClick={handleClearClick} variant="destructive" size="icon" disabled={!drawingManager}>
+                        <Eraser className="h-4 w-4" />
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
     );
 }
 
@@ -109,6 +138,7 @@ function CostEstimationContent() {
     const searchParams = useSearchParams()
 
     const [size, setSize] = useState('');
+    const [location, setLocation] = useState('Riyadh');
     const [lastDrawnPolygon, setLastDrawnPolygon] = useState<google.maps.Polygon | null>(null);
 
     useEffect(() => {
@@ -126,11 +156,15 @@ function CostEstimationContent() {
         
         const areaInSquareMeters = google.maps.geometry.spherical.computeArea(polygon.getPath());
         setSize(areaInSquareMeters.toFixed(2));
-        toast({
-            title: "تم حساب المساحة",
-            description: `تم تحديد مساحة المشروع: ${areaInSquareMeters.toFixed(2)} متر مربع.`,
-        });
     };
+
+    const handleLocationDetect = (detectedLocation: string) => {
+        setLocation(detectedLocation);
+        toast({
+            title: "تم تحديد الموقع والمساحة",
+            description: `الموقع: ${detectedLocation}`,
+        });
+    }
 
     const clearDrawing = () => {
         if(lastDrawnPolygon) {
@@ -138,6 +172,7 @@ function CostEstimationContent() {
             setLastDrawnPolygon(null);
         }
         setSize('');
+        setLocation('Riyadh');
     }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -189,8 +224,8 @@ function CostEstimationContent() {
             <h1 className="text-2xl font-bold">مخطط المشاريع الذكي</h1>
             
             <div className="grid lg:grid-cols-3 gap-8 items-start">
-                <div className="lg:col-span-1 flex flex-col gap-8">
-                    <Card className="shadow-xl rounded-2xl sticky top-20">
+                <div className="lg:col-span-1 flex flex-col gap-8 sticky top-20">
+                    <Card className="shadow-xl rounded-2xl">
                         <CardHeader>
                             <CardTitle>معلومات المشروع</CardTitle>
                             <CardDescription>أدخل تفاصيل مشروعك ليقوم الذكاء الاصطناعي ببناء خطة متكاملة.</CardDescription>
@@ -199,11 +234,11 @@ function CostEstimationContent() {
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="space-y-1">
                                     <Label htmlFor="location">موقع المشروع</Label>
-                                    <Input id="location" name="location" placeholder="مثال: الرياض" defaultValue="Riyadh" />
+                                    <Input id="location" name="location" placeholder="مثال: الرياض" value={location} onChange={(e) => setLocation(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="size">مساحة المشروع (متر مربع)</Label>
-                                    <Input id="size" name="size" type="number" placeholder="مثال: 500" value={size} onChange={(e) => setSize(e.target.value)} />
+                                    <Input id="size" name="size" type="number" min="0" placeholder="مثال: 500" value={size} onChange={(e) => setSize(e.target.value)} />
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="type">نوع المشروع</Label>
@@ -218,7 +253,7 @@ function CostEstimationContent() {
                                                 <SelectItem value="landscaping">تنسيق حدائق (لاندسكيب)</SelectItem>
                                                 <SelectItem value="interior_finishing">تشطيبات داخلية</SelectItem>
                                             </SelectGroup>
-                                            <SelectGroup>
+                                             <SelectGroup>
                                                 <SelectLabel>مباني التجزئة</SelectLabel>
                                                 <SelectItem value="retail_mall">مجمع/مركز تجاري</SelectItem>
                                                 <SelectItem value="retail_strip_mall">مركز تجاري شريطي (Strip Mall)</SelectItem>
@@ -232,7 +267,7 @@ function CostEstimationContent() {
                                                 <SelectItem value="office_business_park">مجمع أعمال (Business Park)</SelectItem>
                                             </SelectGroup>
                                             <SelectGroup>
-                                                <SelectLabel>مباني صناعية</SelectLabel>
+                                                <SelectLabel>المباني الصناعية</SelectLabel>
                                                 <SelectItem value="industrial_warehouse">مستودع</SelectItem>
                                                 <SelectItem value="industrial_factory">مصنع / منشأة تصنيع</SelectItem>
                                                 <SelectItem value="industrial_distribution_center">مركز توزيع</SelectItem>
@@ -283,21 +318,12 @@ function CostEstimationContent() {
                             </form>
                         </CardContent>
                     </Card>
-
-                    <Card className="shadow-xl rounded-2xl">
-                        <CardHeader>
-                            <CardTitle>تحديد المساحة من الخريطة</CardTitle>
-                            <CardDescription>ارسم حدود مشروعك على الخريطة لحساب المساحة تلقائيًا.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                           <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                               <DrawingMap onPolygonComplete={handlePolygonComplete} onClear={clearDrawing} />
-                           </APIProvider>
-                        </CardContent>
-                    </Card>
                 </div>
 
                 <div className="lg:col-span-2 flex flex-col gap-8">
+                     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+                           <DrawingMap onPolygonComplete={handlePolygonComplete} onClear={clearDrawing} onLocationDetect={handleLocationDetect} />
+                       </APIProvider>
                     {!result && !isLoading && (
                         <Card className="w-full shadow-xl rounded-2xl min-h-[600px] flex items-center justify-center">
                             <div className="text-center text-muted-foreground p-8">
@@ -418,7 +444,3 @@ export default function CostEstimationPage() {
         </Suspense>
     )
 }
-
-    
-
-    

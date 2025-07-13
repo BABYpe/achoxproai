@@ -15,33 +15,65 @@ import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { APIProvider, Map, useMap, useDrawingManager } from '@vis.gl/react-google-maps';
+import { APIProvider, Map, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { format } from 'date-fns'
 
 
 function DrawingMap({ onPolygonComplete, onClear }: { onPolygonComplete: (polygon: google.maps.Polygon) => void, onClear: () => void}) {
     const map = useMap();
-    const [drawingMode, setDrawingMode] = useState<google.maps.drawing.OverlayType | null>(null);
-
-    const drawingManager = useDrawingManager({
-        onPolygonComplete: (polygon) => {
-            onPolygonComplete(polygon);
-            setDrawingMode(null);
-        }
-    });
+    const drawing = useMapsLibrary('drawing');
+    const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
+    const [currentPolygons, setCurrentPolygons] = useState<google.maps.Polygon[]>([]);
 
     useEffect(() => {
-        if (!drawingManager) return;
-        drawingManager.setDrawingMode(drawingMode);
-    }, [drawingManager, drawingMode]);
-    
+        if (!map || !drawing) return;
+
+        const newDrawingManager = new drawing.DrawingManager({
+            drawingMode: null,
+            drawingControl: false,
+            polygonOptions: {
+                fillColor: 'hsl(var(--primary))',
+                strokeColor: 'hsl(var(--primary))',
+                fillOpacity: 0.3,
+                strokeWeight: 2,
+                clickable: false,
+                editable: true,
+                zIndex: 1,
+            },
+        });
+
+        newDrawingManager.setMap(map);
+        setDrawingManager(newDrawingManager);
+        
+        const polygonCompleteListener = google.maps.event.addListener(
+            newDrawingManager,
+            'polygoncomplete',
+            (polygon: google.maps.Polygon) => {
+                onPolygonComplete(polygon);
+                setCurrentPolygons(prev => [...prev, polygon]);
+                newDrawingManager.setDrawingMode(null);
+            }
+        );
+
+        return () => {
+            google.maps.event.removeListener(polygonCompleteListener);
+            newDrawingManager.setMap(null);
+        };
+    }, [map, drawing, onPolygonComplete]);
+
     const handleDrawClick = () => {
-       setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+       if (drawingManager) {
+           drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+       }
     }
     
     const handleClearClick = () => {
+        currentPolygons.forEach(p => p.setMap(null));
+        setCurrentPolygons([]);
         onClear();
-        setDrawingMode(null);
+        if (drawingManager) {
+            drawingManager.setDrawingMode(null);
+        }
     }
 
     return (
@@ -57,11 +89,11 @@ function DrawingMap({ onPolygonComplete, onClear }: { onPolygonComplete: (polygo
                 />
             </div>
             <div className="flex gap-2 mt-4">
-                <Button onClick={handleDrawClick} variant="outline" className="w-full">
+                <Button onClick={handleDrawClick} variant="outline" className="w-full" disabled={!drawingManager}>
                     <MapPin className="ml-2 h-4 w-4" />
                     ارسم حدود المشروع
                 </Button>
-                <Button onClick={handleClearClick} variant="destructive" size="icon">
+                <Button onClick={handleClearClick} variant="destructive" size="icon" disabled={!drawingManager}>
                     <Eraser className="h-4 w-4" />
                 </Button>
             </div>
@@ -77,7 +109,7 @@ function CostEstimationContent() {
     const searchParams = useSearchParams()
 
     const [size, setSize] = useState('');
-    const [drawnPolygons, setDrawnPolygons] = useState<google.maps.Polygon[]>([]);
+    const [lastDrawnPolygon, setLastDrawnPolygon] = useState<google.maps.Polygon | null>(null);
 
     useEffect(() => {
         const areaParam = searchParams.get('area');
@@ -87,7 +119,11 @@ function CostEstimationContent() {
     }, [searchParams]);
 
     const handlePolygonComplete = (polygon: google.maps.Polygon) => {
-        setDrawnPolygons(prev => [...prev, polygon]);
+        if(lastDrawnPolygon) {
+            lastDrawnPolygon.setMap(null); // Clear previous polygon
+        }
+        setLastDrawnPolygon(polygon);
+        
         const areaInSquareMeters = google.maps.geometry.spherical.computeArea(polygon.getPath());
         setSize(areaInSquareMeters.toFixed(2));
         toast({
@@ -97,8 +133,10 @@ function CostEstimationContent() {
     };
 
     const clearDrawing = () => {
-        drawnPolygons.forEach(p => p.setMap(null));
-        setDrawnPolygons([]);
+        if(lastDrawnPolygon) {
+            lastDrawnPolygon.setMap(null);
+            setLastDrawnPolygon(null);
+        }
         setSize('');
     }
 

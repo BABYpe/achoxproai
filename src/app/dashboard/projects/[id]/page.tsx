@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useEffect, useState } from "react";
@@ -143,7 +142,7 @@ export default function ProjectDetailsPage() {
                                     <TableRow key={task.id}>
                                         <TableCell className="font-medium">{task.name}</TableCell>
                                         <TableCell>
-                                            <Badge variant={task.status === "مكتمل" ? "default" : task.status === "قيد التنفيذ" ? "secondary" : "outline"}>{task.status}</Badge>
+                                            <Badge variant={task.status === "مكتمل" ? "secondary" : task.status === "قيد التنفيذ" ? "default" : "outline"}>{task.status}</Badge>
                                         </TableCell>
                                         <TableCell>{task.assignee}</TableCell>
                                         <TableCell>{task.dueDate}</TableCell>

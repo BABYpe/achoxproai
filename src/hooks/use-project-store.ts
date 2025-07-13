@@ -52,14 +52,21 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   fetchProjects: () => {
     // Prevent multiple listeners
     if (get().unsubscribe) {
+        // We still want to set loading to false if we already have a listener
+        // This can happen with fast refresh in dev
+        set({ isLoading: false });
         return;
     }
     set({ isLoading: true });
     try {
       const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
       const unsubscribe = onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+            set({ projects: initialProjects, isLoading: false });
+            return;
+        }
         const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
-        set({ projects: projects.length > 0 ? projects : initialProjects, isLoading: false });
+        set({ projects, isLoading: false });
       }, (error) => {
         console.error("Error fetching projects:", error);
         set({ isLoading: false, projects: initialProjects }); // Fallback to initial data on error
@@ -73,10 +80,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
 
   getProjectById: async (projectId: string) => {
     try {
-        // First, check local initial data for a match, useful for dev before db is populated
-        const localProject = initialProjects.find(p => p.id === projectId);
-        if (localProject) return localProject;
-        
         const docRef = doc(db, 'projects', projectId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -87,8 +90,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             }
             return { id: docSnap.id, ...data } as Project;
         } else {
-            console.log("No such document in Firestore, checking initial data again.");
-            return null; // The project is not in firestore
+            console.log("No such document in Firestore, checking initial data.");
+             // Fallback to initialProjects if not found in Firestore
+            const localProject = initialProjects.find(p => p.id === projectId);
+            return localProject || null;
         }
     } catch (error) {
         console.error("Error getting document:", error);

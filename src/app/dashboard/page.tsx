@@ -14,6 +14,7 @@ import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useProjectStore } from "@/hooks/use-project-store"
 import React from "react"
+import { APIProvider } from "@vis.gl/react-google-maps"
 
 const ProjectMap = React.lazy(() => import('@/components/project-map'));
 
@@ -207,9 +208,11 @@ export default function DashboardPage() {
                  </CardContent>
             </Card>
             <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
-                <Suspense fallback={<Skeleton className="h-full w-full rounded-2xl" />}>
-                   <ProjectMap projects={projects} />
-                </Suspense>
+                <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+                    <Suspense fallback={<Skeleton className="h-full w-full rounded-2xl" />}>
+                       <ProjectMap projects={projects} />
+                    </Suspense>
+                </APIProvider>
             </Card>
        </div>
     </div>

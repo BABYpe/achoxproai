@@ -1,6 +1,7 @@
+
 "use client"
 
-import { APIProvider, Map, AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
+import { Map, AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 
 interface Project {
     title: string;

@@ -15,8 +15,59 @@ import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { APIProvider, Map, DrawingManager } from '@vis.gl/react-google-maps'
+import { APIProvider, Map, useMap, useDrawingManager } from '@vis.gl/react-google-maps';
 import { format } from 'date-fns'
+
+
+function DrawingMap({ onPolygonComplete, onClear }: { onPolygonComplete: (polygon: google.maps.Polygon) => void, onClear: () => void}) {
+    const map = useMap();
+    const [drawingMode, setDrawingMode] = useState<google.maps.drawing.OverlayType | null>(null);
+
+    const drawingManager = useDrawingManager({
+        onPolygonComplete: (polygon) => {
+            onPolygonComplete(polygon);
+            setDrawingMode(null);
+        }
+    });
+
+    useEffect(() => {
+        if (!drawingManager) return;
+        drawingManager.setDrawingMode(drawingMode);
+    }, [drawingManager, drawingMode]);
+    
+    const handleDrawClick = () => {
+       setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+    }
+    
+    const handleClearClick = () => {
+        onClear();
+        setDrawingMode(null);
+    }
+
+    return (
+        <>
+            <div className="h-64 w-full rounded-lg overflow-hidden border">
+                <Map
+                    mapId="cost-estimation-map"
+                    style={{ width: '100%', height: '100%' }}
+                    defaultCenter={{ lat: 24.7136, lng: 46.6753 }}
+                    defaultZoom={12}
+                    gestureHandling={'greedy'}
+                    disableDefaultUI={true}
+                />
+            </div>
+            <div className="flex gap-2 mt-4">
+                <Button onClick={handleDrawClick} variant="outline" className="w-full">
+                    <MapPin className="ml-2 h-4 w-4" />
+                    ارسم حدود المشروع
+                </Button>
+                <Button onClick={handleClearClick} variant="destructive" size="icon">
+                    <Eraser className="h-4 w-4" />
+                </Button>
+            </div>
+        </>
+    );
+}
 
 
 function CostEstimationContent() {
@@ -26,7 +77,6 @@ function CostEstimationContent() {
     const searchParams = useSearchParams()
 
     const [size, setSize] = useState('');
-    const [drawingMode, setDrawingMode] = useState<google.maps.drawing.OverlayType | null>(null);
     const [drawnPolygons, setDrawnPolygons] = useState<google.maps.Polygon[]>([]);
 
     useEffect(() => {
@@ -40,7 +90,6 @@ function CostEstimationContent() {
         setDrawnPolygons(prev => [...prev, polygon]);
         const areaInSquareMeters = google.maps.geometry.spherical.computeArea(polygon.getPath());
         setSize(areaInSquareMeters.toFixed(2));
-        setDrawingMode(null); // Exit drawing mode
         toast({
             title: "تم حساب المساحة",
             description: `تم تحديد مساحة المشروع: ${areaInSquareMeters.toFixed(2)} متر مربع.`,
@@ -161,44 +210,9 @@ function CostEstimationContent() {
                             <CardDescription>ارسم حدود مشروعك على الخريطة لحساب المساحة تلقائيًا.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="h-64 w-full rounded-lg overflow-hidden border">
-                                <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                                    <Map
-                                        mapId="cost-estimation-map"
-                                        style={{ width: '100%', height: '100%' }}
-                                        defaultCenter={{ lat: 24.7136, lng: 46.6753 }}
-                                        defaultZoom={12}
-                                        gestureHandling={'greedy'}
-                                        disableDefaultUI={true}
-                                    >
-                                        <DrawingManager
-                                            drawingMode={drawingMode}
-                                            onPolygonComplete={handlePolygonComplete}
-                                            options={{
-                                                drawingControl: false,
-                                                polygonOptions: {
-                                                    fillColor: "hsl(var(--primary))",
-                                                    strokeColor: "hsl(var(--primary))",
-                                                    fillOpacity: 0.3,
-                                                    strokeWeight: 2,
-                                                    clickable: false,
-                                                    editable: false,
-                                                    zIndex: 1
-                                                },
-                                            }}
-                                        />
-                                    </Map>
-                                </APIProvider>
-                            </div>
-                            <div className="flex gap-2 mt-4">
-                                <Button onClick={() => setDrawingMode(google.maps.drawing.OverlayType.POLYGON)} variant="outline" className="w-full">
-                                    <MapPin className="ml-2 h-4 w-4" />
-                                    ارسم حدود المشروع
-                                </Button>
-                                <Button onClick={clearDrawing} variant="destructive" size="icon">
-                                    <Eraser className="h-4 w-4" />
-                                </Button>
-                            </div>
+                           <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+                               <DrawingMap onPolygonComplete={handlePolygonComplete} onClear={clearDrawing} />
+                           </APIProvider>
                         </CardContent>
                     </Card>
                 </div>
@@ -324,3 +338,5 @@ export default function CostEstimationPage() {
         </Suspense>
     )
 }
+
+    

@@ -82,9 +82,8 @@ export default function HomePage() {
              <Image
                 src="https://firebasestorage.googleapis.com/v0/b/gen-prod.appspot.com/o/prototyper%2F1721833509176_construction-helmet.jpg?alt=media&token=e9f4a9b2-3e28-4033-a3d5-6b5797f3747f"
                 alt="Construction site background"
-                layout="fill"
-                objectFit="cover"
-                objectPosition="center"
+                fill
+                style={{objectFit: "cover", objectPosition: "center"}}
                 className="absolute inset-0 z-0"
                 priority
             />

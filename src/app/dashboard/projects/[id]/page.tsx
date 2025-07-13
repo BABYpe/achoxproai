@@ -149,7 +149,7 @@ export default function ProjectDetailsPage() {
 
             <Card className="shadow-xl rounded-2xl w-full">
                 <CardHeader className="relative h-48 md:h-64 rounded-t-2xl overflow-hidden p-0">
-                   <Image src={project.imageUrl} alt={project.title} layout="fill" objectFit="cover" data-ai-hint={project.imageHint}/>
+                   <Image src={project.imageUrl} alt={project.title} fill style={{objectFit: 'cover'}} data-ai-hint={project.imageHint}/>
                    <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
                        <CardTitle className="text-3xl font-bold text-white drop-shadow-lg">{project.title}</CardTitle>
                        <div className="flex items-center gap-2 mt-2">
@@ -276,5 +276,3 @@ export default function ProjectDetailsPage() {
         </div>
     );
 }
-
-    

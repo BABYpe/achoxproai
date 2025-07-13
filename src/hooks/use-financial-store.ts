@@ -22,10 +22,13 @@ export const useFinancialStore = create<FinancialState>()(
       transactions: {},
       addTransaction: (projectId, transaction) => {
         const currentTransactions = get().transactions[projectId] || [];
+        const updatedTransactions = [...currentTransactions, transaction].sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
         set({
           transactions: {
             ...get().transactions,
-            [projectId]: [...currentTransactions, transaction],
+            [projectId]: updatedTransactions,
           },
         });
       },

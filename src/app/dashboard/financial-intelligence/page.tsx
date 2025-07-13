@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/hooks/use-toast";
 import { PlusCircle, Loader, TrendingUp, TrendingDown, Scale, PieChart as PieChartIcon, AreaChart } from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, Area, XAxis, YAxis, CartesianGrid, AreaChart as RechartsAreaChart } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, Area, XAxis, YAxis, CartesianGrid, AreaChart as RechartsAreaChart, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 
 
@@ -192,13 +192,15 @@ export default function FinancialIntelligencePage() {
                     </CardHeader>
                     <CardContent>
                          <ChartContainer config={{}} className="h-[300px] w-full">
-                           <RechartsAreaChart data={spendingOverTimeData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
-                                <YAxis />
-                                <Tooltip content={<ChartTooltipContent />} />
-                                <Area type="monotone" dataKey="spent" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.2)" />
-                            </RechartsAreaChart>
+                           <ResponsiveContainer>
+                             <RechartsAreaChart data={spendingOverTimeData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                  <CartesianGrid strokeDasharray="3 3" />
+                                  <XAxis dataKey="date" />
+                                  <YAxis />
+                                  <Tooltip content={<ChartTooltipContent />} />
+                                  <Area type="monotone" dataKey="spent" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.2)" name="إجمالي المصروفات" />
+                              </RechartsAreaChart>
+                           </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
@@ -209,6 +211,7 @@ export default function FinancialIntelligencePage() {
                     </CardHeader>
                     <CardContent>
                         <ChartContainer config={{}} className="h-[300px] w-full">
+                           <ResponsiveContainer>
                              <PieChart>
                                 <Tooltip content={<ChartTooltipContent />} />
                                 <Legend />
@@ -218,6 +221,7 @@ export default function FinancialIntelligencePage() {
                                     ))}
                                 </Pie>
                             </PieChart>
+                           </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
@@ -346,5 +350,3 @@ export default function FinancialIntelligencePage() {
     </>
   );
 }
-
-    

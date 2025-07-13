@@ -23,16 +23,13 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
     const map = useMap();
     const drawingLibrary = useMapsLibrary('drawing');
     const geocodingLibrary = useMapsLibrary('geocoding');
+    
     const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
-    const [currentPolygons, setCurrentPolygons] = useState<google.maps.Polygon[]>([]);
     const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null);
 
-
     useEffect(() => {
-        if (!map || !drawingLibrary || !geocodingLibrary) return;
-        
-        if (!geocoder) {
-            setGeocoder(new geocodingLibrary.Geocoder());
+        if (!map || !drawingLibrary || !geocodingLibrary) {
+            return;
         }
 
         const newDrawingManager = new drawingLibrary.DrawingManager({
@@ -48,24 +45,40 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
                 zIndex: 1,
             },
         });
-
+        
         newDrawingManager.setMap(map);
         setDrawingManager(newDrawingManager);
         
+        const newGeocoder = new geocodingLibrary.Geocoder();
+        setGeocoder(newGeocoder);
+
         const polygonCompleteListener = google.maps.event.addListener(
             newDrawingManager,
             'polygoncomplete',
             (polygon: google.maps.Polygon) => {
                 onPolygonComplete(polygon);
-                setCurrentPolygons(prev => [...prev, polygon]);
                 newDrawingManager.setDrawingMode(null);
+            }
+        );
 
-                // Geocoding logic
+        return () => {
+            google.maps.event.removeListener(polygonCompleteListener);
+            newDrawingManager.setMap(null);
+        };
+    }, [map, drawingLibrary, geocodingLibrary]);
+    
+     useEffect(() => {
+        if (!map || !geocoder || !drawingManager) return;
+        
+        const polygonCompleteListener = google.maps.event.addListener(
+            drawingManager,
+            'polygoncomplete',
+            (polygon: google.maps.Polygon) => {
                 const bounds = new google.maps.LatLngBounds();
                 polygon.getPath().forEach(latLng => bounds.extend(latLng));
                 const center = bounds.getCenter();
 
-                if (geocoder) {
+                if (center) {
                     geocoder.geocode({ location: center }, (results, status) => {
                         if (status === 'OK' && results?.[0]) {
                            const address = results[0].formatted_address;
@@ -79,10 +92,11 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
         );
 
         return () => {
-            google.maps.event.removeListener(polygonCompleteListener);
-            newDrawingManager.setMap(null);
-        };
-    }, [map, drawingLibrary, geocodingLibrary, onPolygonComplete, onLocationDetect, geocoder]);
+             google.maps.event.clearListeners(drawingManager, 'polygoncomplete');
+        }
+
+    }, [map, geocoder, drawingManager, onLocationDetect]);
+
 
     const handleDrawClick = () => {
        if (drawingManager) {
@@ -91,8 +105,6 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
     }
     
     const handleClearClick = () => {
-        currentPolygons.forEach(p => p.setMap(null));
-        setCurrentPolygons([]);
         onClear();
         if (drawingManager) {
             drawingManager.setDrawingMode(null);

@@ -93,7 +93,7 @@ export default function HomePage() {
             <div className="mt-16 space-y-20">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl" data-ai-hint="document analysis interface" priority/>
+                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl" data-ai-hint="data analysis interface" priority/>
                     </div>
                     <div>
                         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
@@ -106,7 +106,7 @@ export default function HomePage() {
 
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="md:order-2">
-                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تسعير ذكي" className="rounded-2xl shadow-xl" data-ai-hint="cost estimation dashboard"/>
+                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تسعير ذكي" className="rounded-2xl shadow-xl" data-ai-hint="financial planning dashboard"/>
                     </div>
                     <div className="md:order-1">
                          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
@@ -119,7 +119,7 @@ export default function HomePage() {
 
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="إدارة المشاريع" className="rounded-2xl shadow-xl" data-ai-hint="project management dashboard"/>
+                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="إدارة المشاريع" className="rounded-2xl shadow-xl" data-ai-hint="construction site engineers"/>
                     </div>
                     <div>
                         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">

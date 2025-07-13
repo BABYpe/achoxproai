@@ -79,6 +79,12 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   },
 
   getProjectById: async (projectId: string) => {
+     // First, check if the project exists in the local state to avoid unnecessary DB calls
+    const localProject = get().projects.find(p => p.id === projectId);
+    if (localProject) {
+        return localProject;
+    }
+    // If not found locally, try fetching from Firestore
     try {
         const docRef = doc(db, 'projects', projectId);
         const docSnap = await getDoc(docRef);
@@ -90,10 +96,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             }
             return { id: docSnap.id, ...data } as Project;
         } else {
-            console.log("No such document in Firestore, checking initial data.");
-             // Fallback to initialProjects if not found in Firestore
-            const localProject = initialProjects.find(p => p.id === projectId);
-            return localProject || null;
+             console.log("No such document in Firestore.");
+             return null;
         }
     } catch (error) {
         console.error("Error getting document:", error);

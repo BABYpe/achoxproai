@@ -132,7 +132,7 @@ export default function BoqPage() {
     });
   };
 
-  const categories = [...new Set(boqItems.map(item => item.category))].sort();
+  const categories = [...new Set(boqItems.map(item => item.category))];
   
   const handleImportExport = () => {
     if (currentUser.isAdmin) {

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, GanttChartSquare, DollarSign, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useCurrentUser } from "@/lib/auth";
 
 const planningTemplates = [
   { title: "نموذج جدول زمني استباقي لأسبوعين", description: "لتخطيط المهام والأنشطة للأسبوعين القادمين." },
@@ -37,12 +38,21 @@ const reportingTemplates = [
 
 const TemplateCard = ({ title, description }: { title: string, description: string }) => {
     const { toast } = useToast();
+    const currentUser = useCurrentUser();
     
     const handleDownload = () => {
-        toast({
-            title: "ميزة احترافية",
-            description: "تحميل القوالب متاح في الخطط المدفوعة.",
-        });
+        if (currentUser.isAdmin) {
+             toast({
+                title: "صلاحيات المسؤول مفعلة",
+                description: `ميزة تحميل القالب "${title}" متاحة لك.`,
+            });
+            // In a real app, you would initiate the file download here.
+        } else {
+            toast({
+                title: "ميزة احترافية",
+                description: "تحميل القوالب متاح في الخطط المدفوعة.",
+            });
+        }
     }
 
     return (

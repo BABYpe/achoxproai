@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useCurrentUser } from "@/lib/auth";
 
 const masterBoqItems = [
   // --- الأعمال الترابية ---
@@ -95,6 +96,8 @@ export default function BoqPage() {
   const [boqItems, setBoqItems] = useState(masterBoqItems);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
+  const currentUser = useCurrentUser();
+
 
   const { control, handleSubmit, reset } = useForm<BoqItemForm>({
     resolver: zodResolver(boqItemSchema),
@@ -132,10 +135,18 @@ export default function BoqPage() {
   const categories = [...new Set(boqItems.map(item => item.category))].sort();
   
   const handleImportExport = () => {
-    toast({
-      title: "ميزة احترافية",
-      description: "استيراد وتصدير جداول الكميات متاح في الخطط المدفوعة.",
-    });
+    if (currentUser.isAdmin) {
+       toast({
+        title: "صلاحيات المسؤول مفعلة",
+        description: "ميزة الاستيراد والتصدير متاحة لك.",
+       });
+       // In a real app, you would trigger the actual import/export functionality here.
+    } else {
+        toast({
+        title: "ميزة احترافية",
+        description: "استيراد وتصدير جداول الكميات متاح في الخطط المدفوعة.",
+        });
+    }
   };
 
   return (
@@ -239,6 +250,3 @@ export default function BoqPage() {
     </>
   )
 }
-
-
-    

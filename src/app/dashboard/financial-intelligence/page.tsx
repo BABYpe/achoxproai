@@ -16,7 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/hooks/use-toast";
-import { PlusCircle, Loader, TrendingUp, TrendingDown, Scale } from 'lucide-react';
+import { PlusCircle, Loader, TrendingUp, TrendingDown, Scale, PieChart as PieChartIcon, AreaChart } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, Area, XAxis, YAxis, CartesianGrid, AreaChart as RechartsAreaChart } from 'recharts';
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
+
 
 const transactionSchema = z.object({
   description: z.string().min(1, "الوصف مطلوب"),
@@ -29,6 +32,8 @@ const transactionSchema = z.object({
 });
 
 type TransactionForm = z.infer<typeof transactionSchema>;
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#ff4d4d', '#4dff4d'];
 
 export default function FinancialIntelligencePage() {
   const { projects, isLoading: projectsLoading } = useProjectStore();
@@ -60,7 +65,7 @@ export default function FinancialIntelligencePage() {
 
   const projectTransactions = useMemo(() => {
     if (!selectedProjectId) return [];
-    return transactions[selectedProjectId] || [];
+    return transactions[selectedProjectId]?.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()) || [];
   }, [selectedProjectId, transactions]);
 
   const stats = useMemo(() => {
@@ -70,6 +75,26 @@ export default function FinancialIntelligencePage() {
     return { totalSpent, remaining, budget };
   }, [projectTransactions, selectedProject]);
   
+  const categoryData = useMemo(() => {
+    const categoryMap = projectTransactions.reduce((acc, t) => {
+        acc[t.category] = (acc[t.category] || 0) + t.amount;
+        return acc;
+    }, {} as Record<string, number>);
+
+    return Object.entries(categoryMap).map(([name, value]) => ({ name, value }));
+  }, [projectTransactions]);
+
+  const spendingOverTimeData = useMemo(() => {
+    let cumulativeAmount = 0;
+    return projectTransactions.map(t => {
+      cumulativeAmount += t.amount;
+      return {
+        date: new Date(t.date).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' }),
+        spent: cumulativeAmount
+      };
+    });
+  }, [projectTransactions]);
+
   const onSubmit: SubmitHandler<TransactionForm> = async (data) => {
     if (!selectedProjectId) return;
     try {
@@ -87,7 +112,7 @@ export default function FinancialIntelligencePage() {
       reset({
           date: new Date(),
           description: "",
-          category: "",
+          category: "مواد بناء",
           amount: 0,
       });
     } catch (error) {
@@ -158,6 +183,46 @@ export default function FinancialIntelligencePage() {
                 </CardContent>
               </Card>
             </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <Card className="shadow-xl rounded-2xl lg:col-span-3">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><AreaChart className="text-primary"/> المصروفات التراكمية</CardTitle>
+                        <CardDescription>تتبع معدل الصرف مقابل الميزانية</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                         <ChartContainer config={{}} className="h-[300px] w-full">
+                           <RechartsAreaChart data={spendingOverTimeData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" />
+                                <YAxis />
+                                <Tooltip content={<ChartTooltipContent />} />
+                                <Area type="monotone" dataKey="spent" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.2)" />
+                            </RechartsAreaChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+                 <Card className="shadow-xl rounded-2xl lg:col-span-2">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><PieChartIcon className="text-primary"/> توزيع المصروفات حسب الفئة</CardTitle>
+                        <CardDescription>نظرة على بنود الصرف الرئيسية</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ChartContainer config={{}} className="h-[300px] w-full">
+                             <PieChart>
+                                <Tooltip content={<ChartTooltipContent />} />
+                                <Legend />
+                                <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
+                                    {categoryData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                            </PieChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+            </div>
+
 
             <Card className="shadow-xl rounded-2xl">
               <CardHeader>
@@ -184,7 +249,12 @@ export default function FinancialIntelligencePage() {
                       </TableRow>
                     )) : (
                       <TableRow>
-                        <TableCell colSpan={4} className="text-center text-muted-foreground">لا توجد معاملات مسجلة لهذا المشروع بعد.</TableCell>
+                        <TableCell colSpan={4} className="text-center text-muted-foreground py-10">
+                          {projectTransactions.length === 0 && !selectedProjectId
+                            ? "الرجاء اختيار مشروع."
+                            : "لا توجد معاملات مسجلة لهذا المشروع بعد. ابدأ بإضافة معاملة."
+                          }
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -225,7 +295,27 @@ export default function FinancialIntelligencePage() {
               </div>
               <div className="space-y-1">
                 <Label htmlFor="category">الفئة</Label>
-                <Controller name="category" control={control} render={({ field }) => <Input id="category" placeholder="مثال: مواد بناء، أجور عمال..." {...field} />} />
+                <Controller
+                  name="category"
+                  control={control}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                       <SelectTrigger id="category">
+                         <SelectValue placeholder="اختر فئة المصروف" />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="مواد بناء">مواد بناء</SelectItem>
+                         <SelectItem value="أجور عمال">أجور عمال</SelectItem>
+                         <SelectItem value="معدات">إيجار معدات</SelectItem>
+                         <SelectItem value="مقاول باطن">مقاول باطن</SelectItem>
+                         <SelectItem value="رسوم وتصاريح">رسوم وتصاريح</SelectItem>
+                         <SelectItem value="نقل ولوجستيات">نقل ولوجستيات</SelectItem>
+                         <SelectItem value="مصاريف إدارية">مصاريف إدارية</SelectItem>
+                         <SelectItem value="أخرى">أخرى</SelectItem>
+                       </SelectContent>
+                    </Select>
+                  )}
+                />
                  {errors.category && <p className="text-xs text-destructive">{errors.category.message}</p>}
               </div>
                <div className="space-y-1">
@@ -256,3 +346,5 @@ export default function FinancialIntelligencePage() {
     </>
   );
 }
+
+    

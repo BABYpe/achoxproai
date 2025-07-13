@@ -6,11 +6,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Building, DollarSign, User, Calendar, Percent, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus } from "lucide-react";
+import { ArrowLeft, Building, DollarSign, User, Calendar, Percent, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus, Milestone, Handshake, Briefcase } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -25,12 +24,16 @@ import {
 } from "@/components/ui/alert-dialog"
 
 // Mock data for project details - will be replaced with real data in the future
-const mockTasks = [
-    { id: 1, name: "أعمال الحفر والأساسات", status: "مكتمل", assignee: "فريق الحفر", dueDate: "2024-06-15" },
-    { id: 2, name: "بناء الهيكل الخرساني", status: "قيد التنفيذ", assignee: "فريق الخرسانة", dueDate: "2024-07-30" },
-    { id: 3, name: "أعمال المباني والبلوك", status: "مخطط له", assignee: "فريق المباني", dueDate: "2024-08-10" },
-    { id: 4, name: "التشطيبات الداخلية", status: "مخطط له", assignee: "فريق التشطيبات", dueDate: "2024-09-20" },
+const mockRoadmap = [
+    { type: "milestone", status: "completed", title: "توقيع العقد واستلام الموقع", date: "2024-05-15", icon: Handshake },
+    { type: "task", status: "completed", title: "أعمال الحفر والأساسات", date: "2024-06-15" },
+    { type: "task", status: "in-progress", title: "بناء الهيكل الخرساني للدور الأرضي", date: "2024-07-25" },
+    { type: "milestone", status: "in-progress", title: "الوصول إلى منتصف الجدول الزمني", date: "2024-08-01", icon: Milestone },
+    { type: "task", status: "planned", title: "أعمال المباني والتشطيبات الخارجية", date: "2024-08-30" },
+    { type: "task", status: "planned", title: "أعمال التمديدات الكهربائية والصحية", date: "2024-09-15" },
+    { type: "milestone", status: "planned", title: "تسليم المشروع الابتدائي", date: "2024-10-30", icon: Briefcase },
 ];
+
 
 const mockTeam = [
     { name: "علي محمد", role: "مدير المشروع" },
@@ -117,6 +120,15 @@ export default function ProjectDetailsPage() {
             </div>
         );
     }
+    
+    const getStatusStyles = (status: string) => {
+        switch (status) {
+            case "completed": return "bg-green-500";
+            case "in-progress": return "bg-primary animate-pulse";
+            case "planned": return "bg-muted-foreground/50 border-2 border-dashed";
+            default: return "bg-gray-400";
+        }
+    }
 
     return (
         <div className="flex flex-col gap-8">
@@ -192,33 +204,43 @@ export default function ProjectDetailsPage() {
                 <div className="lg:col-span-2 space-y-8">
                      <Card className="shadow-xl rounded-2xl">
                         <CardHeader>
-                            <CardTitle>قائمة المهام الرئيسية</CardTitle>
+                            <CardTitle>خريطة طريق المشروع</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>المهمة</TableHead>
-                                        <TableHead>الحالة</TableHead>
-                                        <TableHead>المسؤول</TableHead>
-                                        <TableHead>تاريخ الاستحقاق</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {mockTasks.map(task => (
-                                        <TableRow key={task.id}>
-                                            <TableCell className="font-medium">{task.name}</TableCell>
-                                            <TableCell>
-                                                <Badge variant={task.status === "مكتمل" ? "secondary" : task.status === "قيد التنفيذ" ? "default" : "outline"}>{task.status}</Badge>
-                                            </TableCell>
-                                            <TableCell>{task.assignee}</TableCell>
-                                            <TableCell>{task.dueDate}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                           <div className="relative pl-6">
+                                {/* Vertical line */}
+                                <div className="absolute right-6 top-0 bottom-0 w-0.5 bg-border"></div>
+
+                                <div className="space-y-8">
+                                    {mockRoadmap.map((item, index) => {
+                                        const Icon = item.icon || null;
+                                        return (
+                                        <div key={index} className="relative flex items-start gap-4">
+                                            {/* Dot/Icon on the line */}
+                                            <div className="absolute top-1/2 -translate-y-1/2 right-6 translate-x-1/2 z-10 flex items-center justify-center">
+                                                {Icon ? (
+                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${getStatusStyles(item.status)} ring-4 ring-background`}>
+                                                        <Icon className="h-5 w-5" />
+                                                    </div>
+                                                ) : (
+                                                    <div className={`w-4 h-4 rounded-full ${getStatusStyles(item.status)} ring-4 ring-background`}></div>
+                                                )}
+                                            </div>
+
+                                            <div className="flex-1 space-y-1 pr-12">
+                                                <p className="font-semibold text-foreground">{item.title}</p>
+                                                <p className="text-sm text-muted-foreground">{item.date}</p>
+                                            </div>
+                                             <Badge variant={item.status === "completed" ? "secondary" : item.status === "in-progress" ? "default" : "outline"}>
+                                                {item.status === 'completed' ? 'مكتمل' : item.status === 'in-progress' ? 'قيد التنفيذ' : 'مخطط له'}
+                                            </Badge>
+                                        </div>
+                                    )})}
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
+
                      <Card className="shadow-xl rounded-2xl">
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>آخر التحديثات والملاحظات</CardTitle>
@@ -276,3 +298,5 @@ export default function ProjectDetailsPage() {
         </div>
     );
 }
+
+    

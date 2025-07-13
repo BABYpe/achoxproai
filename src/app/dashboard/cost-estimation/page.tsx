@@ -21,18 +21,18 @@ import { format } from 'date-fns'
 
 function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygonComplete: (polygon: google.maps.Polygon) => void, onClear: () => void, onLocationDetect: (location: string) => void }) {
     const map = useMap();
-    const mapsLibrary = useMapsLibrary('maps');
     const drawingLibrary = useMapsLibrary('drawing');
+    const geocodingLibrary = useMapsLibrary('geocoding');
     const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
     const [currentPolygons, setCurrentPolygons] = useState<google.maps.Polygon[]>([]);
     const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null);
 
 
     useEffect(() => {
-        if (!map || !drawingLibrary || !mapsLibrary) return;
+        if (!map || !drawingLibrary || !geocodingLibrary) return;
         
         if (!geocoder) {
-            setGeocoder(new mapsLibrary.Geocoder());
+            setGeocoder(new geocodingLibrary.Geocoder());
         }
 
         const newDrawingManager = new drawingLibrary.DrawingManager({
@@ -82,7 +82,7 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
             google.maps.event.removeListener(polygonCompleteListener);
             newDrawingManager.setMap(null);
         };
-    }, [map, drawingLibrary, mapsLibrary, onPolygonComplete, onLocationDetect, geocoder]);
+    }, [map, drawingLibrary, geocodingLibrary, onPolygonComplete, onLocationDetect, geocoder]);
 
     const handleDrawClick = () => {
        if (drawingManager) {

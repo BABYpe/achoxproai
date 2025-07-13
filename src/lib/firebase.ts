@@ -23,12 +23,13 @@ const storage = getStorage(app);
 
 // Initialize Analytics only on the client and if supported
 let analytics;
-if (typeof window !== 'undefined') {
-  isSupported().then(yes => {
-    if (yes) {
-      analytics = getAnalytics(app);
-    }
-  });
-}
+// Disabling Analytics initialization to prevent permission errors
+// if (typeof window !== 'undefined') {
+//   isSupported().then(yes => {
+//     if (yes) {
+//       analytics = getAnalytics(app);
+//     }
+//   });
+// }
 
 export { app, db, storage, analytics };

@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast'
 import { estimateProjectCost, type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost'
-import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser, DraftingCompass } from 'lucide-react'
+import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser, DraftingCompass, PlusCircle, Trash2 } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from '@/components/ui/progress'
@@ -19,7 +19,14 @@ import { APIProvider, Map, useMap, useMapsLibrary } from '@vis.gl/react-google-m
 import { format } from 'date-fns'
 
 
-function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygonComplete: (polygon: google.maps.Polygon, area: number) => void, onClear: () => void, onLocationDetect: (location: string) => void }) {
+function DrawingMap({ onPolygonComplete, onClear, onLocationDetect, coordinates, setCoordinates, manualUpdate }: { 
+    onPolygonComplete: (polygon: google.maps.Polygon, area: number, path: google.maps.LatLngLiteral[]) => void, 
+    onClear: () => void, 
+    onLocationDetect: (location: string) => void,
+    coordinates: google.maps.LatLngLiteral[],
+    setCoordinates: React.Dispatch<React.SetStateAction<google.maps.LatLngLiteral[]>>,
+    manualUpdate: () => void
+}) {
     const map = useMap();
     const drawingLibrary = useMapsLibrary('drawing');
     const geocodingLibrary = useMapsLibrary('geocoding');
@@ -30,13 +37,9 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
     const [currentPolygon, setCurrentPolygon] = useState<google.maps.Polygon | null>(null);
 
     useEffect(() => {
-        if (!map || !drawingLibrary || !geocodingLibrary) {
-            return;
-        }
+        if (!map || !drawingLibrary || !geocodingLibrary) return;
 
-        if (!geocoder) {
-            setGeocoder(new geocodingLibrary.Geocoder());
-        }
+        if (!geocoder) setGeocoder(new geocodingLibrary.Geocoder());
 
         if (!drawingManager) {
             const newDrawingManager = new drawingLibrary.DrawingManager({
@@ -57,56 +60,53 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
         }
 
         return () => {
-            if (drawingManager) {
-                google.maps.event.clearInstanceListeners(drawingManager);
-            }
+            if (drawingManager) google.maps.event.clearInstanceListeners(drawingManager);
         };
-    }, [map, drawingLibrary, geocodingLibrary, drawingManager, geocoder]);
+    }, [map, drawingLibrary, geocodingLibrary, geocoder, drawingManager]);
     
      useEffect(() => {
         if (!drawingManager || !geocoder || !geometryLibrary) return;
         
-        const polygonCompleteListener = google.maps.event.addListener(
-            drawingManager,
-            'polygoncomplete',
-            (polygon: google.maps.Polygon) => {
-                if (currentPolygon) {
-                    currentPolygon.setMap(null);
-                }
-                setCurrentPolygon(polygon);
-                drawingManager.setDrawingMode(null);
+        const handlePolygonUpdate = (polygon: google.maps.Polygon) => {
+             const path = polygon.getPath().getArray().map(latLng => ({ lat: latLng.lat(), lng: latLng.lng() }));
+             const areaInSquareMeters = geometryLibrary.spherical.computeArea(polygon.getPath());
+             
+             onPolygonComplete(polygon, areaInSquareMeters, path);
 
-                const areaInSquareMeters = geometryLibrary.spherical.computeArea(polygon.getPath());
-                onPolygonComplete(polygon, areaInSquareMeters);
+             const bounds = new google.maps.LatLngBounds();
+             polygon.getPath().forEach(latLng => bounds.extend(latLng));
+             const center = bounds.getCenter();
 
-                const bounds = new google.maps.LatLngBounds();
-                polygon.getPath().forEach(latLng => bounds.extend(latLng));
-                const center = bounds.getCenter();
+             if (center && geocoder) {
+                 geocoder.geocode({ location: center }, (results, status) => {
+                     if (status === 'OK' && results?.[0]) {
+                        const address = results[0].formatted_address;
+                        onLocationDetect(address);
+                     }
+                 });
+             }
+        }
 
-                if (center) {
-                    geocoder.geocode({ location: center }, (results, status) => {
-                        if (status === 'OK' && results?.[0]) {
-                           const address = results[0].formatted_address;
-                           onLocationDetect(address);
-                        } else {
-                            console.error('Geocoder failed due to: ' + status);
-                        }
-                    });
-                }
-            }
-        );
+        const polygonCompleteListener = google.maps.event.addListener(drawingManager, 'polygoncomplete', (polygon: google.maps.Polygon) => {
+            if (currentPolygon) currentPolygon.setMap(null);
+            
+            setCurrentPolygon(polygon);
+            drawingManager.setDrawingMode(null);
+
+            handlePolygonUpdate(polygon);
+
+            google.maps.event.addListener(polygon.getPath(), 'set_at', () => handlePolygonUpdate(polygon));
+            google.maps.event.addListener(polygon.getPath(), 'insert_at', () => handlePolygonUpdate(polygon));
+
+        });
 
         return () => {
              google.maps.event.removeListener(polygonCompleteListener);
         }
-
     }, [drawingManager, geocoder, geometryLibrary, onPolygonComplete, onLocationDetect, currentPolygon]);
 
-
     const handleDrawClick = () => {
-       if (drawingManager) {
-           drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-       }
+       if (drawingManager) drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
     }
     
     const handleClearClick = () => {
@@ -116,35 +116,75 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
         }
         onClear();
     }
+    
+    const handleCoordChange = (index: number, field: 'lat' | 'lng', value: string) => {
+        const newCoords = [...coordinates];
+        newCoords[index] = { ...newCoords[index], [field]: parseFloat(value) || 0 };
+        setCoordinates(newCoords);
+    };
+
+    const addCoordinate = () => {
+        setCoordinates([...coordinates, { lat: 0, lng: 0 }]);
+    };
+    
+    const removeCoordinate = (index: number) => {
+        setCoordinates(coordinates.filter((_, i) => i !== index));
+    };
+
 
     return (
-        <Card className="shadow-xl rounded-2xl">
-            <CardHeader>
-                <CardTitle>تحديد المساحة والموقع من الخريطة</CardTitle>
-                <CardDescription>ارسم حدود مشروعك على الخريطة لحساب المساحة وتحديد الموقع تلقائيًا.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="h-64 w-full rounded-lg overflow-hidden border">
-                    <Map
-                        mapId="cost-estimation-map"
-                        style={{ width: '100%', height: '100%' }}
-                        defaultCenter={{ lat: 24.7136, lng: 46.6753 }}
-                        defaultZoom={12}
-                        gestureHandling={'greedy'}
-                        disableDefaultUI={true}
-                    />
-                </div>
-                <div className="flex gap-2 mt-4">
-                    <Button onClick={handleDrawClick} variant="outline" className="w-full" disabled={!drawingManager}>
-                        <DraftingCompass className="ml-2 h-4 w-4" />
-                        ارسم حدود المشروع
+        <div className="sticky top-20 flex flex-col gap-4">
+            <Card className="shadow-xl rounded-2xl">
+                <CardHeader>
+                    <CardTitle>تحديد المساحة والموقع من الخريطة</CardTitle>
+                    <CardDescription>ارسم حدود مشروعك على الخريطة أو أدخل الإحداثيات لحساب المساحة وتحديد الموقع تلقائيًا.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-64 w-full rounded-lg overflow-hidden border">
+                        <Map
+                            mapId="cost-estimation-map"
+                            style={{ width: '100%', height: '100%' }}
+                            defaultCenter={{ lat: 24.7136, lng: 46.6753 }}
+                            defaultZoom={12}
+                            gestureHandling={'greedy'}
+                            disableDefaultUI={true}
+                        />
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                        <Button onClick={handleDrawClick} variant="outline" className="w-full" disabled={!drawingManager}>
+                            <DraftingCompass className="ml-2 h-4 w-4" />
+                            ارسم حدود المشروع
+                        </Button>
+                        <Button onClick={handleClearClick} variant="destructive" size="icon" disabled={!drawingManager || !currentPolygon}>
+                            <Eraser className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+            <Card className="shadow-xl rounded-2xl">
+                <CardHeader>
+                    <CardTitle>أو أدخل الإحداثيات يدويًا</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 max-h-48 overflow-y-auto pr-2">
+                    {coordinates.map((coord, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                            <Label className="w-8">P{index + 1}</Label>
+                            <Input type="number" placeholder="خط العرض (Lat)" value={coord.lat} onChange={(e) => handleCoordChange(index, 'lat', e.target.value)} />
+                            <Input type="number" placeholder="خط الطول (Lng)" value={coord.lng} onChange={(e) => handleCoordChange(index, 'lng', e.target.value)} />
+                            <Button variant="ghost" size="icon" onClick={() => removeCoordinate(index)}>
+                                <Trash2 className="h-4 w-4 text-destructive"/>
+                            </Button>
+                        </div>
+                    ))}
+                    <Button variant="outline" size="sm" onClick={addCoordinate} className="gap-1 w-full mt-2">
+                        <PlusCircle className="h-4 w-4" /> إضافة نقطة
                     </Button>
-                    <Button onClick={handleClearClick} variant="destructive" size="icon" disabled={!drawingManager || !currentPolygon}>
-                        <Eraser className="h-4 w-4" />
-                    </Button>
-                </div>
-            </CardContent>
-        </Card>
+                </CardContent>
+                <CardFooter>
+                     <Button onClick={manualUpdate} className="w-full" disabled={coordinates.length < 3}>تحديث الخريطة من الإحداثيات</Button>
+                </CardFooter>
+            </Card>
+        </div>
     );
 }
 
@@ -158,6 +198,8 @@ function CostEstimationContent() {
     const [size, setSize] = useState('');
     const [location, setLocation] = useState('Riyadh');
     const [polygon, setPolygon] = useState<google.maps.Polygon | null>(null);
+    const [coordinates, setCoordinates] = useState<google.maps.LatLngLiteral[]>([]);
+
 
     useEffect(() => {
         const areaParam = searchParams.get('area');
@@ -166,15 +208,20 @@ function CostEstimationContent() {
         }
     }, [searchParams]);
 
-    const handlePolygonComplete = (polygon: google.maps.Polygon, area: number) => {
-        setPolygon(polygon);
+    const handlePolygonComplete = (poly: google.maps.Polygon, area: number, path: google.maps.LatLngLiteral[]) => {
+        setPolygon(poly);
         setSize(area.toFixed(2));
+        setCoordinates(path);
     };
+
+    const handleManualUpdate = () => {
+         toast({ title: "قيد التطوير", description: "سيتم تفعيل ميزة تحديث الخريطة من الإحداثيات قريبًا."});
+    }
 
     const handleLocationDetect = (detectedLocation: string) => {
         setLocation(detectedLocation);
         toast({
-            title: "تم تحديد الموقع والمساحة",
+            title: "تم تحديث الموقع والمساحة",
             description: `الموقع: ${detectedLocation}`,
         });
     }
@@ -186,6 +233,7 @@ function CostEstimationContent() {
         }
         setSize('');
         setLocation('Riyadh');
+        setCoordinates([]);
     }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -237,8 +285,8 @@ function CostEstimationContent() {
             <h1 className="text-2xl font-bold">مخطط المشاريع الذكي</h1>
             
             <div className="grid lg:grid-cols-3 gap-8 items-start">
-                <div className="lg:col-span-1 flex flex-col gap-8 sticky top-20">
-                    <Card className="shadow-xl rounded-2xl">
+                <div className="lg:col-span-1 flex flex-col gap-8">
+                    <Card className="shadow-xl rounded-2xl sticky top-20">
                         <CardHeader>
                             <CardTitle>معلومات المشروع</CardTitle>
                             <CardDescription>أدخل تفاصيل مشروعك ليقوم الذكاء الاصطناعي ببناء خطة متكاملة.</CardDescription>
@@ -335,7 +383,14 @@ function CostEstimationContent() {
 
                 <div className="lg:col-span-2 flex flex-col gap-8">
                      <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                           <DrawingMap onPolygonComplete={handlePolygonComplete} onClear={clearDrawing} onLocationDetect={handleLocationDetect} />
+                           <DrawingMap 
+                                onPolygonComplete={handlePolygonComplete} 
+                                onClear={clearDrawing} 
+                                onLocationDetect={handleLocationDetect}
+                                coordinates={coordinates}
+                                setCoordinates={setCoordinates}
+                                manualUpdate={handleManualUpdate}
+                            />
                        </APIProvider>
                     {!result && !isLoading && (
                         <Card className="w-full shadow-xl rounded-2xl min-h-[600px] flex items-center justify-center">

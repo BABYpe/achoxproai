@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useEffect, useState } from "react";
@@ -12,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 
-// Mock data for project details
+// Mock data for project details - will be replaced with real data in the future
 const mockTasks = [
     { id: 1, name: "أعمال الحفر والأساسات", status: "مكتمل", assignee: "فريق الحفر", dueDate: "2024-06-15" },
     { id: 2, name: "بناء الهيكل الخرساني", status: "قيد التنفيذ", assignee: "فريق الخرسانة", dueDate: "2024-07-30" },

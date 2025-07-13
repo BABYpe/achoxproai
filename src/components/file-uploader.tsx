@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface FileUploaderProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect: (file: File | null) => void;
   className?: string;
 }
 
@@ -16,8 +16,9 @@ export function FileUploader({ onFileSelect, className }: FileUploaderProps) {
 
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     if (acceptedFiles.length > 0) {
-      setFile(acceptedFiles[0])
-      onFileSelect(acceptedFiles[0])
+      const selectedFile = acceptedFiles[0];
+      setFile(selectedFile);
+      onFileSelect(selectedFile);
     }
   }, [onFileSelect])
 
@@ -35,7 +36,8 @@ export function FileUploader({ onFileSelect, className }: FileUploaderProps) {
 
   const removeFile = (e: React.MouseEvent) => {
     e.stopPropagation()
-    setFile(null)
+    setFile(null);
+    onFileSelect(null);
   }
 
   return (

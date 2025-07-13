@@ -9,7 +9,8 @@ import {
   query,
   orderBy,
   updateDoc,
-  getDoc
+  getDoc,
+  Timestamp
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
@@ -28,7 +29,7 @@ export interface Project {
     lng: number;
     manager: string;
     endDate: string;
-    createdAt?: any;
+    createdAt: any;
 }
 
 interface ProjectState {
@@ -89,7 +90,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       await addDoc(collection(db, 'projects'), {
           ...project,
-          createdAt: serverTimestamp()
+          createdAt: Timestamp.now()
       });
     } catch (error) {
       console.error("Error adding project:", error);

@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -25,7 +24,7 @@ export default function NewProjectPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [projectImage, setProjectImage] = useState<File | null>(null);
 
-    const handleFileSelect = (file: File) => {
+    const handleFileSelect = (file: File | null) => {
         setProjectImage(file);
     };
 

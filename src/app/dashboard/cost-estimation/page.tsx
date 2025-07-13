@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast'
 import { estimateProjectCost, type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost'
-import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser } from 'lucide-react'
+import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser, DraftingCompass } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from '@/components/ui/progress'
@@ -19,13 +19,15 @@ import { APIProvider, Map, useMap, useMapsLibrary } from '@vis.gl/react-google-m
 import { format } from 'date-fns'
 
 
-function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygonComplete: (polygon: google.maps.Polygon) => void, onClear: () => void, onLocationDetect: (location: string) => void }) {
+function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygonComplete: (polygon: google.maps.Polygon, area: number) => void, onClear: () => void, onLocationDetect: (location: string) => void }) {
     const map = useMap();
     const drawingLibrary = useMapsLibrary('drawing');
     const geocodingLibrary = useMapsLibrary('geocoding');
-    
+    const geometryLibrary = useMapsLibrary('geometry');
+
     const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
     const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null);
+    const [currentPolygon, setCurrentPolygon] = useState<google.maps.Polygon | null>(null);
 
     useEffect(() => {
         if (!map || !drawingLibrary || !geocodingLibrary) {
@@ -56,21 +58,26 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
 
         return () => {
             if (drawingManager) {
-                // remove all listeners
                 google.maps.event.clearInstanceListeners(drawingManager);
             }
         };
     }, [map, drawingLibrary, geocodingLibrary, drawingManager, geocoder]);
     
      useEffect(() => {
-        if (!drawingManager || !geocoder) return;
+        if (!drawingManager || !geocoder || !geometryLibrary) return;
         
         const polygonCompleteListener = google.maps.event.addListener(
             drawingManager,
             'polygoncomplete',
             (polygon: google.maps.Polygon) => {
-                onPolygonComplete(polygon);
+                if (currentPolygon) {
+                    currentPolygon.setMap(null);
+                }
+                setCurrentPolygon(polygon);
                 drawingManager.setDrawingMode(null);
+
+                const areaInSquareMeters = geometryLibrary.spherical.computeArea(polygon.getPath());
+                onPolygonComplete(polygon, areaInSquareMeters);
 
                 const bounds = new google.maps.LatLngBounds();
                 polygon.getPath().forEach(latLng => bounds.extend(latLng));
@@ -93,7 +100,7 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
              google.maps.event.removeListener(polygonCompleteListener);
         }
 
-    }, [drawingManager, geocoder, onPolygonComplete, onLocationDetect]);
+    }, [drawingManager, geocoder, geometryLibrary, onPolygonComplete, onLocationDetect, currentPolygon]);
 
 
     const handleDrawClick = () => {
@@ -103,10 +110,11 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
     }
     
     const handleClearClick = () => {
-        onClear();
-        if (drawingManager) {
-            // This is handled by onClear which removes the polygon from the map
+        if (currentPolygon) {
+            currentPolygon.setMap(null);
+            setCurrentPolygon(null);
         }
+        onClear();
     }
 
     return (
@@ -128,10 +136,10 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect }: { onPolygo
                 </div>
                 <div className="flex gap-2 mt-4">
                     <Button onClick={handleDrawClick} variant="outline" className="w-full" disabled={!drawingManager}>
-                        <MapPin className="ml-2 h-4 w-4" />
+                        <DraftingCompass className="ml-2 h-4 w-4" />
                         ارسم حدود المشروع
                     </Button>
-                    <Button onClick={handleClearClick} variant="destructive" size="icon" disabled={!drawingManager}>
+                    <Button onClick={handleClearClick} variant="destructive" size="icon" disabled={!drawingManager || !currentPolygon}>
                         <Eraser className="h-4 w-4" />
                     </Button>
                 </div>
@@ -149,7 +157,7 @@ function CostEstimationContent() {
 
     const [size, setSize] = useState('');
     const [location, setLocation] = useState('Riyadh');
-    const [lastDrawnPolygon, setLastDrawnPolygon] = useState<google.maps.Polygon | null>(null);
+    const [polygon, setPolygon] = useState<google.maps.Polygon | null>(null);
 
     useEffect(() => {
         const areaParam = searchParams.get('area');
@@ -158,14 +166,9 @@ function CostEstimationContent() {
         }
     }, [searchParams]);
 
-    const handlePolygonComplete = (polygon: google.maps.Polygon) => {
-        if(lastDrawnPolygon) {
-            lastDrawnPolygon.setMap(null); // Clear previous polygon
-        }
-        setLastDrawnPolygon(polygon);
-        
-        const areaInSquareMeters = google.maps.geometry.spherical.computeArea(polygon.getPath());
-        setSize(areaInSquareMeters.toFixed(2));
+    const handlePolygonComplete = (polygon: google.maps.Polygon, area: number) => {
+        setPolygon(polygon);
+        setSize(area.toFixed(2));
     };
 
     const handleLocationDetect = (detectedLocation: string) => {
@@ -177,9 +180,9 @@ function CostEstimationContent() {
     }
 
     const clearDrawing = () => {
-        if(lastDrawnPolygon) {
-            lastDrawnPolygon.setMap(null);
-            setLastDrawnPolygon(null);
+        if(polygon) {
+            polygon.setMap(null);
+            setPolygon(null);
         }
         setSize('');
         setLocation('Riyadh');
@@ -244,15 +247,15 @@ function CostEstimationContent() {
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="space-y-1">
                                     <Label htmlFor="location">موقع المشروع</Label>
-                                    <Input id="location" name="location" placeholder="مثال: الرياض" value={location} onChange={(e) => setLocation(e.target.value)} />
+                                    <Input id="location" name="location" placeholder="مثال: الرياض" value={location} onChange={(e) => setLocation(e.target.value)} required />
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="size">مساحة المشروع (متر مربع)</Label>
-                                    <Input id="size" name="size" type="number" min="0" placeholder="مثال: 500" value={size} onChange={(e) => setSize(e.target.value)} />
+                                    <Input id="size" name="size" type="number" min="0" placeholder="مثال: 500" value={size} onChange={(e) => setSize(e.target.value)} required />
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="type">نوع المشروع</Label>
-                                    <Select name="type" defaultValue="residential_villa">
+                                    <Select name="type" defaultValue="residential_villa" required>
                                         <SelectTrigger id="type"><SelectValue placeholder="اختر نوع المشروع" /></SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
@@ -309,7 +312,7 @@ function CostEstimationContent() {
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="quality">مستوى الجودة</Label>
-                                    <Select name="quality" defaultValue="premium">
+                                    <Select name="quality" defaultValue="premium" required>
                                         <SelectTrigger id="quality"><SelectValue placeholder="اختر مستوى الجودة" /></SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="standard">أساسي (Standard)</SelectItem>
@@ -320,7 +323,7 @@ function CostEstimationContent() {
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="scopeOfWork">وصف نطاق العمل</Label>
-                                    <Textarea id="scopeOfWork" name="scopeOfWork" placeholder="صف باختصار الأعمال الرئيسية المطلوبة. مثال: بناء فيلا دورين مع ملحق، تشطيب فاخر..." />
+                                    <Textarea id="scopeOfWork" name="scopeOfWork" placeholder="صف باختصار الأعمال الرئيسية المطلوبة. مثال: بناء فيلا دورين مع ملحق، تشطيب فاخر..." required />
                                 </div>
                                 <Button type="submit" disabled={isLoading} className="w-full font-bold text-lg py-6 mt-4">
                                     {isLoading ? <><Loader className="ml-2 h-4 w-4 animate-spin" /> جاري التخطيط...</> : <><Wand2 className="ml-2 h-4 w-4" /> إنشاء خطة المشروع</>}

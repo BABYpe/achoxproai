@@ -90,6 +90,32 @@ const masterBoqItems = [
   { id: "MEC-005", category: "الأعمال الميكانيكية", description: "توريد وتركيب كرسي إفرنجي معلق", unit: "عدد", quantity: 1, unitPrice: 1300, total: 1300 },
   { id: "MEC-006", category: "الأعمال الميكانيكية", description: "تأسيس نظام مكافحة حريق (رشاشات)", unit: "نقطة", quantity: 1, unitPrice: 350, total: 350 },
   { id: "MEC-007", category: "الأعمال الميكانيكية", description: "توريد وتركيب مضخة مياه (1 حصان)", unit: "عدد", quantity: 1, unitPrice: 950, total: 950 },
+
+  // --- مشاريع الرعاية الصحية (مستشفيات ومستوصفات) ---
+  { id: "HOS-001", category: "مشاريع الرعاية الصحية", description: "نظام استدعاء الممرضات (لكل سرير)", unit: "نقطة", quantity: 1, unitPrice: 1800, total: 1800 },
+  { id: "HOS-002", category: "مشاريع الرعاية الصحية", description: "تمديدات الغازات الطبية (مخرج أكسجين)", unit: "نقطة", quantity: 1, unitPrice: 2500, total: 2500 },
+  { id: "HOS-003", category: "مشاريع الرعاية الصحية", description: "تمديدات الغازات الطبية (مخرج شفط)", unit: "نقطة", quantity: 1, unitPrice: 2300, total: 2300 },
+  { id: "HOS-004", category: "مشاريع الرعاية الصحية", description: "تجاليد جدران معزولة بالرصاص (لغرف الأشعة)", unit: "م²", quantity: 1, unitPrice: 950, total: 950 },
+  { id: "HOS-005", category: "مشاريع الرعاية الصحية", description: "أرضيات فينيل مضادة للبكتيريا", unit: "م²", quantity: 1, unitPrice: 220, total: 220 },
+  { id: "HOS-006", category: "مشاريع الرعاية الصحية", description: "وحدة مناولة هواء (HVAC) مع فلاتر HEPA", unit: "عدد", quantity: 1, unitPrice: 45000, total: 45000 },
+  { id: "HOS-007", category: "مشاريع الرعاية الصحية", description: "أبواب أوتوماتيكية لغرف العمليات", unit: "عدد", quantity: 1, unitPrice: 22000, total: 22000 },
+  
+  // --- مشاريع الضيافة والمطاعم ---
+  { id: "KIT-001", category: "مشاريع الضيافة والمطاعم", description: "نظام شفط مركزي للمطابخ (Hood)", unit: "م.ط", quantity: 1, unitPrice: 3000, total: 3000 },
+  { id: "KIT-002", category: "مشاريع الضيافة والمطاعم", description: "مصيدة شحوم وزيوت (Grease Trap)", unit: "عدد", quantity: 1, unitPrice: 7500, total: 7500 },
+  { id: "KIT-003", category: "مشاريع الضيافة والمطاعم", description: "تجاليد جدران ستانلس ستيل للمطابخ", unit: "م²", quantity: 1, unitPrice: 450, total: 450 },
+  { id: "KIT-004", category: "مشاريع الضيافة والمطاعم", description: "أرضيات Quarry Tile للمطابخ", unit: "م²", quantity: 1, unitPrice: 280, total: 280 },
+  { id: "KIT-005", category: "مشاريع الضيافة والمطاعم", description: "بناء غرفة تبريد (Walk-in Cooler)", unit: "م²", quantity: 1, unitPrice: 2200, total: 2200 },
+  { id: "HOT-001", category: "مشاريع الضيافة والمطاعم", description: "نظام مفاتيح الغرف الإلكترونية (للباب)", unit: "عدد", quantity: 1, unitPrice: 1500, total: 1500 },
+  { id: "HOT-002", category: "مشاريع الضيافة والمطاعم", description: "تجهيز منطقة استقبال (Lobby) - أعمال ديكور", unit: "مقطوعة", quantity: 1, unitPrice: 150000, total: 150000 },
+  
+  // --- مشاريع تجارية متخصصة ---
+  { id: "GAS-001", category: "مشاريع تجارية متخصصة", description: "تركيب خزان وقود أرضي (سعة 50,000 لتر)", unit: "عدد", quantity: 1, unitPrice: 120000, total: 120000 },
+  { id: "GAS-002", category: "مشاريع تجارية متخصصة", description: "تركيب مضخة وقود إلكترونية مزدوجة", unit: "عدد", quantity: 1, unitPrice: 65000, total: 65000 },
+  { id: "GAS-003", category: "مشاريع تجارية متخصصة", description: "تركيب مظلة محطة الوقود (Canopy)", unit: "م²", quantity: 1, unitPrice: 850, total: 850 },
+  { id: "GYM-001", category: "مشاريع تجارية متخصصة", description: "أرضيات مطاطية ممتصة للصدمات (للصالات الرياضية)", unit: "م²", quantity: 1, unitPrice: 350, total: 350 },
+  { id: "GYM-002", category: "مشاريع تجارية متخصصة", description: "توريد وتركيب ساونا جافة", unit: "عدد", quantity: 1, unitPrice: 35000, total: 35000 },
+  { id: "GYM-003", category: "مشاريع تجارية متخصصة", description: "توريد وتركيب غرفة بخار", unit: "عدد", quantity: 1, unitPrice: 42000, total: 42000 },
   
   // --- تجهيزات الفعاليات ---
   { id: "EVT-001", category: "تجهيزات فنية وتقنية (فعاليات)", description: "تأجير شاشة LED (سعر للمتر المربع/لليوم)", unit: "م²/يوم", quantity: 1, unitPrice: 350, total: 350 },
@@ -100,7 +126,6 @@ const masterBoqItems = [
   { id: "EVT-006", category: "خدمات مساندة للفعاليات", description: "خدمات تنظيم وإدارة حشود (للساعة/للفرد)", unit: "ساعة/فرد", quantity: 1, unitPrice: 120, total: 120 },
   { id: "EVT-007", category: "خدمات مساندة للفعاليات", description: "تأجير أثاث للفعالية (كرسي، طاولة)", unit: "قطعة/يوم", quantity: 1, unitPrice: 50, total: 50 },
   { id: "EVT-008", category: "تجهيزات فنية وتقنية (فعاليات)", description: "تصوير وتغطية فيديو للفعالية", unit: "مقطوعة", quantity: 1, unitPrice: 8000, total: 8000 },
-
 ];
 
 

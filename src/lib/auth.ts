@@ -8,6 +8,7 @@ interface User {
   avatar: string;
   fallback: string;
   isAdmin: boolean;
+  plan: string;
 }
 
 // Hardcoded list of admin emails
@@ -16,13 +17,18 @@ const ADMIN_EMAILS = ["marokiri8@gmail.com"];
 const MOCK_USER: User = {
   name: "Maroki Ri",
   email: "marokiri8@gmail.com",
-  avatar: "https://placehold.co/40x40.png",
+  avatar: "https://placehold.co/80x80.png",
   fallback: "MR",
   isAdmin: false, // Default value
+  plan: "الخطة الاحترافية"
 };
 
 // Check if the current user's email is in the admin list
 MOCK_USER.isAdmin = ADMIN_EMAILS.includes(MOCK_USER.email);
+if (MOCK_USER.isAdmin) {
+    MOCK_USER.plan = "خطة الشركات (مسؤول)";
+}
+
 
 /**
  * A hook to get the current user's data.

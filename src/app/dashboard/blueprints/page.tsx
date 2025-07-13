@@ -4,13 +4,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FileUploader } from "@/components/file-uploader";
 import { analyzeBlueprint, type AnalyzeBlueprintOutput } from "@/ai/flows/analyze-blueprint";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, BarChart, Maximize, ListTree, Calculator } from "lucide-react";
+import { Loader, BarChart, Maximize, ListTree, Calculator, AlertTriangle, FileText, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 export default function BlueprintsPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -50,7 +51,7 @@ export default function BlueprintsPage() {
         const base64File = reader.result as string;
         const result = await analyzeBlueprint({ blueprintDataUri: base64File });
         setAnalysisResult(result);
-        setIsLoading(false); // Set loading to false after analysis is complete
+        setIsLoading(false); 
         toast({
           title: "نجاح",
           description: "تم تحليل المخطط بنجاح.",
@@ -78,7 +79,6 @@ export default function BlueprintsPage() {
 
   const handleUseForEstimation = () => {
     if (analysisResult?.quantities.area) {
-      // Extract only the numerical value from the area string
       const area = parseFloat(analysisResult.quantities.area.replace(/[^\d.-]/g, ''));
       if (!isNaN(area)) {
           router.push(`/dashboard/cost-estimation?area=${area}`);
@@ -103,6 +103,7 @@ export default function BlueprintsPage() {
             <Card className="shadow-lg rounded-2xl">
                 <CardHeader>
                     <CardTitle>رفع المخطط</CardTitle>
+                    <CardDescription>ارفع ملف المخطط ليقوم الذكاء الاصطناعي بتحليله بشكل شامل.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                     <FileUploader onFileSelect={handleFileSelect} />
@@ -124,7 +125,7 @@ export default function BlueprintsPage() {
                         <CardTitle>معاينة المخطط</CardTitle>
                     </CardHeader>
                      <CardContent>
-                        <div className="relative w-full h-96 bg-secondary rounded-lg overflow-hidden">
+                        <div className="relative w-full h-96 bg-secondary rounded-lg overflow-hidden border">
                            <Image src={previewUrl} alt="معاينة المخطط" layout="fill" objectFit="contain" />
                         </div>
                     </CardContent>
@@ -135,6 +136,7 @@ export default function BlueprintsPage() {
              <Card className="shadow-lg rounded-2xl sticky top-20">
                 <CardHeader>
                     <CardTitle>نتائج التحليل</CardTitle>
+                    <CardDescription>ملخص شامل لتحليل المخطط بواسطة الذكاء الاصطناعي.</CardDescription>
                 </CardHeader>
                 <CardContent className="min-h-[300px]">
                      {isLoading && (
@@ -146,25 +148,57 @@ export default function BlueprintsPage() {
                     {analysisResult && (
                         <div className="flex flex-col gap-4">
                             <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger className="font-bold"><BarChart className="ml-2 h-5 w-5 text-accent"/>الكميات</AccordionTrigger>
-                                <AccordionContent>
-                                <div className="space-y-2 text-sm pr-2">
-                                    <div className="flex justify-between"><span>المساحة الإجمالية:</span> <span className="font-mono">{analysisResult.quantities.area}</span></div>
+                                <AccordionItem value="item-1">
+                                    <AccordionTrigger className="font-bold text-base"><FileText className="ml-2 h-5 w-5 text-accent"/>ملخص التحليل</AccordionTrigger>
+                                    <AccordionContent className="text-sm text-muted-foreground pr-2">
+                                        {analysisResult.scopeOfWork}
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="item-2">
+                                    <AccordionTrigger className="font-bold text-base">
+                                        <div className="flex items-center">
+                                            <AlertTriangle className="ml-2 h-5 w-5 text-destructive"/>الأخطاء والملاحظات
+                                            <Badge variant={analysisResult.errorsFound.length > 0 ? "destructive" : "secondary"} className="mr-2">
+                                                {analysisResult.errorsFound.length}
+                                            </Badge>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="space-y-2 text-sm pr-2">
+                                        {analysisResult.errorsFound.length > 0 ? (
+                                            <ul className="list-disc list-outside space-y-1 pl-4">
+                                                {analysisResult.errorsFound.map((error, index) => (
+                                                    <li key={index}>{error}</li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <div className="flex items-center gap-2 text-green-600">
+                                                <CheckCircle className="h-4 w-4" />
+                                                <p>لم يتم العثور على أخطاء واضحة.</p>
+                                            </div>
+                                        )}
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="item-3">
+                                    <AccordionTrigger className="font-bold text-base"><BarChart className="ml-2 h-5 w-5 text-accent"/>الكميات المستخرجة</AccordionTrigger>
+                                    <AccordionContent className="space-y-2 text-sm pr-2">
+                                        <div className="flex justify-between"><span>المساحة الإجمالية:</span> <span className="font-mono">{analysisResult.quantities.area}</span></div>
                                         <div className="flex justify-between"><span>الطول الإجمالي للخطوط:</span> <span className="font-mono">{analysisResult.quantities.length}</span></div>
-                                </div>
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger className="font-bold"><ListTree className="ml-2 h-5 w-5 text-accent"/>تعداد العناصر</AccordionTrigger>
-                                <AccordionContent>
-                                    <div className="space-y-2 text-sm pr-2">
-                                    {Object.entries(analysisResult.quantities.objectCounts).map(([key, value]) => (
-                                        <div className="flex justify-between" key={key}><span>{key}:</span> <span className="font-mono">{value}</span></div>
-                                    ))}
-                                    </div>
-                                </AccordionContent>
-                            </AccordionItem>
+                                        <h4 className="font-semibold mt-2 pt-2 border-t">تعداد العناصر:</h4>
+                                        {Object.entries(analysisResult.quantities.objectCounts).map(([key, value]) => (
+                                            <div className="flex justify-between" key={key}><span>{key}:</span> <span className="font-mono">{value}</span></div>
+                                        ))}
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="item-4">
+                                    <AccordionTrigger className="font-bold text-base"><ListTree className="ml-2 h-5 w-5 text-accent"/>بنود العمل المقترحة</AccordionTrigger>
+                                    <AccordionContent className="space-y-2 text-sm pr-2">
+                                         <ul className="list-disc list-outside space-y-2 pl-4">
+                                            {analysisResult.requiredItems.map((item, index) => (
+                                                <li key={index}><strong>{item.item}:</strong> {item.reason}</li>
+                                            ))}
+                                        </ul>
+                                    </AccordionContent>
+                                </AccordionItem>
                             </Accordion>
                             <Button onClick={handleUseForEstimation} className="w-full mt-4">
                                 <Calculator className="ml-2 h-4 w-4" />
@@ -175,7 +209,7 @@ export default function BlueprintsPage() {
                      {!isLoading && !analysisResult && (
                          <div className="flex flex-col items-center justify-center gap-4 py-10 text-muted-foreground">
                             <Maximize className="h-10 w-10" />
-                            <p>ستظهر نتائج التحليل هنا.</p>
+                            <p className="text-center">ستظهر نتائج التحليل الشامل هنا بعد رفع المخطط.</p>
                         </div>
                      )}
                 </CardContent>

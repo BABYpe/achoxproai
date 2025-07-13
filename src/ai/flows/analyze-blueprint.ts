@@ -21,13 +21,19 @@ const AnalyzeBlueprintInputSchema = z.object({
 export type AnalyzeBlueprintInput = z.infer<typeof AnalyzeBlueprintInputSchema>;
 
 const AnalyzeBlueprintOutputSchema = z.object({
+  scopeOfWork: z.string().describe("A summary of the scope of work based on the blueprint."),
+  errorsFound: z.array(z.string()).describe("A list of potential engineering errors or inconsistencies found in the blueprint."),
   quantities: z.object({
     area: z.string().describe('The total area of the blueprint.'),
     length: z.string().describe('The total length of lines in the blueprint.'),
     objectCounts: z
       .record(z.string(), z.number())
-      .describe('Counts of different objects identified in the blueprint.'),
+      .describe('Counts of different objects identified in the blueprint (e.g., doors, windows, columns).'),
   }),
+  requiredItems: z.array(z.object({
+      item: z.string().describe("The name of the required construction item."),
+      reason: z.string().describe("The reason or context for requiring this item based on the blueprint."),
+  })).describe("A list of required items or materials to execute the plan."),
 });
 export type AnalyzeBlueprintOutput = z.infer<typeof AnalyzeBlueprintOutputSchema>;
 
@@ -40,13 +46,23 @@ const prompt = ai.definePrompt({
   model: 'gemini-1.5-flash-latest',
   input: {schema: AnalyzeBlueprintInputSchema},
   output: {schema: AnalyzeBlueprintOutputSchema},
-  prompt: `You are an expert project engineer specializing in blueprint analysis.
+  prompt: `You are an expert Senior Project Engineer specializing in blueprint analysis for a major construction company in Saudi Arabia.
 
-You will analyze the provided blueprint image and extract key quantities such as area, length, and counts of various objects.
+Your task is to perform a comprehensive analysis of the provided blueprint.
 
-Blueprint Image: {{media url=blueprintDataUri}}
+**Instructions:**
+1.  **Summarize Scope of Work:** Briefly describe the main purpose and scope of the project as depicted in the blueprint.
+2.  **Detect Errors & Inconsistencies:** Carefully examine the blueprint for any potential engineering errors, inconsistencies, or missing information. Examples include conflicting dimensions, structural issues, non-compliance with standard practices, or missing labels. List any findings. If no errors are found, return an empty array.
+3.  **Extract Quantities:** Accurately extract key quantities:
+    *   Total floor area.
+    *   Total length of all walls/lines.
+    *   Counts of distinct objects (e.g., "Doors", "Windows", "Columns").
+4.  **List Required Items:** Based on the blueprint, identify and list the primary construction items or materials needed for execution (e.g., "Concrete for foundations", "Rebar for columns", "Blockwork for walls").
 
-Provide the extracted quantities in JSON format.
+**Blueprint Image to Analyze:**
+{{media url=blueprintDataUri}}
+
+Provide the complete analysis in the required JSON format. Be thorough, precise, and professional.
 `,
 });
 

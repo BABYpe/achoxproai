@@ -2,4 +2,6 @@
 #
 # Allow all crawling
 User-agent: *
-Allow: /
+Disallow:
+
+Sitemap: https://your-domain.com/sitemap.xml

@@ -17,12 +17,12 @@ const cairo = Cairo({
   variable: '--font-cairo',
 })
 
-// Metadata can't be dynamically generated in a client component.
-// We'll manage the title dynamically if needed using other methods.
-// export const metadata: Metadata = {
-//   title: 'AchoX Pro AI',
-//   description: 'منصة AchoX Pro AI هي شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة.',
-// };
+// Default metadata
+export const metadata: Metadata = {
+  title: 'AchoX Pro AI | منصة إدارة المشاريع الذكية',
+  description: 'منصة AchoX Pro AI هي شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة.',
+  robots: "index, follow",
+};
 
 export default function RootLayout({
   children,
@@ -35,11 +35,7 @@ export default function RootLayout({
   return (
     <html lang={language} dir={language === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <head>
-        <title>AchoX Pro AI</title>
-         <meta
-          name="description"
-          content="منصة AchoX Pro AI هي شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة."
-        />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <Script
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places,marker,drawing,geometry`}
           strategy="beforeInteractive"

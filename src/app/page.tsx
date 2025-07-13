@@ -50,9 +50,8 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" aria-label="Change Language">
                   <Globe className="h-5 w-5" />
-                  <span className="sr-only">Change language</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -134,7 +133,7 @@ export default function HomePage() {
             <div className="mt-16 space-y-20">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl" data-ai-hint="data analysis interface" priority/>
+                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl" data-ai-hint="data analysis interface"/>
                     </div>
                     <div>
                         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">

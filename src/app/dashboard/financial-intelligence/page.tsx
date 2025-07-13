@@ -1,8 +1,8 @@
 
 "use client"
 
-import React, { useState, useMemo } from 'react';
-import { useForm, SubmitHandler } from "react-hook-form";
+import React, { useState, useMemo, useEffect } from 'react';
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useProjectStore } from '@/hooks/use-project-store';
@@ -37,9 +37,22 @@ export default function FinancialIntelligencePage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<TransactionForm>({
+  const { control, handleSubmit, reset, formState: { errors } } = useForm<TransactionForm>({
     resolver: zodResolver(transactionSchema),
+    defaultValues: {
+      date: new Date(),
+      description: "",
+      category: "",
+      amount: 0,
+    }
   });
+
+  useEffect(() => {
+    // If there are projects and no project is selected, select the first one.
+    if (!projectsLoading && projects.length > 0 && !selectedProjectId) {
+      setSelectedProjectId(projects[0].id!);
+    }
+  }, [projectsLoading, projects, selectedProjectId]);
 
   const selectedProject = useMemo(() => {
     return projects.find(p => p.id === selectedProjectId);
@@ -71,7 +84,12 @@ export default function FinancialIntelligencePage() {
         description: "تم تسجيل المعاملة المالية الجديدة.",
       });
       setIsDialogOpen(false);
-      reset();
+      reset({
+          date: new Date(),
+          description: "",
+          category: "",
+          amount: 0,
+      });
     } catch (error) {
       toast({
         title: "خطأ",
@@ -197,29 +215,29 @@ export default function FinancialIntelligencePage() {
             <div className="grid gap-4 py-4">
               <div className="space-y-1">
                 <Label htmlFor="description">الوصف</Label>
-                <Input id="description" {...register("description")} />
+                <Controller name="description" control={control} render={({ field }) => <Input id="description" {...field} />} />
                 {errors.description && <p className="text-xs text-destructive">{errors.description.message}</p>}
               </div>
               <div className="space-y-1">
                 <Label htmlFor="amount">المبلغ (ر.س)</Label>
-                <Input id="amount" type="number" {...register("amount")} />
+                <Controller name="amount" control={control} render={({ field }) => <Input id="amount" type="number" {...field} />} />
                  {errors.amount && <p className="text-xs text-destructive">{errors.amount.message}</p>}
               </div>
               <div className="space-y-1">
                 <Label htmlFor="category">الفئة</Label>
-                <Input id="category" placeholder="مثال: مواد بناء، أجور عمال، إيجار معدات" {...register("category")} />
+                <Controller name="category" control={control} render={({ field }) => <Input id="category" placeholder="مثال: مواد بناء، أجور عمال..." {...field} />} />
                  {errors.category && <p className="text-xs text-destructive">{errors.category.message}</p>}
               </div>
                <div className="space-y-1">
                 <Label htmlFor="date">التاريخ</Label>
                 <Controller
-                    control={control}
                     name="date"
+                    control={control}
                     render={({ field }) => (
                          <DatePicker 
                             id="date"
                             date={field.value}
-                            onDateChange={(date) => setValue("date", date || new Date())}
+                            onDateChange={field.onChange}
                         />
                     )}
                 />

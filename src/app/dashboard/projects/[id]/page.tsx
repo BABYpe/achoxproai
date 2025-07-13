@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useEffect, useState } from "react";
@@ -5,12 +6,23 @@ import { useParams, useRouter } from "next/navigation";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Building, DollarSign, User, Calendar, Percent, Loader, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Building, DollarSign, User, Calendar, Percent, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 // Mock data for project details - will be replaced with real data in the future
 const mockTasks = [
@@ -26,12 +38,25 @@ const mockTeam = [
     { name: "أحمد خان", role: "مشرف عمال" },
 ]
 
+const mockUpdates = [
+    { date: "2024-07-20", author: "علي محمد", text: "تم الانتهاء من صب خرسانة الدور الأول. واجهنا تأخيرًا بسيطًا بسبب الطقس ولكن تم تعويضه. سنبدأ في أعمال المباني الأسبوع القادم." },
+    { date: "2024-07-18", author: "سارة عبدالله", text: "تم تحديد خطر محتمل يتعلق بتوريد مواد العزل. تم التواصل مع مورد بديل كخطة احتياطية." },
+    { date: "2024-07-15", author: "علي محمد", text: "تقرير تقدم أسبوعي: تم إنجاز 90% من أعمال الأساسات. الفريق يعمل بكفاءة عالية." },
+];
+
+const mockFiles = [
+    { name: "عقد المقاول الرئيسي.pdf", size: "2.5 MB", type: "PDF" },
+    { name: "المخططات المعمارية المعتمدة.dwg", size: "15.2 MB", type: "DWG" },
+    { name: "جدول الكميات.xlsx", size: "850 KB", type: "XLSX" },
+]
+
 export default function ProjectDetailsPage() {
     const params = useParams();
     const router = useRouter();
-    const { getProjectById } = useProjectStore.getState(); // Get function from state without subscribing
+    const { getProjectById, deleteProject } = useProjectStore.getState();
     const [project, setProject] = useState<Project | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { toast } = useToast();
 
     const projectId = typeof params.id === 'string' ? params.id : '';
 
@@ -46,6 +71,31 @@ export default function ProjectDetailsPage() {
             fetchProject();
         }
     }, [projectId, getProjectById]);
+
+    const handleDelete = async () => {
+        if (!projectId) return;
+        try {
+        await deleteProject(projectId);
+        toast({
+            title: "تم الحذف",
+            description: `تم حذف المشروع بنجاح.`,
+        });
+        router.push('/dashboard/projects');
+        } catch (error) {
+        toast({
+            title: "خطأ",
+            description: "فشل حذف المشروع. الرجاء المحاولة مرة أخرى.",
+            variant: "destructive",
+        });
+        }
+    };
+    
+    const handleEdit = () => {
+        toast({
+            title: "قيد التطوير",
+            description: "سيتم تفعيل صفحة تعديل المشروع قريبًا."
+        });
+    }
 
     if (isLoading) {
         return (
@@ -75,10 +125,26 @@ export default function ProjectDetailsPage() {
                     <ArrowLeft className="ml-2 h-4 w-4" />
                     العودة إلى قائمة المشاريع
                 </Button>
-                <div className="flex gap-2">
-                    <Button variant="outline"><Edit className="ml-2 h-4 w-4" /> تعديل</Button>
-                    <Button variant="destructive"><Trash2 className="ml-2 h-4 w-4" /> حذف</Button>
-                </div>
+                 <AlertDialog>
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={handleEdit}><Edit className="ml-2 h-4 w-4" /> تعديل</Button>
+                        <AlertDialogTrigger asChild>
+                             <Button variant="destructive"><Trash2 className="ml-2 h-4 w-4" /> حذف</Button>
+                        </AlertDialogTrigger>
+                    </div>
+                     <AlertDialogContent>
+                        <AlertDialogHeader>
+                        <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.title}" نهائيًا من قاعدة البيانات.
+                        </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">تأكيد الحذف</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
 
             <Card className="shadow-xl rounded-2xl w-full">
@@ -122,56 +188,93 @@ export default function ProjectDetailsPage() {
                 </CardContent>
             </Card>
 
-            <div className="grid md:grid-cols-3 gap-8 items-start">
-                <Card className="shadow-xl rounded-2xl md:col-span-2">
-                    <CardHeader>
-                        <CardTitle>قائمة المهام الرئيسية</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>المهمة</TableHead>
-                                    <TableHead>الحالة</TableHead>
-                                    <TableHead>المسؤول</TableHead>
-                                    <TableHead>تاريخ الاستحقاق</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {mockTasks.map(task => (
-                                    <TableRow key={task.id}>
-                                        <TableCell className="font-medium">{task.name}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={task.status === "مكتمل" ? "secondary" : task.status === "قيد التنفيذ" ? "default" : "outline"}>{task.status}</Badge>
-                                        </TableCell>
-                                        <TableCell>{task.assignee}</TableCell>
-                                        <TableCell>{task.dueDate}</TableCell>
+            <div className="grid lg:grid-cols-3 gap-8 items-start">
+                <div className="lg:col-span-2 space-y-8">
+                     <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>قائمة المهام الرئيسية</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>المهمة</TableHead>
+                                        <TableHead>الحالة</TableHead>
+                                        <TableHead>المسؤول</TableHead>
+                                        <TableHead>تاريخ الاستحقاق</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                                </TableHeader>
+                                <TableBody>
+                                    {mockTasks.map(task => (
+                                        <TableRow key={task.id}>
+                                            <TableCell className="font-medium">{task.name}</TableCell>
+                                            <TableCell>
+                                                <Badge variant={task.status === "مكتمل" ? "secondary" : task.status === "قيد التنفيذ" ? "default" : "outline"}>{task.status}</Badge>
+                                            </TableCell>
+                                            <TableCell>{task.assignee}</TableCell>
+                                            <TableCell>{task.dueDate}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                     <Card className="shadow-xl rounded-2xl">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle>آخر التحديثات والملاحظات</CardTitle>
+                            <Button variant="outline" size="sm"><MessageSquarePlus className="ml-2 h-4 w-4"/> إضافة تحديث</Button>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {mockUpdates.map((update, index) => (
+                                <div key={index} className="p-3 bg-secondary/50 rounded-lg">
+                                    <p className="text-sm">{update.text}</p>
+                                    <p className="text-xs text-muted-foreground mt-2 text-left">{update.author} - {update.date}</p>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </div>
 
-                <Card className="shadow-xl rounded-2xl md:col-span-1">
-                    <CardHeader>
-                        <CardTitle>فريق العمل</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {mockTeam.map((member, index) => (
-                           <div key={index} className="flex items-center gap-3">
-                               <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                                   <User className="h-6 w-6 text-muted-foreground"/>
-                               </div>
-                               <div>
-                                   <p className="font-semibold">{member.name}</p>
-                                   <p className="text-sm text-muted-foreground">{member.role}</p>
-                               </div>
-                           </div>
-                        ))}
-                    </CardContent>
-                </Card>
+                <div className="lg:col-span-1 space-y-8">
+                    <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>فريق العمل</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {mockTeam.map((member, index) => (
+                            <div key={index} className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                                    <User className="h-6 w-6 text-muted-foreground"/>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">{member.name}</p>
+                                    <p className="text-sm text-muted-foreground">{member.role}</p>
+                                </div>
+                            </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                    <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>مستندات المشروع</CardTitle>
+                        </CardHeader>
+                         <CardContent className="space-y-3">
+                             {mockFiles.map((file, index) => (
+                                <div key={index} className="flex items-center gap-3 p-2 rounded-md hover:bg-secondary/50">
+                                    <FileText className="h-6 w-6 text-primary" />
+                                    <div className="flex-1">
+                                        <p className="text-sm font-medium">{file.name}</p>
+                                        <p className="text-xs text-muted-foreground">{file.size}</p>
+                                    </div>
+                                    <Paperclip className="h-4 w-4 text-muted-foreground"/>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );
 }
+
+    

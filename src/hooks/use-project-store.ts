@@ -35,7 +35,7 @@ export interface Project {
 interface ProjectState {
   projects: Project[];
   isLoading: boolean;
-  unsubscribe: () => void;
+  unsubscribe: (() => void) | null;
   fetchProjects: () => void;
   getProjectById: (projectId: string) => Promise<Project | null>;
   addProject: (project: Omit<Project, 'id' | 'createdAt'>) => Promise<void>;
@@ -46,12 +46,12 @@ interface ProjectState {
 export const useProjectStore = create<ProjectState>((set, get) => ({
   projects: [],
   isLoading: true,
-  unsubscribe: () => {},
+  unsubscribe: null,
 
   fetchProjects: () => {
-    // Check if already subscribed to prevent memory leaks
+    // Prevent multiple listeners
     if (get().unsubscribe) {
-        get().unsubscribe();
+        return;
     }
     set({ isLoading: true });
     try {
@@ -75,7 +75,12 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         const docRef = doc(db, 'projects', projectId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            return { id: docSnap.id, ...docSnap.data() } as Project;
+            const data = docSnap.data();
+            // Convert Firestore Timestamps to serializable format if they exist
+            if (data.createdAt && data.createdAt instanceof Timestamp) {
+                data.createdAt = data.createdAt.toDate().toISOString();
+            }
+            return { id: docSnap.id, ...data } as Project;
         } else {
             console.log("No such document!");
             return null;
@@ -117,5 +122,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   }
 }));
 
-// Automatically fetch projects when the app loads
-useProjectStore.getState().fetchProjects();
+// We will no longer fetch projects automatically on app load.
+// Instead, we will trigger this from the main dashboard component.
+// useProjectStore.getState().fetchProjects();

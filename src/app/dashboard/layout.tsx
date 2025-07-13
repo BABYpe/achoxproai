@@ -1,7 +1,7 @@
 
 "use client"
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import {
@@ -44,7 +44,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { projects } = useProjectStore();
+  const fetchProjects = useProjectStore((state) => state.fetchProjects);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   const isActive = (path: string) => pathname === path;
   const isProjectsActive = pathname.startsWith('/dashboard/projects');

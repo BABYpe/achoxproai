@@ -7,32 +7,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { DatePicker } from "@/components/ui/date-picker"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { useProjectStore, type Project } from "@/hooks/use-project-store"
-import { Loader, ArrowLeft, Wand2 } from "lucide-react"
+import { Loader, ArrowLeft, Wand2, FileText, Users, GanttChartSquare, ClipboardList } from "lucide-react"
 import Link from "next/link"
 import { FileUploader } from "@/components/file-uploader"
 import { uploadFile } from "@/services/storage"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { analyzeProjectDescription } from "@/ai/flows/analyze-project-description"
+import { generateComprehensivePlan, type GenerateComprehensivePlanOutput } from "@/ai/flows/generate-comprehensive-plan"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
 
 const projectSchema = z.object({
     projectName: z.string().min(1, "اسم المشروع مطلوب"),
-    location: z.string().min(1, "موقع المشروع مطلوب"),
     projectDescription: z.string().min(10, "يرجى تقديم وصف لا يقل عن 10 أحرف."),
-    budget: z.number().positive("الميزانية يجب أن تكون رقمًا موجبًا").optional(),
-    endDate: z.date().optional(),
-    projectType: z.string().min(1, "نوع المشروع مطلوب"),
-    quality: z.string().min(1, "مستوى الجودة مطلوب"),
+    location: z.string().min(1, "موقع المشروع مطلوب"),
 });
 
 type ProjectFormData = z.infer<typeof projectSchema>;
-
 
 export default function NewProjectPage() {
     const { toast } = useToast()
@@ -40,98 +36,97 @@ export default function NewProjectPage() {
     const addProject = useProjectStore((state) => state.addProject);
     
     const [isLoading, setIsLoading] = useState(false);
-    const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const [projectImage, setProjectImage] = useState<File | null>(null);
+    const [blueprintFile, setBlueprintFile] = useState<File | null>(null);
+    const [generatedPlan, setGeneratedPlan] = useState<GenerateComprehensivePlanOutput | null>(null);
 
-    const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<ProjectFormData>({
+    const { control, handleSubmit, formState: { errors } } = useForm<ProjectFormData>({
         resolver: zodResolver(projectSchema),
-        defaultValues: {
-            projectName: "",
-            location: "",
-            projectDescription: "",
-            projectType: "",
-            quality: "",
-        },
     });
 
-    const projectDescriptionValue = watch("projectDescription");
-
     const handleFileSelect = (file: File | null) => {
-        setProjectImage(file);
+        setBlueprintFile(file);
     };
 
-    const handleAnalyzeDescription = async () => {
-        if (!projectDescriptionValue) {
-            toast({
-                title: "وصف مطلوب",
-                description: "يرجى كتابة وصف للمشروع أولاً.",
-                variant: "destructive"
-            });
-            return;
-        }
-        setIsAnalyzing(true);
-        try {
-            const result = await analyzeProjectDescription({ description: projectDescriptionValue });
-            setValue("projectType", result.projectType, { shouldValidate: true });
-            setValue("quality", result.quality, { shouldValidate: true });
-            toast({
-                title: "تم التحليل بنجاح",
-                description: "تم اقتراح نوع المشروع ومستوى الجودة.",
-            });
-        } catch (error) {
-            console.error("Analysis failed:", error);
-            toast({
-                title: "فشل التحليل",
-                description: "لم نتمكن من تحليل الوصف. الرجاء المحاولة مرة أخرى.",
-                variant: "destructive",
-            });
-        } finally {
-            setIsAnalyzing(false);
-        }
-    };
-
-    const onSubmit = async (data: ProjectFormData) => {
+    const handleGeneratePlan = async (data: ProjectFormData) => {
         setIsLoading(true);
+        setGeneratedPlan(null);
         
-        let imageUrl = "https://placehold.co/600x400.png";
-        let imageHint = "construction site";
-
         try {
-            if (projectImage) {
-                toast({ title: "جاري رفع صورة المشروع..." });
-                imageUrl = await uploadFile(projectImage, "project-images");
-                imageHint = "custom project image";
+            let blueprintDataUri: string | undefined = undefined;
+            if (blueprintFile) {
+                toast({ title: "جاري رفع المخطط..." });
+                const reader = new FileReader();
+                blueprintDataUri = await new Promise((resolve, reject) => {
+                    reader.onload = () => resolve(reader.result as string);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blueprintFile);
+                });
             }
 
+            toast({ title: "يقوم العقل المدبر بتحليل مشروعك...", description: "قد تستغرق هذه العملية بضع لحظات." });
+            const result = await generateComprehensivePlan({
+                projectName: data.projectName,
+                projectDescription: data.projectDescription,
+                location: data.location,
+                blueprintDataUri,
+            });
+
+            setGeneratedPlan(result);
+            toast({
+                title: "تم إنشاء الخطة بنجاح!",
+                description: "يمكنك الآن مراجعة الخطة وحفظ المشروع.",
+            });
+
+        } catch (error) {
+             console.error("Plan generation failed:", error);
+            toast({
+                title: "خطأ في إنشاء الخطة",
+                description: "لم نتمكن من إنشاء الخطة. الرجاء المحاولة مرة أخرى.",
+                variant: "destructive",
+            })
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    
+    const handleSaveProject = async () => {
+        if (!generatedPlan) return;
+        setIsLoading(true);
+        try {
+            let imageUrl = "https://placehold.co/600x400.png";
+            let imageHint = "construction site";
+            
+            if (blueprintFile) {
+                 imageUrl = await uploadFile(blueprintFile, "project-images");
+                 imageHint = "custom project image"
+            }
+            
             const newProject: Omit<Project, 'id' | 'createdAt'> = {
-                title: data.projectName,
+                title: generatedPlan.projectName,
                 status: "مخطط له",
                 variant: "outline",
-                location: data.location,
-                imageUrl: imageUrl,
-                imageHint: imageHint,
+                location: generatedPlan.location,
+                imageUrl,
+                imageHint,
                 progress: 0,
-                budget: data.budget || 0,
-                currency: "SAR",
-                lat: 24.7136, // Default to Riyadh for now
+                budget: parseFloat(generatedPlan.costEstimation.totalEstimatedCost.replace(/[^0-9.]/g, '')),
+                currency: generatedPlan.costEstimation.totalEstimatedCost.replace(/[0-9,.\s]/g, ''),
+                lat: 24.7136, // Default, can be improved with geocoding
                 lng: 46.6753,
                 manager: "علي محمد", // Default manager
-                endDate: data.endDate?.toISOString().split('T')[0] || "",
+                endDate: generatedPlan.costEstimation.ganttChartData.slice(-1)[0]?.end || "",
             };
 
             await addProject(newProject);
-            toast({
-                title: "تم إنشاء المشروع بنجاح!",
+             toast({
+                title: "تم حفظ المشروع بنجاح!",
                 description: "تمت إضافة المشروع الجديد إلى قاعدة البيانات.",
             })
-            router.push("/dashboard/projects")
+            router.push("/dashboard/projects");
+
         } catch (error) {
-             console.error("Project creation failed:", error);
-            toast({
-                title: "خطأ في إنشاء المشروع",
-                description: "لم نتمكن من حفظ المشروع. الرجاء المحاولة مرة أخرى.",
-                variant: "destructive",
-            })
+            console.error("Failed to save project", error);
+            toast({ title: "فشل حفظ المشروع", variant: "destructive" });
         } finally {
             setIsLoading(false);
         }
@@ -140,7 +135,7 @@ export default function NewProjectPage() {
     return (
         <div className="flex flex-col gap-8">
              <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">إنشاء مشروع جديد</h1>
+                <h1 className="text-2xl font-bold">إنشاء مشروع جديد بالذكاء الاصطناعي</h1>
                 <Button variant="outline" asChild>
                     <Link href="/dashboard/projects">
                         <ArrowLeft className="ml-2 h-4 w-4" />
@@ -148,103 +143,163 @@ export default function NewProjectPage() {
                     </Link>
                 </Button>
             </div>
-            <Card className="shadow-xl rounded-2xl">
-                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <CardHeader>
-                        <CardTitle>تفاصيل المشروع</CardTitle>
-                        <CardDescription>أدخل المعلومات الأساسية لمشروعك الجديد ليتم حفظه في قاعدة البيانات.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                         <div className="space-y-2">
-                            <Label htmlFor="projectName">اسم المشروع</Label>
-                            <Controller name="projectName" control={control} render={({ field }) => <Input {...field} placeholder="مثال: بناء فيلا سكنية بحي الياسمين" />} />
-                            {errors.projectName && <p className="text-destructive text-sm mt-1">{errors.projectName.message}</p>}
-                        </div>
-                        
-                        <div className="space-y-2">
-                            <Label htmlFor="projectDescription">وصف المشروع</Label>
-                            <div className="relative">
-                                <Controller name="projectDescription" control={control} render={({ field }) => (
-                                    <Textarea 
-                                        {...field}
-                                        placeholder="وصف موجز لنطاق العمل والأهداف الرئيسية للمشروع."
-                                        rows={4}
-                                        className="pr-40"
-                                    />
-                                )} />
-                                <Button type="button" size="sm" variant="outline" className="absolute top-2 right-2 gap-1" onClick={handleAnalyzeDescription} disabled={isAnalyzing}>
-                                    {isAnalyzing ? <Loader className="h-4 w-4 animate-spin"/> : <Wand2 className="h-4 w-4" />}
-                                    تحليل بالـ AI
-                                </Button>
-                            </div>
-                            {errors.projectDescription && <p className="text-destructive text-sm mt-1">{errors.projectDescription.message}</p>}
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div className="grid lg:grid-cols-3 gap-8 items-start">
+                <Card className="shadow-xl rounded-2xl lg:col-span-1 sticky top-20">
+                     <form onSubmit={handleSubmit(handleGeneratePlan)}>
+                        <CardHeader>
+                            <CardTitle>فكرة المشروع</CardTitle>
+                            <CardDescription>أدخل التفاصيل الأساسية، وسيقوم العقل المدبر بتوليد خطة متكاملة.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="projectType">نوع المشروع</Label>
-                                <Controller name="projectType" control={control} render={({ field }) => (
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <SelectTrigger><SelectValue placeholder="اختر نوع المشروع" /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="residential_villa">فيلا سكنية</SelectItem>
-                                            <SelectItem value="interior_finishing">تشطيبات داخلية</SelectItem>
-                                            <SelectItem value="commercial_building">مبنى تجاري</SelectItem>
-                                            <SelectItem value="event_setup">تجهيز فعالية</SelectItem>
-                                            <SelectItem value="other">أخرى</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )} />
-                                {errors.projectType && <p className="text-destructive text-sm mt-1">{errors.projectType.message}</p>}
+                                <Label htmlFor="projectName">اسم المشروع</Label>
+                                <Controller name="projectName" control={control} render={({ field }) => <Input {...field} placeholder="مثال: بناء فيلا سكنية بحي الياسمين" />} />
+                                {errors.projectName && <p className="text-destructive text-sm mt-1">{errors.projectName.message}</p>}
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="quality">مستوى الجودة</Label>
-                                <Controller name="quality" control={control} render={({ field }) => (
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <SelectTrigger><SelectValue placeholder="اختر مستوى الجودة" /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="standard">أساسي (Standard)</SelectItem>
-                                            <SelectItem value="premium">ممتاز (Premium)</SelectItem>
-                                            <SelectItem value="luxury">فاخر (Luxury)</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )} />
-                                {errors.quality && <p className="text-destructive text-sm mt-1">{errors.quality.message}</p>}
-                            </div>
-                        </div>
-
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                             <div className="space-y-2">
                                 <Label htmlFor="location">موقع المشروع</Label>
                                 <Controller name="location" control={control} render={({ field }) => <Input {...field} placeholder="مثال: الرياض، حي الملقا" />} />
                                 {errors.location && <p className="text-destructive text-sm mt-1">{errors.location.message}</p>}
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="budget">الميزانية التقديرية (ر.س)</Label>
-                                <Controller name="budget" control={control} render={({ field }) => <Input {...field} type="number" placeholder="1500000" onChange={e => field.onChange(Number(e.target.value))}/>} />
-                                {errors.budget && <p className="text-destructive text-sm mt-1">{errors.budget.message}</p>}
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="endDate">تاريخ الانتهاء المخطط له</Label>
-                                <Controller name="endDate" control={control} render={({ field }) => <DatePicker id="endDate" date={field.value} onDateChange={field.onChange} />} />
-                                 {errors.endDate && <p className="text-destructive text-sm mt-1">{errors.endDate.message}</p>}
+                                <Label htmlFor="projectDescription">وصف المشروع</Label>
+                                <Controller name="projectDescription" control={control} render={({ field }) => (
+                                    <Textarea 
+                                        {...field}
+                                        placeholder="وصف موجز لنطاق العمل والأهداف الرئيسية للمشروع."
+                                        rows={4}
+                                    />
+                                )} />
+                                {errors.projectDescription && <p className="text-destructive text-sm mt-1">{errors.projectDescription.message}</p>}
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="projectImage">صورة المشروع (اختياري)</Label>
+                                <Label htmlFor="projectImage">المخطط الهندسي (اختياري)</Label>
                                 <FileUploader onFileSelect={handleFileSelect} />
+                                <p className="text-xs text-muted-foreground">رفع المخطط يوفر تحليلًا أكثر دقة.</p>
                             </div>
-                        </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-end pt-4">
-                        <Button type="submit" disabled={isLoading || isAnalyzing} className="font-bold text-lg py-6 px-8">
-                            {isLoading ? <><Loader className="ml-2 h-4 w-4 animate-spin" /> جاري الحفظ...</> : 'إنشاء المشروع'}
-                        </Button>
-                    </CardFooter>
-                 </form>
-            </Card>
+                        </CardContent>
+                        <CardFooter>
+                            <Button type="submit" disabled={isLoading} className="w-full font-bold text-lg py-6">
+                                {isLoading ? <><Loader className="ml-2 h-4 w-4 animate-spin" /> جاري التخطيط...</> : <><Wand2 className="ml-2 h-4 w-4" /> إنشاء خطة المشروع</>}
+                            </Button>
+                        </CardFooter>
+                     </form>
+                </Card>
+                
+                <div className="lg:col-span-2 space-y-8">
+                     {!generatedPlan && !isLoading && (
+                        <Card className="w-full shadow-xl rounded-2xl min-h-[600px] flex items-center justify-center">
+                            <div className="text-center text-muted-foreground p-8">
+                                <Wand2 className="h-16 w-16 mx-auto mb-4 text-primary/30" />
+                                <h3 className="text-xl font-semibold text-foreground">بانتظار فكرة مشروعك</h3>
+                                <p>ستظهر الخطة الهندسية والمالية المتكاملة هنا بعد إدخال المعلومات والضغط على زر الإنشاء.</p>
+                            </div>
+                        </Card>
+                    )}
+                    {isLoading && !generatedPlan && (
+                        <Card className="w-full shadow-xl rounded-2xl min-h-[600px] flex items-center justify-center">
+                            <div className="text-center text-muted-foreground p-8">
+                                <Loader className="h-16 w-16 mx-auto mb-4 animate-spin text-primary" />
+                                <h3 className="text-xl font-semibold text-foreground">يقوم العقل المدبر ببناء الخطة...</h3>
+                                <p>يتم الآن تحليل المتطلبات، وحساب التكاليف، وبناء الجدول الزمني.</p>
+                            </div>
+                        </Card>
+                    )}
+                    {generatedPlan && (
+                        <>
+                             <Card className="w-full shadow-xl rounded-2xl bg-gradient-to-br from-primary/80 to-accent/80 text-primary-foreground">
+                                <CardHeader className="flex-row items-center justify-between">
+                                    <CardTitle className="text-2xl text-white">الخطة المتكاملة لمشروع: {generatedPlan.projectName}</CardTitle>
+                                     <Button onClick={handleSaveProject} disabled={isLoading} variant="secondary">
+                                        {isLoading ? "جاري الحفظ..." : "اعتماد الخطة وحفظ المشروع"}
+                                    </Button>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">{generatedPlan.costEstimation.totalEstimatedCost}</p>
+                                    <p className="text-sm mt-1 text-white/80">التكلفة الإجمالية التقديرية</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="shadow-xl rounded-2xl">
+                                <CardHeader className="flex flex-row items-center gap-2">
+                                    <Users className="w-6 h-6 text-primary" />
+                                    <CardTitle>توصيات فريق العمل</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex items-baseline gap-4">
+                                        <p className="text-4xl font-bold">{generatedPlan.costEstimation.crewRecommendation.totalPersonnel}</p>
+                                        <p className="text-muted-foreground">شخص</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                                        {Object.entries(generatedPlan.costEstimation.crewRecommendation.breakdown).map(([role, count]) => (
+                                            <div key={role} className="bg-secondary/50 p-3 rounded-lg">
+                                                <p className="font-semibold">{role}</p>
+                                                <p className="text-2xl font-bold text-primary">{count}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                             <Card className="shadow-xl rounded-2xl">
+                                <CardHeader className="flex flex-row items-center gap-2">
+                                    <ClipboardList className="w-6 h-6 text-primary" />
+                                    <CardTitle>جدول الكميات المفصل (BOQ)</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>البند</TableHead>
+                                                <TableHead>الوحدة</TableHead>
+                                                <TableHead>الكمية</TableHead>
+                                                <TableHead>سعر الوحدة</TableHead>
+                                                <TableHead>الإجمالي</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {generatedPlan.costEstimation.boq.map((item) => (
+                                            <TableRow key={item.id}>
+                                                <TableCell className="font-medium">{item.description}</TableCell>
+                                                <TableCell>{item.unit}</TableCell>
+                                                <TableCell>{item.quantity}</TableCell>
+                                                <TableCell className="font-mono">{item.unitPrice.toLocaleString()} ر.س</TableCell>
+                                                <TableCell className="font-mono font-semibold">{item.total.toLocaleString()} ر.س</TableCell>
+                                            </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="shadow-xl rounded-2xl">
+                                <CardHeader className="flex flex-row items-center gap-2">
+                                    <GanttChartSquare className="w-6 h-6 text-primary" />
+                                    <CardTitle>الجدول الزمني للمشروع (Gantt Chart)</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-6">
+                                    {generatedPlan.costEstimation.ganttChartData.map(task => (
+                                        <div key={task.id}>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <p className="font-semibold">{task.task}</p>
+                                                <Badge variant="secondary">{task.responsible}</Badge>
+                                            </div>
+                                            <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
+                                                <span>{task.start} &rarr; {task.end}</span>
+                                                <span>المدة: {task.duration} أيام</span>
+                                            </div>
+                                            <Progress value={task.progress} className="h-2" />
+                                        </div>
+                                    ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </>
+                    )}
+                </div>
+            </div>
         </div>
     )
 }

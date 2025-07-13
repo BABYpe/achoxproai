@@ -18,7 +18,7 @@ const EstimateProjectCostInputSchema = z.object({
   size: z.string().describe('The size of the project (e.g., in square meters).'),
   type: z.string().describe('The type of the project (e.g., residential villa, commercial building, event setup).'),
   quality: z.enum(['standard', 'premium', 'luxury']).describe('The desired quality level for finishing and materials.'),
-  scopeOfWork: z.string().describe('A detailed description of the work to be done.'),
+  scopeOfWork: z.string().describe('A detailed description of the work to be done. This can be from user input or AI analysis of a blueprint.'),
   currentDate: z.string().optional().describe('The current date in YYYY-MM-DD format.'),
 });
 export type EstimateProjectCostInput = z.infer<typeof EstimateProjectCostInputSchema>;
@@ -86,8 +86,8 @@ Your task is to create a complete and professional project plan based on the use
 
 **CRITICAL INSTRUCTIONS:**
 1.  **Use Market Data:** You **MUST** start by calling the 'getRealTimeMarketPrices' tool to fetch current prices for the specified location and quality. This is mandatory.
-2.  **Analyze Inputs:** Carefully analyze all project details: location, size, type, quality, and scope of work. The quality level (standard, premium, luxury) and the project type (e.g., residential_villa, interior_finishing, event_setup) are critical. They determine the specific materials, tasks, and costs involved.
-3.  **Generate Dynamic & Relevant BOQ:** Create a comprehensive Bill of Quantities (BOQ) that is **highly specific** to the project type. For example:
+2.  **Analyze Inputs:** Carefully analyze all project details: location, size, type, quality, and scope of work. The quality level (standard, premium, luxury) and the project type (e.g., residential_villa, interior_finishing, event_setup) are critical. They determine the specific materials, tasks, and costs involved. The 'scopeOfWork' is the most important input, use it as the primary source of truth for what needs to be built.
+3.  **Generate Dynamic & Relevant BOQ:** Create a comprehensive Bill of Quantities (BOQ) that is **highly specific** to the project type and the detailed scope of work. For example:
     *   If the type is 'residential_villa', include items for excavation, concrete, masonry, plumbing, electrical, etc.
     *   If the type is 'interior_finishing', focus on items like demolition (if any), drywall, painting, flooring, and custom joinery.
     *   If the type is 'event_setup', include items like staging, lighting rigs, sound systems, and temporary structures.

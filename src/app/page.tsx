@@ -78,22 +78,32 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative pt-20 pb-16 md:pt-32 md:pb-24">
-            <div aria-hidden="true" className="absolute inset-0 top-0 h-full w-full bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-            <div className="container mx-auto px-4 text-center">
-                <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl">
+        <section className="relative pt-20 pb-16 md:pt-32 md:pb-24 text-center overflow-hidden">
+             <Image
+                src="https://firebasestorage.googleapis.com/v0/b/gen-prod.appspot.com/o/prototyper%2F1721833509176_construction-helmet.jpg?alt=media&token=e9f4a9b2-3e28-4033-a3d5-6b5797f3747f"
+                alt="Construction site background"
+                layout="fill"
+                objectFit="cover"
+                objectPosition="center"
+                className="absolute inset-0 z-0"
+                priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-10"></div>
+            <div className="absolute inset-0 bg-black/30 z-0"></div>
+            <div className="container relative z-20 mx-auto px-4 text-white">
+                <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl [text-shadow:_0_2px_4px_rgb(0_0_0_/_50%)]">
                     {t('landing.hero.title1')}
                     <br />
                     <span className="text-primary">{t('landing.hero.title2')}</span> {t('landing.hero.title3')}
                 </h1>
-                <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground">
+                <p className="mx-auto mt-6 max-w-3xl text-lg text-white/90 [text-shadow:_0_1px_2px_rgb(0_0_0_/_50%)]">
                     {t('landing.hero.description')}
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" asChild className="w-full sm:w-auto text-lg py-7 px-8 shadow-lg shadow-primary/30">
                         <Link href="/register">{t('landing.hero.cta.startTrial')}</Link>
                     </Button>
-                    <Button size="lg" variant="outline" asChild className="w-full sm:w-auto text-lg py-7 px-8">
+                    <Button size="lg" variant="outline" asChild className="w-full sm:w-auto text-lg py-7 px-8 bg-white/10 border-white/50 text-white hover:bg-white/20">
                         <Link href="/dashboard">
                            {t('landing.hero.cta.explore')}
                            <ArrowLeft className="mr-2 h-5 w-5" />
@@ -101,8 +111,8 @@ export default function HomePage() {
                     </Button>
                 </div>
                 <div className="mt-12 text-center">
-                    <span className="text-sm font-semibold text-muted-foreground">{t('landing.hero.trustedBy')}</span>
-                    <div className="mt-4 flex justify-center gap-8 items-center text-muted-foreground">
+                    <span className="text-sm font-semibold text-white/80 [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">{t('landing.hero.trustedBy')}</span>
+                    <div className="mt-4 flex justify-center gap-8 items-center text-white/90 [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">
                         <span className="font-bold text-lg">NEOM</span>
                         <span className="font-bold text-lg">ROSHN</span>
                          <span className="font-bold text-lg">ARAMCO</span>

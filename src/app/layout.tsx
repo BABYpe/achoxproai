@@ -3,7 +3,6 @@ import { Cairo } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
 import Script from 'next/script';
 import './globals.css';
-import './i18n'; // Import i18n configuration
 import ClientLayout from './client-layout';
 
 const cairo = Cairo({

@@ -13,8 +13,8 @@ import { estimateProjectCost, type EstimateProjectCostOutput } from '@/ai/flows/
 import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser, DraftingCompass, PlusCircle, Trash2 } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Progress } from '@/components/ui/progress'
-import { Badge } from '@/components/ui/badge'
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge'
 import { APIProvider, Map, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { format } from 'date-fns'
 

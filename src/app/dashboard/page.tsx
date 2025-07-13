@@ -208,11 +208,9 @@ export default function DashboardPage() {
                  </CardContent>
             </Card>
             <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
-                <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                    <Suspense fallback={<Skeleton className="h-full w-full rounded-2xl" />}>
-                       <ProjectMap projects={projects} />
-                    </Suspense>
-                </APIProvider>
+                <Suspense fallback={<Skeleton className="h-full w-full rounded-2xl" />}>
+                    <ProjectMap projects={projects} />
+                </Suspense>
             </Card>
        </div>
     </div>

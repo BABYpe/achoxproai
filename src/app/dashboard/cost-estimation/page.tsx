@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast'
 import { estimateProjectCost, type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost'
 import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser } from 'lucide-react'
@@ -210,13 +210,55 @@ function CostEstimationContent() {
                                     <Select name="type" defaultValue="residential_villa">
                                         <SelectTrigger id="type"><SelectValue placeholder="اختر نوع المشروع" /></SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="residential_villa">فيلا سكنية</SelectItem>
-                                            <SelectItem value="commercial_building">مبنى تجاري</SelectItem>
-                                            <SelectItem value="event_setup">تجهيز فعالية</SelectItem>
-                                            <SelectItem value="interior_finishing">تشطيبات داخلية</SelectItem>
-                                            <SelectItem value="landscaping">تنسيق حدائق (لاندسكيب)</SelectItem>
-                                            <SelectItem value="restoration_project">مشروع ترميم</SelectItem>
-                                            <SelectItem value="exhibition_booth">تجهيز جناح معرض</SelectItem>
+                                            <SelectGroup>
+                                                <SelectLabel>مشاريع سكنية</SelectLabel>
+                                                <SelectItem value="residential_villa">فيلا سكنية</SelectItem>
+                                                <SelectItem value="residential_building">عمارة سكنية</SelectItem>
+                                                <SelectItem value="restoration_project">مشروع ترميم</SelectItem>
+                                                <SelectItem value="landscaping">تنسيق حدائق (لاندسكيب)</SelectItem>
+                                                <SelectItem value="interior_finishing">تشطيبات داخلية</SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>مباني التجزئة</SelectLabel>
+                                                <SelectItem value="retail_mall">مجمع/مركز تجاري</SelectItem>
+                                                <SelectItem value="retail_strip_mall">مركز تجاري شريطي (Strip Mall)</SelectItem>
+                                                <SelectItem value="retail_big_box">متجر كبير (Big-Box Store)</SelectItem>
+                                                <SelectItem value="retail_showroom">صالة عرض</SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>مباني المكاتب</SelectLabel>
+                                                <SelectItem value="office_high_rise">برج مكاتب شاهق</SelectItem>
+                                                <SelectItem value="office_mid_rise">مبنى مكاتب متوسط الارتفاع</SelectItem>
+                                                <SelectItem value="office_business_park">مجمع أعمال (Business Park)</SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>مباني صناعية</SelectLabel>
+                                                <SelectItem value="industrial_warehouse">مستودع</SelectItem>
+                                                <SelectItem value="industrial_factory">مصنع / منشأة تصنيع</SelectItem>
+                                                <SelectItem value="industrial_distribution_center">مركز توزيع</SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>مرافق الضيافة والترفيه</SelectLabel>
+                                                <SelectItem value="hospitality_hotel">فندق</SelectItem>
+                                                <SelectItem value="hospitality_restaurant">مطعم / مقهى</SelectItem>
+                                                <SelectItem value="hospitality_resort">منتجع</SelectItem>
+                                                <SelectItem value="hospitality_sports_arena">ملعب / مركز رياضي</SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>مرافق الرعاية الصحية</SelectLabel>
+                                                <SelectItem value="health_hospital">مستشفى</SelectItem>
+                                                <SelectItem value="health_clinic">عيادة</SelectItem>
+                                                <SelectItem value="health_medical_offices">مبنى مكاتب طبية</SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>مشاريع الفعاليات</SelectLabel>
+                                                <SelectItem value="event_setup">تجهيز فعالية</SelectItem>
+                                                <SelectItem value="exhibition_booth">تجهيز جناح معرض</SelectItem>
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>أخرى</SelectLabel>
+                                                <SelectItem value="mixed_use_development">تطوير متعدد الاستخدامات</SelectItem>
+                                            </SelectGroup>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -376,5 +418,7 @@ export default function CostEstimationPage() {
         </Suspense>
     )
 }
+
+    
 
     

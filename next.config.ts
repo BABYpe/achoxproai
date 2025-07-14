@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
   experimental: {
       serverActions: {},
   },
-  allowedDevOrigins: ['*.cloudworkstations.dev'],
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -31,6 +30,9 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  // Add the following line to allow cross-origin requests from the specified domain.
+  // This is often needed in development environments like cloud workstations.
+  allowedDevOrigins: ["*.cloudworkstations.dev"],
 };
 
 export default nextConfig;

@@ -44,7 +44,7 @@ export async function analyzeBlueprint(input: AnalyzeBlueprintInput): Promise<An
 
 const prompt = ai.definePrompt({
   name: 'analyzeBlueprintPrompt',
-  model: 'gemini-pro',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: AnalyzeBlueprintInputSchema},
   output: {schema: AnalyzeBlueprintOutputSchema},
   prompt: `You are an expert AI Engineering Consultant, specializing in the Saudi Building Code (SBC). Your task is to perform a comprehensive, critical analysis of the provided blueprint.

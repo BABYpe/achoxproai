@@ -41,7 +41,7 @@ export async function generateMarketingOutreach(input: GenerateMarketingOutreach
 
 const prompt = ai.definePrompt({
   name: 'generateMarketingOutreachPrompt',
-  model: 'gemini-pro',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateMarketingOutreachInputSchema},
   output: {schema: GenerateMarketingOutreachOutputSchema},
   prompt: `You are a world-class B2B Marketing and Sales Strategist specializing in the Saudi Arabian construction and events market.

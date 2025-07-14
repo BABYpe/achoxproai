@@ -5,10 +5,10 @@ import { useMemo, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard, Loader, ListChecks, Activity, AlertTriangle, Briefcase } from "lucide-react"
+import { PlusCircle, MoreVertical, Activity, AlertTriangle, Briefcase, DollarSign, Users, CheckCircle, LayoutDashboard, Loader, ListChecks } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
-import { AreaChart, Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip, Area } from "recharts"
+import { AreaChart, Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip, Area, Legend, Cell, XAxis, YAxis, CartesianGrid, PieLabel } from "recharts"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -34,34 +34,47 @@ export default function DashboardPage() {
       acc[project.status] = (acc[project.status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    
-    const statusColors: Record<string, string> = {
-        'قيد التنفيذ': 'hsl(var(--primary))',
-        'مكتمل': 'hsl(var(--accent))',
-        'مخطط له': 'hsl(var(--muted-foreground))',
-        'متأخر': 'hsl(var(--destructive))',
-    }
 
     return Object.entries(statusCounts).map(([name, value]) => ({
       name,
       value,
-      fill: statusColors[name] || '#8884d8',
     }));
   }, [projects]);
   
-  const weeklyProgressData = useMemo(() => {
-    return [
-      { name: "Week 1", progress: 15, budget: 30 },
-      { name: "Week 2", progress: 25, budget: 45 },
-      { name: "Week 3", progress: 40, budget: 60 },
-      { name: "Week 4", progress: 55, budget: 70 },
-      { name: "Week 5", progress: 70, budget: 85 },
-      { name: "Week 6", progress: 85, budget: 95 },
-      { name: "Week 7", progress: 100, budget: 100 },
-    ]
-  }, []);
+  const projectProgressData = useMemo(() => {
+    if (projects.length === 0) return [];
 
+    const sortedProjects = [...projects].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    
+    let cumulativeProgress = 0;
+    let cumulativeBudgetSpent = 0;
+    const totalBudget = sortedProjects.reduce((sum, p) => sum + p.budget, 0);
+
+    return sortedProjects.map((p, index) => {
+      cumulativeProgress += p.progress;
+      cumulativeBudgetSpent += p.budget * (p.progress / 100);
+      
+      const averageProgress = cumulativeProgress / (index + 1);
+      const budgetSpentPercentage = totalBudget > 0 ? (cumulativeBudgetSpent / totalBudget) * 100 : 0;
+
+      return {
+        name: `مشروع ${index + 1}`,
+        date: new Date(p.createdAt).toLocaleDateString('ar-SA'),
+        progress: averageProgress, 
+        budget: budgetSpentPercentage 
+      }
+    });
+  }, [projects]);
   
+  const chartConfig = {
+    projects: { label: "المشاريع" },
+    'قيد التنفيذ': { label: "قيد التنفيذ", color: "hsl(var(--primary))" },
+    'مكتمل': { label: "مكتمل", color: "hsl(var(--chart-2))" },
+    'مخطط له': { label: "مخطط له", color: "hsl(var(--muted-foreground))" },
+    'متأخر': { label: "متأخر", color: "hsl(var(--destructive))" },
+  }
+
+
   if (isLoading) {
     return (
         <div className="flex items-center justify-center h-[80vh]">
@@ -127,7 +140,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts */}
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
+       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
          <Card className="shadow-xl rounded-2xl lg:col-span-3">
             <CardHeader>
                 <CardTitle>نظرة عامة على تقدم المشاريع</CardTitle>
@@ -135,23 +148,25 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
                  <ChartContainer config={{ 
-                     progress: { label: "التقدم", color: "hsl(var(--primary))" },
-                     budget: { label: "الميزانية", color: "hsl(var(--accent))" }
+                     progress: { label: "التقدم (%)", color: "hsl(var(--primary))" },
+                     budget: { label: "الميزانية المستهلكة (%)", color: "hsl(var(--accent))" }
                     }} className="h-[250px] w-full">
-                    <AreaChart accessibilityLayer data={weeklyProgressData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
-                        <defs>
-                            <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                            </linearGradient>
-                            <linearGradient id="colorBudget" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0}/>
-                            </linearGradient>
-                        </defs>
+                    <AreaChart accessibilityLayer data={projectProgressData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                          dataKey="date"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          tickFormatter={(value) => new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})}
+                        />
+                         <YAxis 
+                            tickFormatter={(value) => `${value}%`}
+                        />
                         <Tooltip content={<ChartTooltipContent indicator="dot" />} />
-                        <Area type="monotone" dataKey="progress" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorProgress)" />
-                        <Area type="monotone" dataKey="budget" stroke="hsl(var(--accent))" fillOpacity={1} fill="url(#colorBudget)" />
+                         <Legend />
+                        <Area type="monotone" dataKey="progress" stroke="var(--color-progress)" fill="var(--color-progress)" fillOpacity={0.4} name="متوسط التقدم" />
+                        <Area type="monotone" dataKey="budget" stroke="var(--color-budget)" fill="var(--color-budget)" fillOpacity={0.4} name="الميزانية المستهلكة" />
                     </AreaChart>
                 </ChartContainer>
             </CardContent>
@@ -162,10 +177,14 @@ export default function DashboardPage() {
              <CardDescription>نظرة سريعة على حالة جميع المشاريع.</CardDescription>
           </CardHeader>
           <CardContent className="pb-8">
-            <ChartContainer config={{}} className="mx-auto aspect-square h-[250px]">
+            <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
                 <PieChart>
-                    <Tooltip content={<ChartTooltipContent hideLabel nameKey="name" />} />
-                    <Pie data={projectStatusData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5} />
+                    <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
+                    <Pie data={projectStatusData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5} >
+                         {projectStatusData.map((entry, index) => (
+                           <Cell key={`cell-${index}`} fill={chartConfig[entry.name as keyof typeof chartConfig]?.color} />
+                        ))}
+                    </Pie>
                 </PieChart>
             </ChartContainer>
           </CardContent>
@@ -188,7 +207,7 @@ export default function DashboardPage() {
                                 <div>
                                     <h3 className="font-bold">{project.title}</h3>
                                     <div className="flex items-center text-xs text-muted-foreground gap-1">
-                                        <Building className="h-3 w-3" />
+                                        <Users className="h-3 w-3" />
                                         <span>{project.location}</span>
                                     </div>
                                 </div>
@@ -199,7 +218,7 @@ export default function DashboardPage() {
                                         <DollarSign className="h-3 w-3 text-green-500"/> <span>{project.budget.toLocaleString()} {project.currency}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
-                                        <TrendingUp className="h-3 w-3 text-primary"/> <span>{project.progress}%</span>
+                                        <Activity className="h-3 w-3 text-primary"/> <span>{project.progress}%</span>
                                     </div>
                                </div>
                           </div>
@@ -218,3 +237,6 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+
+    

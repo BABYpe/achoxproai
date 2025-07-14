@@ -2,7 +2,6 @@
 import type {Metadata} from 'next';
 import { Cairo } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
-import Script from 'next/script';
 import './globals.css';
 import ClientLayout from './client-layout';
 
@@ -31,10 +30,6 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
          <link rel="sitemap" href="/sitemap.xml" />
         <meta name="description" content={metadata.description!} />
-        <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places,marker,drawing,geometry`}
-          strategy="beforeInteractive"
-        />
       </head>
       <body className={`${cairo.variable} font-body antialiased bg-background`}>
         {children}
@@ -43,3 +38,5 @@ export default function RootLayout({
     </ClientLayout>
   );
 }
+
+    

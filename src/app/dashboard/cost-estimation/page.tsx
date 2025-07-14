@@ -382,7 +382,7 @@ function CostEstimationContent() {
                 </div>
 
                 <div className="lg:col-span-2 flex flex-col gap-8">
-                     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+                     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={['drawing', 'geometry', 'geocoding']}>
                            <DrawingMap 
                                 onPolygonComplete={handlePolygonComplete} 
                                 onClear={clearDrawing} 
@@ -512,5 +512,7 @@ export default function CostEstimationPage() {
         </Suspense>
     )
 }
+
+    
 
     

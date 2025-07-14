@@ -5,7 +5,7 @@ import { useMemo, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard, Loader, ListChecks } from "lucide-react"
+import { PlusCircle, MoreVertical, Building, TrendingUp, DollarSign, Clock, Users, CheckCircle, LayoutDashboard, Loader, ListChecks, Activity, AlertTriangle } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 import { AreaChart, Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip, Area } from "recharts"
@@ -24,9 +24,9 @@ export default function DashboardPage() {
   const stats = useMemo(() => {
     const totalProjects = projects.length;
     const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
-    const activeProjects = projects.filter(p => p.status === 'قيد التنفيذ' || p.status === 'متأخر').length;
-    const completedProjects = projects.filter(p => p.status === 'مكتمل').length;
-    return { totalProjects, totalBudget, activeProjects, completedProjects };
+    const activeProjects = projects.filter(p => p.status === 'قيد التنفيذ').length;
+    const overdueProjects = projects.filter(p => p.status === 'متأخر').length;
+    return { totalProjects, totalBudget, activeProjects, overdueProjects };
   }, [projects]);
 
   const projectStatusData = useMemo(() => {
@@ -86,18 +86,28 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="shadow-lg rounded-2xl border-l-4 border-primary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">إجمالي الميزانية</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">إجمالي المشاريع</CardTitle>
+            <Briefcase className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalBudget.toLocaleString('en-US')} ر.س</div>
-            <p className="text-xs text-muted-foreground">لـ {stats.totalProjects} مشروع</p>
+            <div className="text-2xl font-bold">{stats.totalProjects}</div>
+            <p className="text-xs text-muted-foreground">إجمالي المشاريع في المنصة</p>
           </CardContent>
         </Card>
         <Card className="shadow-lg rounded-2xl border-l-4 border-accent">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">إجمالي الميزانيات</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+             <div className="text-2xl font-bold">{stats.totalBudget.toLocaleString('en-US', { notation: 'compact' })} ر.س</div>
+            <p className="text-xs text-muted-foreground">قيمة جميع المشاريع</p>
+          </CardContent>
+        </Card>
+        <Card className="shadow-lg rounded-2xl">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">المشاريع النشطة</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.activeProjects}</div>
@@ -106,22 +116,12 @@ export default function DashboardPage() {
         </Card>
         <Card className="shadow-lg rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">مهام مكتملة هذا الأسبوع</CardTitle>
-            <ListChecks className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">مشاريع متأخرة</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+12</div>
-             <p className="text-xs text-muted-foreground">+5.2% عن الأسبوع الماضي</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">المشاريع المكتملة</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.completedProjects}</div>
-            <p className="text-xs text-muted-foreground">إجمالي المشاريع المنجزة</p>
+            <div className="text-2xl font-bold text-destructive">{stats.overdueProjects}</div>
+            <p className="text-xs text-muted-foreground">تحتاج إلى متابعة فورية</p>
           </CardContent>
         </Card>
       </div>
@@ -208,8 +208,10 @@ export default function DashboardPage() {
                  </CardContent>
             </Card>
             <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
-                <Suspense fallback={<Skeleton className="h-full w-full rounded-2xl" />}>
-                    <ProjectMap projects={projects} />
+                 <Suspense fallback={<Skeleton className="h-full w-full rounded-2xl" />}>
+                     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+                        <ProjectMap projects={projects} />
+                    </APIProvider>
                 </Suspense>
             </Card>
        </div>

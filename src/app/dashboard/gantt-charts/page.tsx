@@ -5,9 +5,13 @@ import React, { useState, useMemo } from 'react';
 import { useProjectStore, Project } from '@/hooks/use-project-store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader, Milestone, CheckCircle, Briefcase, Handshake } from 'lucide-react';
+import { Loader, Milestone, CheckCircle, Briefcase, Handshake, Wand2 } from 'lucide-react';
 import { GanttChartIcon } from '@/components/icons/gantt-chart-icon';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { estimateProjectCost } from '@/ai/flows/estimate-project-cost';
+import { format } from 'date-fns';
 
 type GanttTask = NonNullable<Project['ganttChartData']>[number] & {
     status: 'completed' | 'in-progress' | 'planned';
@@ -25,11 +29,16 @@ const getStatusStyles = (status: 'completed' | 'in-progress' | 'planned') => {
 }
 
 export default function GanttChartsPage() {
-    const { projects, isLoading: projectsLoading } = useProjectStore();
+    const { projects, isLoading: projectsLoading, updateProjectGanttData, fetchProjects } = useProjectStore();
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const { toast } = useToast();
 
+    const selectedProject = useMemo(() => {
+        return projects.find(p => p.id === selectedProjectId);
+    }, [selectedProjectId, projects]);
+    
     const roadmap: GanttTask[] = useMemo(() => {
-        const selectedProject = projects.find(p => p.id === selectedProjectId);
         if (!selectedProject || !selectedProject.ganttChartData) return [];
 
         const today = new Date();
@@ -54,7 +63,42 @@ export default function GanttChartsPage() {
 
             return { ...task, status, type: isMilestone ? 'milestone' : 'task', icon: Icon };
         });
-    }, [selectedProjectId, projects]);
+    }, [selectedProject]);
+    
+    const handleGenerateGantt = async () => {
+        if (!selectedProject) {
+            toast({ title: "خطأ", description: "الرجاء تحديد مشروع أولاً.", variant: "destructive" });
+            return;
+        }
+
+        setIsGenerating(true);
+        try {
+             toast({ title: "جاري تحليل المشروع...", description: "يقوم الذكاء الاصطناعي ببناء الجدول الزمني." });
+            const estimation = await estimateProjectCost({
+                location: selectedProject.location,
+                // A very rough approximation of size based on budget. In a real app, this should be a stored property.
+                size: (selectedProject.budget / 7000).toFixed(0),
+                type: 'residential_villa', // This should be stored in the project object
+                quality: 'premium', // This should also be stored
+                scopeOfWork: `Generate a detailed timeline for the project: ${selectedProject.title}`,
+                currentDate: format(new Date(), 'yyyy-MM-dd'),
+            });
+
+            if (estimation.ganttChartData) {
+                await updateProjectGanttData(selectedProject.id!, estimation.ganttChartData);
+                await fetchProjects(); // Re-fetch to update the local state
+                toast({ title: "نجاح!", description: "تم إنشاء الجدول الزمني وتحديث المشروع." });
+            } else {
+                 throw new Error("AI did not return Gantt chart data.");
+            }
+
+        } catch (error) {
+            console.error(error);
+            toast({ title: "خطأ", description: "فشل توليد الجدول الزمني. الرجاء المحاولة مرة أخرى.", variant: "destructive" });
+        } finally {
+            setIsGenerating(false);
+        }
+    };
 
 
     return (
@@ -91,7 +135,7 @@ export default function GanttChartsPage() {
                         </div>
                     )}
                     
-                    {selectedProjectId && roadmap.length > 0 && (
+                    {selectedProject && roadmap.length > 0 && (
                         <div className="relative pl-6">
                             {/* Vertical timeline */}
                             <div className="absolute right-6 top-0 bottom-0 w-0.5 bg-border"></div>
@@ -132,11 +176,15 @@ export default function GanttChartsPage() {
                             </div>
                         </div>
                     )}
-                     {selectedProjectId && roadmap.length === 0 && !projectsLoading && (
-                         <div className="flex flex-col items-center justify-center gap-4 py-20 text-muted-foreground">
+                     {selectedProject && roadmap.length === 0 && !projectsLoading && (
+                         <div className="flex flex-col items-center justify-center gap-6 py-20 text-muted-foreground">
                             <GanttChartIcon className="h-16 w-16" />
-                            <p className="font-semibold text-lg">لا يوجد جدول زمني لهذا المشروع</p>
-                            <p>قد يكون المشروع قيد الإنشاء أو لم يتم توليد جدول زمني له بعد.</p>
+                            <p className="font-semibold text-lg text-center">لا يوجد جدول زمني لهذا المشروع</p>
+                            <p className="text-center">قد يكون المشروع قيد الإنشاء أو لم يتم توليد جدول زمني له بعد. <br/> يمكنك توليده الآن باستخدام الذكاء الاصطناعي.</p>
+                             <Button onClick={handleGenerateGantt} disabled={isGenerating}>
+                                {isGenerating ? <Loader className="ml-2 h-4 w-4 animate-spin" /> : <Wand2 className="ml-2 h-4 w-4" />}
+                                {isGenerating ? 'جاري التوليد...' : 'توليد جدول زمني بالذكاء الاصطناعي'}
+                            </Button>
                         </div>
                      )}
                 </CardContent>
@@ -144,4 +192,3 @@ export default function GanttChartsPage() {
         </div>
     );
 }
-

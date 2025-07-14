@@ -44,6 +44,7 @@ interface ProjectState {
   addProject: (project: Omit<Project, 'id' | 'createdAt'>) => Promise<void>;
   deleteProject: (projectId: string) => Promise<void>;
   updateProject: (projectId: string, updatedData: Partial<Project>) => Promise<void>;
+  updateProjectGanttData: (projectId: string, ganttData: EstimateProjectCostOutput['ganttChartData']) => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -54,9 +55,9 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   fetchProjects: () => {
     // Prevent multiple listeners
     if (get().unsubscribe) {
-        // We still want to set loading to false if we already have a listener
-        // This can happen with fast refresh in dev
         set({ isLoading: false });
+        // Manually trigger a re-render by creating a new array
+        set(state => ({ projects: [...state.projects] }));
         return;
     }
     set({ isLoading: true });
@@ -139,5 +140,23 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       console.error("Error updating project:", error);
       throw error;
     }
-  }
+  },
+
+  updateProjectGanttData: async (projectId, ganttData) => {
+    try {
+        const projectRef = doc(db, 'projects', projectId);
+        await updateDoc(projectRef, { ganttChartData: ganttData });
+        
+        // Update local state as well for immediate feedback
+        set(state => ({
+            projects: state.projects.map(p => 
+                p.id === projectId ? { ...p, ganttChartData: ganttData } : p
+            )
+        }));
+
+    } catch (error) {
+        console.error("Error updating Gantt data:", error);
+        throw error;
+    }
+  },
 }));

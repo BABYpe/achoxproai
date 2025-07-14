@@ -24,6 +24,8 @@ export default function HomePage() {
     i18n.changeLanguage(lng);
   };
   
+  const trustedPartners = ["NEOM", "ROSHN", "ARAMCO", "Red Sea Global", "Saudi Electricity Co.", "SABIC"];
+  
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground font-body">
       {/* Header */}
@@ -109,13 +111,23 @@ export default function HomePage() {
                         </Link>
                     </Button>
                 </div>
-                <div className="mt-12 text-center">
+                 <div className="mt-12 text-center">
                     <span className="text-sm font-semibold text-white/80 [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">{t('landing.hero.trustedBy')}</span>
-                    <div className="mt-4 flex justify-center gap-8 items-center text-white/90 [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">
-                        <span className="font-bold text-lg">NEOM</span>
-                        <span className="font-bold text-lg">ROSHN</span>
-                         <span className="font-bold text-lg">ARAMCO</span>
-                        <span className="font-bold text-lg">Red Sea Global</span>
+                    <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-4">
+                      <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-scroll">
+                        {trustedPartners.map((partner, index) => (
+                          <li key={`${partner}-${index}`} className="text-white/90 font-bold text-lg [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">
+                            {partner}
+                          </li>
+                        ))}
+                      </ul>
+                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-scroll" aria-hidden="true">
+                         {trustedPartners.map((partner, index) => (
+                          <li key={`${partner}-clone-${index}`} className="text-white/90 font-bold text-lg [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">
+                            {partner}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                 </div>
             </div>

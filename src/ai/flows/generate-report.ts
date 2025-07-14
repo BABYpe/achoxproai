@@ -10,7 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { type Project } from '@/hooks/use-project-store';
 
 const GenerateReportInputSchema = z.object({
   project: z.object({
@@ -43,7 +42,7 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateReportOutputSchema},
   prompt: `You are a professional Senior Project Manager in a major construction company in Saudi Arabia. Your task is to generate a comprehensive and well-structured project status report in Arabic.
 
-Use the following project data object to create the report. The report must be in Markdown format, easy to read, and professional in tone. It should include an introduction, a summary of the current status with progress, a budget overview, key achievements, potential risks or challenges, and a concluding summary.
+Use the following project data to create the report. The report must be in Markdown format, easy to read, and professional in tone. It should include an introduction, a summary of the current status with progress, a budget overview, key achievements, potential risks or challenges, and a concluding summary.
 
 **Project Data:**
 - **Project Title:** {{{project.title}}}

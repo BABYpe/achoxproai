@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -37,22 +38,20 @@ export default function ProjectsPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleDelete = (projectTitle: string) => {
-    deleteProject(projectTitle);
+  const handleDelete = (projectId: string) => {
+    const projectToDelete = projects.find(p => p.id === projectId);
+    if (!projectToDelete) return;
+
+    deleteProject(projectId);
     toast({
       title: "تم الحذف",
-      description: `تم حذف مشروع "${projectTitle}" بنجاح.`,
+      description: `تم حذف مشروع "${projectToDelete.title}" بنجاح.`,
       variant: "destructive",
     })
   }
   
   const handleNavigation = (path: string) => {
-    // This can be expanded later to navigate to actual edit/details pages
-    toast({
-        title: "قيد التطوير",
-        description: `سيتم تفعيل صفحة تفاصيل المشروع قريبًا. المسار: ${path}`
-    })
-    // router.push(path);
+    router.push(path);
   }
 
   return (
@@ -79,8 +78,8 @@ export default function ProjectsPage() {
       
       {viewMode === 'grid' && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {projects.map((project, index) => (
-            <Card key={index} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50">
+          {projects.map((project) => (
+            <Card key={project.id} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50">
               <CardHeader className="p-0 relative">
                 <Image src={project.imageUrl} alt={project.title} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
                 <Badge variant={project.variant as any} className="absolute top-2 right-2">{project.status}</Badge>
@@ -92,8 +91,8 @@ export default function ProjectsPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/${project.title.replace(/\s+/g, '-')}`)}>عرض التفاصيل</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/edit/${project.title.replace(/\s+/g, '-')}`)}>تعديل المشروع</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/${project.id}`)}>عرض التفاصيل</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleNavigation(`/dashboard/projects/edit/${project.id}`)}>تعديل المشروع</DropdownMenuItem>
                         <AlertDialogTrigger asChild>
                           <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>حذف المشروع</DropdownMenuItem>
                         </AlertDialogTrigger>
@@ -108,7 +107,7 @@ export default function ProjectsPage() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                         <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(project.title)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction>
+                        <AlertDialogAction onClick={() => handleDelete(project.id!)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>

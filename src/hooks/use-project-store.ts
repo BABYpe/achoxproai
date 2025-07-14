@@ -52,7 +52,7 @@ interface ProjectState {
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
-  projects: initialProjects, // Use initial data
+  projects: [], // Start with an empty array
   isLoading: true,
   unsubscribe: null,
 
@@ -87,12 +87,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   },
 
   getProjectById: async (projectId: string) => {
-     // First, check if the project exists in the local state to avoid unnecessary DB calls
-    const localProject = get().projects.find(p => p.id === projectId);
-    if (localProject) {
-        return localProject;
-    }
-    // If not found locally, try fetching from Firestore
     try {
         const docRef = doc(db, 'projects', projectId);
         const docSnap = await getDoc(docRef);

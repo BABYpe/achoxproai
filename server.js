@@ -11,16 +11,17 @@ const port = process.env.PORT || 3000
 const app = next({ dev, hostname, port })
 const handle = app.getRequestHandler()
 
+const compressionMiddleware = compression();
+
 app.prepare().then(() => {
   createServer((req, res) => {
-    // Be sure to pass `true` as the second argument to `url.parse`.
-    // This tells it to parse the query portion of the URL.
     const parsedUrl = parse(req.url, true)
     
     // Apply compression to all responses
-    compression()(req, res, () => {
+    compressionMiddleware(req, res, () => {
       handle(req, res, parsedUrl)
-    })
+    });
+
   }).listen(port, (err) => {
     if (err) throw err
     console.log(`> Ready on http://${hostname}:${port}`)

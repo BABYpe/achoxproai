@@ -24,12 +24,6 @@ import {
 } from "@/components/ui/alert-dialog"
 
 // Mock data for project details that aren't yet in the main project object
-const mockTeam = [
-    { name: "علي محمد", role: "مدير المشروع" },
-    { name: "سارة عبدالله", role: "مهندس موقع" },
-    { name: "أحمد خان", role: "مشرف عمال" },
-]
-
 const mockUpdates = [
     { date: "2024-07-20", author: "علي محمد", text: "تم الانتهاء من صب خرسانة الدور الأول. واجهنا تأخيرًا بسيطًا بسبب الطقس ولكن تم تعويضه. سنبدأ في أعمال المباني الأسبوع القادم." },
     { date: "2024-07-18", author: "سارة عبدالله", text: "تم تحديد خطر محتمل يتعلق بتوريد مواد العزل. تم التواصل مع مورد بديل كخطة احتياطية." },
@@ -111,6 +105,12 @@ export default function ProjectDetailsPage() {
         );
     }
     
+    const mockTeam = [
+        { name: project.manager, role: "مدير المشروع" },
+        { name: "سارة عبدالله", role: "مهندس موقع" },
+        { name: "أحمد خان", role: "مشرف عمال" },
+    ]
+
     // Dynamically determine roadmap status
     const today = new Date();
     const roadmap = project.ganttChartData ? project.ganttChartData.map(task => {

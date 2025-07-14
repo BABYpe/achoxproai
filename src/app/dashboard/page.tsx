@@ -14,7 +14,6 @@ import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useProjectStore } from "@/hooks/use-project-store"
 import React from "react"
-import { APIProvider } from "@vis.gl/react-google-maps"
 import dynamic from 'next/dynamic'
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
@@ -155,23 +154,25 @@ export default function DashboardPage() {
                      progress: { label: "التقدم (%)", color: "hsl(var(--primary))" },
                      budget: { label: "الميزانية المستهلكة (%)", color: "hsl(var(--accent))" }
                     }} className="h-[250px] w-full">
-                    <AreaChart accessibilityLayer data={projectProgressData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                          dataKey="date"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          tickFormatter={(value) => new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})}
-                        />
-                         <YAxis 
-                            tickFormatter={(value) => `${value}%`}
-                        />
-                        <Tooltip content={<ChartTooltipContent indicator="dot" />} />
-                         <Legend />
-                        <Area type="monotone" dataKey="progress" stroke="var(--color-progress)" fill="var(--color-progress)" fillOpacity={0.4} name="متوسط التقدم" />
-                        <Area type="monotone" dataKey="budget" stroke="var(--color-budget)" fill="var(--color-budget)" fillOpacity={0.4} name="الميزانية المستهلكة" />
-                    </AreaChart>
+                    <Suspense fallback={<Skeleton className="h-full w-full" />}>
+                        <AreaChart accessibilityLayer data={projectProgressData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                              dataKey="date"
+                              tickLine={false}
+                              axisLine={false}
+                              tickMargin={8}
+                              tickFormatter={(value) => new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})}
+                            />
+                             <YAxis 
+                                tickFormatter={(value) => `${value}%`}
+                            />
+                            <Tooltip content={<ChartTooltipContent indicator="dot" />} />
+                             <Legend />
+                            <Area type="monotone" dataKey="progress" stroke="var(--color-progress)" fill="var(--color-progress)" fillOpacity={0.4} name="متوسط التقدم" />
+                            <Area type="monotone" dataKey="budget" stroke="var(--color-budget)" fill="var(--color-budget)" fillOpacity={0.4} name="الميزانية المستهلكة" />
+                        </AreaChart>
+                    </Suspense>
                 </ChartContainer>
             </CardContent>
         </Card>
@@ -182,14 +183,16 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="pb-8">
             <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
-                <PieChart>
-                    <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
-                    <Pie data={projectStatusData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5} >
-                         {projectStatusData.map((entry, index) => (
-                           <Cell key={`cell-${index}`} fill={chartConfig[entry.name as keyof typeof chartConfig]?.color} />
-                        ))}
-                    </Pie>
-                </PieChart>
+                <Suspense fallback={<Skeleton className="h-full w-full" />}>
+                    <PieChart>
+                        <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
+                        <Pie data={projectStatusData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5} >
+                             {projectStatusData.map((entry, index) => (
+                               <Cell key={`cell-${index}`} fill={chartConfig[entry.name as keyof typeof chartConfig]?.color} />
+                            ))}
+                        </Pie>
+                    </PieChart>
+                 </Suspense>
             </ChartContainer>
           </CardContent>
         </Card>
@@ -231,9 +234,9 @@ export default function DashboardPage() {
                  </CardContent>
             </Card>
             <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
-                 <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                    <ProjectMap projects={projects} />
-                </APIProvider>
+                <Suspense fallback={<Skeleton className="h-full w-full" />}>
+                     <ProjectMap projects={projects} />
+                </Suspense>
             </Card>
        </div>
     </div>

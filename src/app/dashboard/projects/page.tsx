@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -181,7 +181,9 @@ export default function ProjectsPage() {
 
       {viewMode === 'map' && (
         <Card className="shadow-xl rounded-2xl overflow-hidden h-[calc(100vh-12rem)]">
-          {isLoading ? <Skeleton className="h-full w-full" /> : <ProjectMap projects={projects} />}
+          <Suspense fallback={<Skeleton className="h-full w-full" />}>
+            <ProjectMap projects={projects} />
+          </Suspense>
         </Card>
       )}
     </div>

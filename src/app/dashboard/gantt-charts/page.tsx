@@ -77,10 +77,10 @@ export default function GanttChartsPage() {
             const estimation = await estimateProjectCost({
                 location: selectedProject.location,
                 // A very rough approximation of size based on budget. In a real app, this should be a stored property.
-                size: (selectedProject.budget / 7000).toFixed(0),
-                type: 'residential_villa', // This should be stored in the project object
-                quality: 'premium', // This should also be stored
-                scopeOfWork: `Generate a detailed timeline for the project: ${selectedProject.title}`,
+                size: (selectedProject.budget / 7000).toFixed(0), // Kept for now, but scope is more important
+                type: selectedProject.projectType || 'residential_villa', // Use stored type
+                quality: selectedProject.quality || 'premium', // Use stored quality
+                scopeOfWork: selectedProject.scopeOfWork || `Generate a detailed timeline for the project: ${selectedProject.title}`, // Use stored scope
                 currentDate: format(new Date(), 'yyyy-MM-dd'),
             });
 

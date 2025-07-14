@@ -116,6 +116,9 @@ export default function NewProjectPage() {
                 manager: "علي محمد", // Default manager
                 endDate: generatedPlan.costEstimation.ganttChartData.slice(-1)[0]?.end || "",
                 ganttChartData: generatedPlan.costEstimation.ganttChartData,
+                projectType: generatedPlan.projectAnalysis.projectType,
+                quality: generatedPlan.projectAnalysis.quality,
+                scopeOfWork: generatedPlan.blueprintAnalysis?.scopeOfWork || generatedPlan.projectAnalysis.initialBlueprintPrompt || '',
             };
 
             await addProject(newProject);

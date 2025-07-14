@@ -15,6 +15,7 @@ import {
 import { db } from '@/lib/firebase';
 import { initialProjects } from '@/lib/initial-projects';
 import { type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost';
+import { type AnalyzeProjectDescriptionOutput } from '@/ai/flows/analyze-project-description';
 
 export interface Project {
     id?: string; // Firestore ID
@@ -32,7 +33,10 @@ export interface Project {
     manager: string;
     endDate: string;
     createdAt: any;
-    ganttChartData?: EstimateProjectCostOutput['ganttChartData']; // Add this line
+    ganttChartData?: EstimateProjectCostOutput['ganttChartData'];
+    projectType?: AnalyzeProjectDescriptionOutput['projectType'];
+    quality?: AnalyzeProjectDescriptionOutput['quality'];
+    scopeOfWork?: string;
 }
 
 interface ProjectState {

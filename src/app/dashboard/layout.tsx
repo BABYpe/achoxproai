@@ -19,6 +19,7 @@ import {
   Warehouse,
   Wrench,
   ClipboardType,
+  Send,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -129,7 +130,7 @@ export default function DashboardLayout({
               </SidebarMenuItem>
               
                <Separator className="my-2" />
-               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التحليل</p>
+               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التحليل والنمو</p>
 
                 <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive('/dashboard/financial-intelligence')} tooltip="الذكاء المالي">
@@ -152,6 +153,14 @@ export default function DashboardLayout({
                     <Link href="/dashboard/blueprints">
                         <FileText />
                         <span>تحليل المخططات</span>
+                    </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/marketing-automations')} tooltip="المسوق الذكي">
+                    <Link href="/dashboard/marketing-automations">
+                        <Send />
+                        <span>المسوق الذكي</span>
                     </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>

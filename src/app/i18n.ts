@@ -9,6 +9,9 @@ const resources = {
       // General
       "returnToHome": "Return to Home",
       "loading": "Loading...",
+      "searchPlaceholder": "Search...",
+      "notifications": "Notifications",
+      "copyright": "© {{year}} AchoX Pro AI. All rights reserved.",
 
       // Landing Page
       "landing.header.features": "Features",
@@ -90,9 +93,8 @@ const resources = {
       "landing.footer.legal": "Legal",
       "landing.footer.privacy": "Privacy Policy",
       "landing.footer.terms": "Terms of Service",
-      "landing.footer.copyright": "© {{year}} AchoX Pro AI. All rights reserved.",
 
-      // Auth Pages (Login, Register, Contact Sales)
+      // Auth Pages
       "login.title": "Login to AchoX Pro AI",
       "login.description": "Enter your email below to login to your account",
       "login.email": "Email",
@@ -116,10 +118,6 @@ const resources = {
       "register.hasAccount": "Already have an account?",
       "contactSales.title": "Contact Sales",
       "contactSales.description": "Ready to take your business to the next level? Fill out the form below and one of our experts will contact you.",
-      "contactSales.firstName": "First Name",
-      "contactSales.firstNamePlaceholder": "Ahmed",
-      "contactSales.lastName": "Last Name",
-      "contactSales.lastNamePlaceholder": "Ali",
       "contactSales.workEmail": "Work Email",
       "contactSales.companyName": "Company Name",
       "contactSales.companyNamePlaceholder": "Modern Construction Co.",
@@ -130,11 +128,50 @@ const resources = {
       "contactSales.helpMessagePlaceholder": "Tell us about your needs or inquiries...",
       "contactSales.submitButton": "Submit Request",
       
-      // Other
-      "privacy.title": "Privacy Policy",
-      "privacy.content": "This is a placeholder for the Privacy Policy.",
-      "terms.title": "Terms of Service",
-      "terms.content": "This is a placeholder for the Terms of Service."
+      // Legal Pages
+      "privacy.pageTitle": "Privacy Policy",
+      "terms.pageTitle": "Terms of Service",
+
+      // Dashboard
+      "dashboard.sidebar.dashboard": "Dashboard",
+      "dashboard.sidebar.planning": "Planning",
+      "dashboard.sidebar.costEstimation": "Cost Estimation",
+      "dashboard.sidebar.gantt": "Gantt Chart",
+      "dashboard.sidebar.crewPlanner": "Crew Planner",
+      "dashboard.sidebar.execution": "Execution",
+      "dashboard.sidebar.projects": "Projects",
+      "dashboard.sidebar.procurement": "Procurement",
+      "dashboard.sidebar.analysisGrowth": "Analysis & Growth",
+      "dashboard.sidebar.financials": "Financial Intelligence",
+      "dashboard.sidebar.reports": "Reports",
+      "dashboard.sidebar.blueprints": "Blueprint Analysis",
+      "dashboard.sidebar.smartMarketer": "Smart Marketer",
+      "dashboard.sidebar.resources": "Resources",
+      "dashboard.sidebar.inventory": "Inventory",
+      "dashboard.sidebar.assets": "Assets",
+      "dashboard.sidebar.boq": "BOQ",
+      "dashboard.sidebar.templates": "Templates Library",
+      "dashboard.sidebar.settings": "Settings",
+
+      // User Nav Dropdown
+      "userNav.profile": "Profile",
+      "userNav.billing": "Billing",
+      "userNav.settings": "Settings",
+      "userNav.changeLanguage": "Change Language",
+      "userNav.language.ar": "العربية",
+      "userNav.language.en": "English",
+      "userNav.language.fr": "Français (soon)",
+      "userNav.changeTheme": "Change Theme",
+      "userNav.theme.light": "Light",
+      "userNav.theme.dark": "Dark",
+      "userNav.theme.system": "System",
+      "userNav.logout": "Logout",
+      "userNav.greeting": "Welcome, {{name}}",
+      "userNav.email": "{{email}}",
+
+      "cookieBanner.message": "We use cookies to ensure you get the best experience on our website. By continuing to use this site, you agree to our use of cookies.",
+      "cookieBanner.accept": "Accept"
+
     }
   },
   ar: {
@@ -142,6 +179,9 @@ const resources = {
       // General
       "returnToHome": "العودة إلى الرئيسية",
       "loading": "جاري التحميل...",
+      "searchPlaceholder": "بحث...",
+      "notifications": "الإشعارات",
+      "copyright": "© {{year}} AchoX Pro AI. جميع الحقوق محفوظة.",
 
       // Landing Page
       "landing.header.features": "الميزات",
@@ -223,9 +263,8 @@ const resources = {
       "landing.footer.legal": "قانوني",
       "landing.footer.privacy": "سياسة الخصوصية",
       "landing.footer.terms": "شروط الخدمة",
-      "landing.footer.copyright": "© {{year}} AchoX Pro AI. جميع الحقوق محفوظة.",
 
-      // Auth Pages (Login, Register, Contact Sales)
+      // Auth Pages
       "login.title": "تسجيل الدخول إلى AchoX Pro AI",
       "login.description": "أدخل بريدك الإلكتروني أدناه لتسجيل الدخول إلى حسابك",
       "login.email": "البريد الإلكتروني",
@@ -249,10 +288,6 @@ const resources = {
       "register.hasAccount": "لديك حساب بالفعل؟",
       "contactSales.title": "تواصل مع فريق المبيعات",
       "contactSales.description": "هل أنت مستعد للارتقاء بأعمالك؟ املأ النموذج أدناه وسيتواصل معك أحد خبرائنا.",
-      "contactSales.firstName": "الاسم الأول",
-      "contactSales.firstNamePlaceholder": "أحمد",
-      "contactSales.lastName": "الاسم الأخير",
-      "contactSales.lastNamePlaceholder": "علي",
       "contactSales.workEmail": "البريد الإلكتروني للعمل",
       "contactSales.companyName": "اسم الشركة",
       "contactSales.companyNamePlaceholder": "شركة الإنشاءات الحديثة",
@@ -263,11 +298,49 @@ const resources = {
       "contactSales.helpMessagePlaceholder": "أخبرنا عن احتياجاتك أو استفساراتك...",
       "contactSales.submitButton": "إرسال الطلب",
       
-      // Other
-      "privacy.title": "سياسة الخصوصية",
-      "privacy.content": "هذا النص هو مثال لسياسة الخصوصية.",
-      "terms.title": "شروط الخدمة",
-      "terms.content": "هذا النص هو مثال لشروط الخدمة."
+      // Legal Pages
+      "privacy.pageTitle": "سياسة الخصوصية",
+      "terms.pageTitle": "شروط الخدمة",
+      
+      // Dashboard
+      "dashboard.sidebar.dashboard": "لوحة التحكم",
+      "dashboard.sidebar.planning": "التخطيط",
+      "dashboard.sidebar.costEstimation": "تقدير التكاليف",
+      "dashboard.sidebar.gantt": "مخطط جانت",
+      "dashboard.sidebar.crewPlanner": "مخطط الطاقم",
+      "dashboard.sidebar.execution": "التنفيذ",
+      "dashboard.sidebar.projects": "المشاريع",
+      "dashboard.sidebar.procurement": "المشتريات",
+      "dashboard.sidebar.analysisGrowth": "التحليل والنمو",
+      "dashboard.sidebar.financials": "الذكاء المالي",
+      "dashboard.sidebar.reports": "التقارير",
+      "dashboard.sidebar.blueprints": "تحليل المخططات",
+      "dashboard.sidebar.smartMarketer": "المسوق الذكي",
+      "dashboard.sidebar.resources": "الموارد",
+      "dashboard.sidebar.inventory": "المخزون",
+      "dashboard.sidebar.assets": "الأصول",
+      "dashboard.sidebar.boq": "جداول الكميات",
+      "dashboard.sidebar.templates": "مكتبة القوالب",
+      "dashboard.sidebar.settings": "الإعدادات",
+
+      // User Nav Dropdown
+      "userNav.profile": "الملف الشخصي",
+      "userNav.billing": "الفواتير",
+      "userNav.settings": "الإعدادات",
+      "userNav.changeLanguage": "تغيير اللغة",
+      "userNav.language.ar": "العربية",
+      "userNav.language.en": "English",
+      "userNav.language.fr": "Français (قريباً)",
+      "userNav.changeTheme": "تغيير المظهر",
+      "userNav.theme.light": "فاتح",
+      "userNav.theme.dark": "داكن",
+      "userNav.theme.system": "النظام",
+      "userNav.logout": "تسجيل الخروج",
+      "userNav.greeting": "أهلاً، {{name}}",
+      "userNav.email": "{{email}}",
+
+      "cookieBanner.message": "نحن نستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا. من خلال الاستمرار في استخدام هذا الموقع، فإنك توافق على استخدامنا لملفات تعريف الارتباط.",
+      "cookieBanner.accept": "قبول"
     }
   }
 };

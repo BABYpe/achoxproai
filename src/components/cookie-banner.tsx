@@ -5,8 +5,10 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Cookie } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export function CookieBanner() {
+  const { t } = useTranslation();
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
@@ -37,11 +39,11 @@ export function CookieBanner() {
             <div className="flex items-center gap-3">
                 <Cookie className="h-6 w-6 text-primary flex-shrink-0" />
                 <p className="text-sm">
-                    نحن نستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا. من خلال الاستمرار في استخدام هذا الموقع، فإنك توافق على استخدامنا لملفات تعريف الارتباط.
+                    {t('cookieBanner.message')}
                 </p>
             </div>
             <Button onClick={handleAccept} className="w-full sm:w-auto flex-shrink-0">
-                قبول
+                {t('cookieBanner.accept')}
             </Button>
         </div>
     </div>

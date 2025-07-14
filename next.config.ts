@@ -1,6 +1,8 @@
 
 import type {NextConfig} from 'next';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
@@ -38,7 +40,7 @@ const nextConfig: NextConfig = {
   },
   // Add the following line to allow cross-origin requests from the specified domain.
   // This is often needed in development environments like cloud workstations.
-  allowedDevOrigins: ["*.cloudworkstations.dev"],
+  ...(isDev && { allowedDevOrigins: ["*.cloudworkstations.dev"] }),
 };
 
 export default nextConfig;

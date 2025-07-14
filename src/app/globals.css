@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    --background: 210 40% 98%;
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
     --card-foreground: 224 71.4% 4.1%;
@@ -20,7 +20,7 @@ body {
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 285, 91%, 60%; /* Vibrant Purple */
+    --accent: 142 91% 60%; /* Vibrant Green */
     --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -58,7 +58,7 @@ body {
     --secondary-foreground: 210 40% 98%;
     --muted: 224 71% 8%;
     --muted-foreground: 215 20% 65%;
-    --accent: 285, 91%, 60%; /* Vibrant Purple */
+    --accent: 142 80% 65%; /* Vibrant Green */
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 40%;
     --destructive-foreground: 210 40% 98%;
@@ -66,7 +66,7 @@ body {
     --input: 224 71% 10%;
     --ring: 195, 91%, 55%;
     --chart-1: 195 85% 55%;
-    --chart-2: 285 80% 65%;
+    --chart-2: 142 80% 65%;
     --chart-3: 220 70% 50%;
     --chart-4: 160 60% 45%;
     --chart-5: 340 75% 55%;

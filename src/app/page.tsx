@@ -83,20 +83,20 @@ export default function HomePage() {
              <div className="absolute inset-0 z-0 bg-grid-glow"></div>
              <div className="absolute inset-0 z-0 hero-glow"></div>
 
-            <div className="container relative z-20 mx-auto px-4 text-white">
-                <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl [text-shadow:_0_2px_4px_rgb(0_0_0_/_50%)]">
+            <div className="container relative z-20 mx-auto px-4">
+                <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl">
                     {t('landing.hero.title1')}
                     <br />
                     <span className="text-primary">{t('landing.hero.title2')}</span> {t('landing.hero.title3')}
                 </h1>
-                <p className="mx-auto mt-6 max-w-3xl text-lg text-white/90 [text-shadow:_0_1px_2px_rgb(0_0_0_/_50%)]">
+                <p className="mx-auto mt-6 max-w-3xl text-lg text-foreground/90">
                     {t('landing.hero.description')}
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" asChild className="w-full sm:w-auto text-lg py-7 px-8 shadow-lg shadow-primary/30">
                         <Link href="/register">{t('landing.hero.cta.startTrial')}</Link>
                     </Button>
-                    <Button size="lg" variant="outline" asChild className="w-full sm:w-auto text-lg py-7 px-8 bg-transparent border-white/50 text-white hover:bg-white/10 hover:text-white">
+                    <Button size="lg" variant="outline" asChild className="w-full sm:w-auto text-lg py-7 px-8">
                         <Link href="/dashboard">
                            {t('landing.hero.cta.explore')}
                            <ArrowLeft className="mr-2 h-5 w-5" />
@@ -104,18 +104,18 @@ export default function HomePage() {
                     </Button>
                 </div>
                  <div className="mt-12 text-center">
-                    <span className="text-sm font-semibold text-white/80 [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">{t('landing.hero.trustedBy')}</span>
+                    <span className="text-sm font-semibold text-muted-foreground">{t('landing.hero.trustedBy')}</span>
                     <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-4">
                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-scroll">
                         {trustedPartners.map((partner, index) => (
-                          <li key={`${partner}-${index}`} className="text-white/90 font-bold text-lg [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">
+                          <li key={`${partner}-${index}`} className="text-muted-foreground font-bold text-lg">
                             {partner}
                           </li>
                         ))}
                       </ul>
                        <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-scroll" aria-hidden="true">
                          {trustedPartners.map((partner, index) => (
-                          <li key={`${partner}-clone-${index}`} className="text-white/90 font-bold text-lg [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">
+                          <li key={`${partner}-clone-${index}`} className="text-muted-foreground font-bold text-lg">
                             {partner}
                           </li>
                         ))}

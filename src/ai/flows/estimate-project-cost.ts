@@ -77,7 +77,7 @@ const getRealTimeMarketPrices = ai.defineTool(
 
 const prompt = ai.definePrompt({
   name: 'estimateProjectCostPrompt',
-  model: 'gemini-1.5-flash-latest',
+  model: 'gemini-pro',
   input: {schema: EstimateProjectCostInputSchema},
   output: {schema: EstimateProjectCostOutputSchema},
   tools: [getRealTimeMarketPrices],

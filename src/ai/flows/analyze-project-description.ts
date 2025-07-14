@@ -32,7 +32,7 @@ export async function analyzeProjectDescription(input: AnalyzeProjectDescription
 
 const prompt = ai.definePrompt({
   name: 'analyzeProjectDescriptionPrompt',
-  model: 'gemini-1.5-flash-latest',
+  model: 'gemini-pro',
   input: {schema: AnalyzeProjectDescriptionInputSchema},
   output: {schema: AnalyzeProjectDescriptionOutputSchema},
   prompt: `You are an expert project management assistant. Your task is to analyze a user's project description and extract key information.

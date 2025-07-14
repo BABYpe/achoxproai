@@ -80,17 +80,9 @@ export default function HomePage() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative pt-20 pb-16 md:pt-32 md:pb-24 text-center overflow-hidden">
-             <Image
-                src="https://placehold.co/1920x1080.png"
-                alt="Construction site background"
-                fill
-                style={{objectFit: "cover", objectPosition: "center"}}
-                className="absolute inset-0 z-0"
-                priority
-                data-ai-hint="construction site"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-10"></div>
-            <div className="absolute inset-0 bg-black/30 z-0"></div>
+             <div className="absolute inset-0 z-0 bg-grid-glow"></div>
+             <div className="absolute inset-0 z-0 hero-glow"></div>
+
             <div className="container relative z-20 mx-auto px-4 text-white">
                 <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl [text-shadow:_0_2px_4px_rgb(0_0_0_/_50%)]">
                     {t('landing.hero.title1')}
@@ -104,7 +96,7 @@ export default function HomePage() {
                     <Button size="lg" asChild className="w-full sm:w-auto text-lg py-7 px-8 shadow-lg shadow-primary/30">
                         <Link href="/register">{t('landing.hero.cta.startTrial')}</Link>
                     </Button>
-                    <Button size="lg" variant="outline" asChild className="w-full sm:w-auto text-lg py-7 px-8 bg-white/10 border-white/50 text-white hover:bg-white/20">
+                    <Button size="lg" variant="outline" asChild className="w-full sm:w-auto text-lg py-7 px-8 bg-transparent border-white/50 text-white hover:bg-white/10 hover:text-white">
                         <Link href="/dashboard">
                            {t('landing.hero.cta.explore')}
                            <ArrowLeft className="mr-2 h-5 w-5" />
@@ -134,7 +126,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-20 md:py-24 bg-secondary/30">
+        <section id="features" className="py-20 md:py-24 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center">
                 <span className="text-primary font-semibold">{t('landing.features.tagline')}</span>
@@ -146,7 +138,7 @@ export default function HomePage() {
             <div className="mt-16 space-y-20">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl" data-ai-hint="data analysis interface"/>
+                        <Image src="https://images.unsplash.com/photo-1665686374006-b8f04cf62d57?q=80&w=600" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl border-2 border-primary/10" data-ai-hint="data analysis interface"/>
                     </div>
                     <div>
                         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
@@ -159,7 +151,7 @@ export default function HomePage() {
 
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="md:order-2">
-                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="تسعير ذكي" className="rounded-2xl shadow-xl" data-ai-hint="financial planning dashboard"/>
+                        <Image src="https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=600" width={600} height={400} alt="تسعير ذكي" className="rounded-2xl shadow-xl border-2 border-primary/10" data-ai-hint="financial planning dashboard"/>
                     </div>
                     <div className="md:order-1">
                          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
@@ -172,7 +164,7 @@ export default function HomePage() {
 
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="إدارة المشاريع" className="rounded-2xl shadow-xl" data-ai-hint="construction site engineers"/>
+                        <Image src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=600" width={600} height={400} alt="إدارة المشاريع" className="rounded-2xl shadow-xl border-2 border-primary/10" data-ai-hint="construction site engineers"/>
                     </div>
                     <div>
                         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
@@ -187,7 +179,7 @@ export default function HomePage() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-20 md:py-24">
+        <section id="testimonials" className="py-20 md:py-24 bg-secondary/20">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold md:text-4xl">{t('landing.testimonials.title')}</h2>
@@ -196,11 +188,11 @@ export default function HomePage() {
               </p>
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300">
+                <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
                     <CardContent className="p-0">
                         <p className="text-muted-foreground mb-4">"{t('landing.testimonials.1.quote')}"</p>
                         <div className="flex items-center gap-4 pt-4 border-t">
-                            <Image src="https://placehold.co/48x48.png" width={48} height={48} alt="User 1" className="rounded-full" data-ai-hint="person face" />
+                            <Image src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=48" width={48} height={48} alt="User 1" className="rounded-full" data-ai-hint="person face" />
                             <div>
                                 <h3 className="font-semibold">{t('landing.testimonials.1.name')}</h3>
                                 <p className="text-sm text-muted-foreground">{t('landing.testimonials.1.title')}</p>
@@ -208,11 +200,11 @@ export default function HomePage() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300">
+                <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
                     <CardContent className="p-0">
                         <p className="text-muted-foreground mb-4">"{t('landing.testimonials.2.quote')}"</p>
                          <div className="flex items-center gap-4 pt-4 border-t">
-                            <Image src="https://placehold.co/48x48.png" width={48} height={48} alt="User 2" className="rounded-full" data-ai-hint="woman face" />
+                            <Image src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=48" width={48} height={48} alt="User 2" className="rounded-full" data-ai-hint="woman face" />
                             <div>
                                 <h3 className="font-semibold">{t('landing.testimonials.2.name')}</h3>
                                 <p className="text-sm text-muted-foreground">{t('landing.testimonials.2.title')}</p>
@@ -220,11 +212,11 @@ export default function HomePage() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300">
+                <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
                     <CardContent className="p-0">
                        <p className="text-muted-foreground mb-4">"{t('landing.testimonials.3.quote')}"</p>
                          <div className="flex items-center gap-4 pt-4 border-t">
-                            <Image src="https://placehold.co/48x48.png" width={48} height={48} alt="User 3" className="rounded-full" data-ai-hint="man face" />
+                            <Image src="https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=48" width={48} height={48} alt="User 3" className="rounded-full" data-ai-hint="man face" />
                             <div>
                                 <h3 className="font-semibold">{t('landing.testimonials.3.name')}</h3>
                                 <p className="text-sm text-muted-foreground">{t('landing.testimonials.3.title')}</p>
@@ -237,7 +229,7 @@ export default function HomePage() {
         </section>
 
         {/* Pricing Section */}
-        <section id="pricing" className="py-20 md:py-24 bg-secondary/30">
+        <section id="pricing" className="py-20 md:py-24 bg-background">
             <div className="container mx-auto px-4">
                 <div className="mx-auto max-w-2xl text-center">
                     <h2 className="text-3xl font-bold md:text-4xl">{t('landing.pricing.title')}</h2>
@@ -247,7 +239,7 @@ export default function HomePage() {
                 </div>
                 <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3 items-center">
                     {/* Free Plan */}
-                    <Card className="shadow-lg rounded-2xl border-2 flex flex-col h-full">
+                    <Card className="shadow-lg rounded-2xl border-2 flex flex-col h-full bg-card/50 backdrop-blur-sm">
                         <CardHeader className="pb-4">
                             <CardTitle className="text-xl">{t('landing.pricing.basic.title')}</CardTitle>
                              <p className="text-muted-foreground">{t('landing.pricing.basic.description')}</p>
@@ -266,7 +258,7 @@ export default function HomePage() {
                         </div>
                     </Card>
                     {/* Pro Plan */}
-                    <Card className="shadow-2xl rounded-2xl border-2 border-primary relative flex flex-col h-full scale-105">
+                    <Card className="shadow-2xl rounded-2xl border-2 border-primary relative flex flex-col h-full scale-105 bg-card/80 backdrop-blur-sm">
                         <div className="absolute top-0 right-4 -mt-3 rounded-full bg-primary px-3 py-1 text-sm font-semibold text-primary-foreground">{t('landing.pricing.pro.tag')}</div>
                         <CardHeader className="pb-4">
                             <CardTitle className="text-xl">{t('landing.pricing.pro.title')}</CardTitle>
@@ -286,7 +278,7 @@ export default function HomePage() {
                         </div>
                     </Card>
                     {/* Enterprise Plan */}
-                    <Card className="shadow-lg rounded-2xl border-2 flex flex-col h-full">
+                    <Card className="shadow-lg rounded-2xl border-2 flex flex-col h-full bg-card/50 backdrop-blur-sm">
                         <CardHeader className="pb-4">
                             <CardTitle className="text-xl">{t('landing.pricing.enterprise.title')}</CardTitle>
                             <p className="text-muted-foreground">{t('landing.pricing.enterprise.description')}</p>
@@ -351,7 +343,7 @@ export default function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-secondary/30">
+      <footer className="border-t bg-secondary/20">
         <div className="container mx-auto px-4 py-8">
             <div className="grid md:grid-cols-4 gap-8">
                 <div>

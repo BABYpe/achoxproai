@@ -21,7 +21,7 @@ body {
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 285, 91%, 60%; /* Vibrant Purple */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
@@ -59,7 +59,7 @@ body {
     --muted: 224 71% 8%;
     --muted-foreground: 215 20% 65%;
     --accent: 285, 91%, 60%; /* Vibrant Purple */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 40%;
     --destructive-foreground: 210 40% 98%;
     --border: 224 71% 10%;
@@ -98,5 +98,9 @@ body {
             linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
             linear-gradient(to right, hsl(var(--primary) / 0.1) 1px, transparent 1px);
         background-size: 3rem 3rem;
+    }
+
+    .hero-glow {
+      background-image: radial-gradient(ellipse 80% 50% at 50% 120%, hsl(var(--primary) / 0.15), transparent);
     }
 }

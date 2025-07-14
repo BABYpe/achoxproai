@@ -14,13 +14,22 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/logo";
+import Image from "next/image";
 
 export default function LoginPage() {
   const { t } = useTranslation();
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="mx-auto max-w-sm w-full shadow-xl rounded-2xl">
+    <main className="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden">
+        <Image
+            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070"
+            alt="Abstract background"
+            fill
+            className="absolute inset-0 z-0 object-cover"
+            data-ai-hint="abstract background"
+        />
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10"></div>
+      <Card className="mx-auto max-w-sm w-full shadow-xl rounded-2xl z-20 bg-card/70 backdrop-blur-lg border-primary/20">
         <CardHeader className="text-center">
             <div className="mx-auto mb-4">
                <Logo className="h-12 w-12 text-primary" />

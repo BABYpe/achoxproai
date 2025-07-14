@@ -16,21 +16,30 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { useTranslation } from "react-i18next";
+import Image from "next/image";
 
 
 export default function ContactSalesPage() {
   const { t } = useTranslation();
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="absolute top-4 left-4">
-        <Button variant="ghost" asChild>
+    <main className="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden">
+        <Image
+            src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1932"
+            alt="Team working together"
+            fill
+            className="absolute inset-0 z-0 object-cover"
+            data-ai-hint="team work"
+        />
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10"></div>
+      <div className="absolute top-4 left-4 z-20">
+        <Button variant="ghost" asChild className="text-white hover:bg-white/10 hover:text-white">
           <Link href="/">
              <ArrowLeft className="ml-2 h-4 w-4" />
              {t('returnToHome')}
           </Link>
         </Button>
       </div>
-      <Card className="mx-auto max-w-xl w-full shadow-xl rounded-2xl">
+      <Card className="mx-auto max-w-xl w-full shadow-xl rounded-2xl z-20 bg-card/70 backdrop-blur-lg border-primary/20">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
             <Logo className="h-12 w-12 text-primary" />

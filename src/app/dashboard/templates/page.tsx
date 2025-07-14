@@ -3,131 +3,70 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, GanttChartSquare, DollarSign, FileText } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { ArrowLeft, Building, DollarSign, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useCurrentUser } from "@/lib/auth";
-
-const planningTemplates = [
-  { title: "نموذج جدول زمني استباقي لأسبوعين", description: "لتخطيط المهام والأنشطة للأسبوعين القادمين." },
-  { title: "نموذج جدول زمني استباقي لثلاثة أسابيع", description: "نظرة مستقبلية متوسطة المدى لأنشطة المشروع." },
-  { title: "نموذج جدول زمني استباقي لأربعة أسابيع", description: "تخطيط شهري للمهام والموارد الرئيسية." },
-  { title: "حاسبة المسار الحرج", description: "أداة لتحديد أطول سلسلة من المهام وتأثيرها على الجدول الزمني." },
-  { title: "نموذج طريقة المسار الحرج خطوة بخطوة", description: "قالب منظم لتطبيق منهجية المسار الحرج على مشروعك." },
-];
-
-const financialTemplates = [
-  { title: "نموذج ميزانية الأعمال", description: "قالب شامل لتخطيط ميزانية الشركة أو المشاريع الكبرى." },
-  { title: "ميزانية بناء المنازل", description: "نموذج مخصص لتتبع تكاليف بناء المشاريع السكنية." },
-  { title: "نموذج التدفق النقدي البسيط لمشروع البناء", description: "لتتبع السيولة النقدية الداخلة والخارجة." },
-  { title: "نموذج مراقبة تكاليف مشروع البناء", description: "لمقارنة التكاليف الفعلية مع الميزانية المخطط لها." },
-  { title: "تقدير تكلفة البناء", description: "قالب تفصيلي لتقدير التكاليف الأولية للمشروع." },
-  { title: "نموذج تتبع التكاليف الأسبوعي", description: "لتسجيل ومراقبة المصروفات بشكل أسبوعي." },
-];
-
-const reportingTemplates = [
-  { title: "نموذج تقرير حالة المشروع", description: "قالب قياسي لتقديم تحديثات منتظمة عن حالة المشروع." },
-  { title: "نموذج تقرير أداء المشروع", description: "لتقييم أداء المشروع مقابل الأهداف المحددة." },
-  { title: "تقرير التقدم اليومي", description: "لتوثيق الإنجازات والتحديات اليومية في الموقع." },
-  { title: "نموذج تقرير تقدم الإنشاءات", description: "تقرير متخصص يركز على تقدم الأعمال الإنشائية." },
-  { title: "نموذج سجل الدروس المستفادة", description: "لتوثيق المعرفة والخبرات المكتسبة من المشروع." },
-  { title: "نموذج سجل المخاطر", description: "لتحديد وتتبع وإدارة المخاطر المحتملة في المشروع." },
-  { title: "نموذج متتبع وثائق المشروع", description: "لتنظيم وإدارة جميع مستندات ووثائق المشروع." },
-];
-
-const TemplateCard = ({ title, description }: { title: string, description: string }) => {
-    const { toast } = useToast();
-    const currentUser = useCurrentUser();
-    
-    const handleDownload = () => {
-        if (currentUser.isAdmin) {
-             toast({
-                title: "صلاحيات المسؤول مفعلة",
-                description: `ميزة تحميل القالب "${title}" متاحة لك.`,
-            });
-            // In a real app, you would initiate the file download here.
-        } else {
-            toast({
-                title: "ميزة احترافية",
-                description: "تحميل القوالب متاح في الخطط المدفوعة.",
-            });
-        }
-    }
-
-    return (
-        <Card className="shadow-md rounded-xl hover:shadow-lg transition-shadow">
-            <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex-1">
-                    <h3 className="font-semibold">{title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{description}</p>
-                </div>
-                <Button variant="ghost" size="icon" onClick={handleDownload}>
-                    <Download className="h-5 w-5 text-primary" />
-                </Button>
-            </CardContent>
-        </Card>
-    )
-}
+import { initialProjects } from "@/lib/initial-projects";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function TemplatesPage() {
-  return (
-    <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">مكتبة القوالب</h1>
-        <p className="text-muted-foreground">موارد جاهزة لتسريع وإدارة مشاريعك بكفاءة.</p>
-      </div>
+    const { toast } = useToast();
+    const router = useRouter();
 
-      <Tabs defaultValue="planning" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="planning" className="gap-1"><GanttChartSquare className="h-4 w-4"/> تخطيط وجدولة</TabsTrigger>
-          <TabsTrigger value="financial" className="gap-1"><DollarSign className="h-4 w-4"/> إدارة مالية</TabsTrigger>
-          <TabsTrigger value="reporting" className="gap-1"><FileText className="h-4 w-4"/> تقارير وتوثيق</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="planning">
-          <Card className="shadow-xl rounded-2xl">
-            <CardHeader>
-              <CardTitle>قوالب تخطيط وجدولة المشاريع</CardTitle>
-              <CardDescription>أدوات تساعدك على بناء جداول زمنية دقيقة وتتبع التقدم بفعالية.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
-              {planningTemplates.map((template, index) => (
-                <TemplateCard key={index} title={template.title} description={template.description} />
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
+    const handleUseTemplate = (template: typeof initialProjects[0]) => {
+        const query = new URLSearchParams({
+            template: JSON.stringify({
+                projectName: `${template.title} (نسخة)`,
+                location: template.location,
+                projectDescription: template.scopeOfWork || `مشروع جديد مبني على قالب: ${template.title}`,
+            }),
+        }).toString();
 
-        <TabsContent value="financial">
-          <Card className="shadow-xl rounded-2xl">
-            <CardHeader>
-              <CardTitle>قوالب الإدارة المالية</CardTitle>
-              <CardDescription>أدوات لإدارة الميزانيات، تتبع التكاليف، ومراقبة التدفقات النقدية لمشاريعك.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
-              {financialTemplates.map((template, index) => (
-                <TemplateCard key={index} title={template.title} description={template.description} />
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="reporting">
-          <Card className="shadow-xl rounded-2xl">
-            <CardHeader>
-              <CardTitle>قوالب التقارير والتوثيق</CardTitle>
-              <CardDescription>نماذج جاهزة لتوثيق كل جوانب المشروع، من التقارير اليومية إلى سجلات المخاطر والدروس المستفادة.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
-              {reportingTemplates.map((template, index) => (
-                <TemplateCard key={index} title={template.title} description={template.description} />
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
+        router.push(`/dashboard/projects/new?${query}`);
+    };
 
-      </Tabs>
-    </div>
-  );
+    return (
+        <div className="flex flex-col gap-8">
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold">مكتبة قوالب المشاريع</h1>
+                <p className="text-muted-foreground">ابدأ مشروعك الجديد بنقرة زر.</p>
+            </div>
+
+            <Card className="shadow-xl rounded-2xl">
+                <CardHeader>
+                    <CardTitle>اختر قالبًا لتبدأ</CardTitle>
+                    <CardDescription>
+                        استخدم أحد هذه المشاريع كنقطة انطلاق قوية لمشروعك التالي. يمكنك تخصيص جميع التفاصيل لاحقًا.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {initialProjects.map((template) => (
+                        <Card key={template.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+                            <Image src={template.imageUrl} alt={template.title} width={400} height={200} className="w-full h-48 object-cover" data-ai-hint={template.imageHint} />
+                            <CardHeader>
+                                <CardTitle>{template.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-grow space-y-2 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-2">
+                                    <Building className="h-4 w-4 text-primary" />
+                                    <span>{template.location}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <DollarSign className="h-4 w-4 text-primary" />
+                                    <span>تقدير الميزانية: {template.budget.toLocaleString('ar-SA')} {template.currency}</span>
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Button className="w-full gap-2" onClick={() => handleUseTemplate(template)}>
+                                    <Wand2 className="h-4 w-4" />
+                                    استخدام هذا القالب
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </CardContent>
+            </Card>
+        </div>
+    );
 }

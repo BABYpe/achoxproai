@@ -1,14 +1,14 @@
 
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useProjectStore, type Project } from "@/hooks/use-project-store"
 import { Loader, ArrowLeft, Wand2, FileText, Users, GanttChartSquare, ClipboardList } from "lucide-react"
 import Link from "next/link"
@@ -30,18 +30,45 @@ const projectSchema = z.object({
 
 type ProjectFormData = z.infer<typeof projectSchema>;
 
-export default function NewProjectPage() {
+function NewProjectPageContent() {
     const { toast } = useToast()
     const router = useRouter()
+    const searchParams = useSearchParams();
     const addProject = useProjectStore((state) => state.addProject);
     
     const [isLoading, setIsLoading] = useState(false);
     const [blueprintFile, setBlueprintFile] = useState<File | null>(null);
     const [generatedPlan, setGeneratedPlan] = useState<GenerateComprehensivePlanOutput | null>(null);
 
-    const { control, handleSubmit, formState: { errors } } = useForm<ProjectFormData>({
+    const { control, handleSubmit, formState: { errors }, reset } = useForm<ProjectFormData>({
         resolver: zodResolver(projectSchema),
+        defaultValues: {
+            projectName: "",
+            projectDescription: "",
+            location: "",
+        },
     });
+
+    useEffect(() => {
+        const templateParam = searchParams.get('template');
+        if (templateParam) {
+            try {
+                const templateData = JSON.parse(templateParam);
+                reset(templateData); // Set form values from template
+                 toast({
+                    title: "تم تحميل القالب",
+                    description: "يمكنك الآن تعديل التفاصيل أو إنشاء الخطة مباشرة.",
+                });
+            } catch (error) {
+                console.error("Failed to parse template data:", error);
+                toast({
+                    title: "خطأ في تحميل القالب",
+                    variant: "destructive",
+                });
+            }
+        }
+    }, [searchParams, reset, toast]);
+
 
     const handleFileSelect = (file: File | null) => {
         setBlueprintFile(file);
@@ -305,5 +332,14 @@ export default function NewProjectPage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+
+export default function NewProjectPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <NewProjectPageContent />
+        </Suspense>
     )
 }

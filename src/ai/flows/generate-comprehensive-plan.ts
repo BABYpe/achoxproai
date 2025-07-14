@@ -11,36 +11,19 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'zod';
 import { format } from 'date-fns';
 
 // Import the flows this orchestrator will use
 import { analyzeProjectDescription } from './analyze-project-description';
-import { type AnalyzeProjectDescriptionOutput, AnalyzeProjectDescriptionOutputSchema } from './analyze-project-description.types';
 import { analyzeBlueprint } from './analyze-blueprint';
-import { type AnalyzeBlueprintOutput, AnalyzeBlueprintOutputSchema } from './analyze-blueprint.types';
 import { estimateProjectCost } from './estimate-project-cost';
-import { type EstimateProjectCostOutput, EstimateProjectCostOutputSchema } from './estimate-project-cost.types';
-
-
-export const GenerateComprehensivePlanInputSchema = z.object({
-  projectName: z.string().describe('The name of the project.'),
-  projectDescription: z.string().describe('A textual description of the project provided by the user.'),
-  location: z.string().describe('The physical location of the project (e.g., city).'),
-  blueprintDataUri: z.string().optional().describe(
-      "An optional blueprint file (PDF, DWG, etc.), as a data URI. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    ),
-});
-export type GenerateComprehensivePlanInput = z.infer<typeof GenerateComprehensivePlanInputSchema>;
-
-export const GenerateComprehensivePlanOutputSchema = z.object({
-    projectName: z.string(),
-    location: z.string(),
-    projectAnalysis: AnalyzeProjectDescriptionOutputSchema,
-    blueprintAnalysis: AnalyzeBlueprintOutputSchema.optional(),
-    costEstimation: EstimateProjectCostOutputSchema,
-});
-export type GenerateComprehensivePlanOutput = z.infer<typeof GenerateComprehensivePlanOutputSchema>;
+import {
+    GenerateComprehensivePlanInputSchema,
+    GenerateComprehensivePlanOutputSchema,
+    type GenerateComprehensivePlanInput,
+    type GenerateComprehensivePlanOutput
+} from './generate-comprehensive-plan.types';
+import { type AnalyzeBlueprintOutput } from './analyze-blueprint.types';
 
 
 export async function generateComprehensivePlan(input: GenerateComprehensivePlanInput): Promise<GenerateComprehensivePlanOutput> {

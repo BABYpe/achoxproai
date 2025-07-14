@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { FileUploader } from "@/components/file-uploader";
 import { analyzeBlueprint, type AnalyzeBlueprintOutput } from "@/ai/flows/analyze-blueprint";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, BarChart, Maximize, ListTree, Calculator, AlertTriangle, FileText, CheckCircle } from "lucide-react";
+import { Loader, BarChart, Maximize, ListTree, Calculator, AlertTriangle, FileText, CheckCircle, Lightbulb } from "lucide-react";
 import Image from "next/image";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
@@ -103,7 +103,7 @@ export default function BlueprintsPage() {
             <Card className="shadow-lg rounded-2xl">
                 <CardHeader>
                     <CardTitle>رفع المخطط</CardTitle>
-                    <CardDescription>ارفع ملف المخطط ليقوم الذكاء الاصطناعي بتحليله بشكل شامل.</CardDescription>
+                    <CardDescription>ارفع ملف المخطط ليقوم المستشار الهندسي الذكي بتحليله بشكل شامل.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                     <FileUploader onFileSelect={handleFileSelect} />
@@ -135,21 +135,21 @@ export default function BlueprintsPage() {
         <div className="lg:col-span-1">
              <Card className="shadow-lg rounded-2xl sticky top-20">
                 <CardHeader>
-                    <CardTitle>نتائج التحليل</CardTitle>
+                    <CardTitle>تقرير المستشار الهندسي</CardTitle>
                     <CardDescription>ملخص شامل لتحليل المخطط بواسطة الذكاء الاصطناعي.</CardDescription>
                 </CardHeader>
                 <CardContent className="min-h-[300px]">
                      {isLoading && (
                          <div className="flex flex-col items-center justify-center gap-4 py-10 text-muted-foreground">
                              <Loader className="h-10 w-10 animate-spin text-primary" />
-                             <p>يقوم الذكاء الاصطناعي بتحليل المخطط...</p>
+                             <p>يقوم المستشار الذكي بتحليل المخطط...</p>
                          </div>
                      )}
                     {analysisResult && (
                         <div className="flex flex-col gap-4">
-                            <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
+                            <Accordion type="multiple" defaultValue={["item-1", "item-2", "item-3"]} className="w-full">
                                 <AccordionItem value="item-1">
-                                    <AccordionTrigger className="font-bold text-base"><FileText className="ml-2 h-5 w-5 text-accent"/>ملخص التحليل</AccordionTrigger>
+                                    <AccordionTrigger className="font-bold text-base"><FileText className="ml-2 h-5 w-5 text-accent"/>ملخص نطاق العمل</AccordionTrigger>
                                     <AccordionContent className="text-sm text-muted-foreground pr-2">
                                         {analysisResult.scopeOfWork}
                                     </AccordionContent>
@@ -157,24 +157,45 @@ export default function BlueprintsPage() {
                                 <AccordionItem value="item-2">
                                     <AccordionTrigger className="font-bold text-base">
                                         <div className="flex items-center">
-                                            <AlertTriangle className="ml-2 h-5 w-5 text-destructive"/>الأخطاء والملاحظات
-                                            <Badge variant={analysisResult.errorsFound.length > 0 ? "destructive" : "secondary"} className="mr-2">
-                                                {analysisResult.errorsFound.length}
+                                            <AlertTriangle className="ml-2 h-5 w-5 text-destructive"/>تحذيرات ومخاطر
+                                            <Badge variant={analysisResult.warnings.length > 0 ? "destructive" : "secondary"} className="mr-2">
+                                                {analysisResult.warnings.length}
                                             </Badge>
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent className="space-y-2 text-sm pr-2">
-                                        {analysisResult.errorsFound.length > 0 ? (
+                                        {analysisResult.warnings.length > 0 ? (
                                             <ul className="list-disc list-outside space-y-1 pl-4">
-                                                {analysisResult.errorsFound.map((error, index) => (
+                                                {analysisResult.warnings.map((error, index) => (
                                                     <li key={index}>{error}</li>
                                                 ))}
                                             </ul>
                                         ) : (
                                             <div className="flex items-center gap-2 text-green-600">
                                                 <CheckCircle className="h-4 w-4" />
-                                                <p>لم يتم العثور على أخطاء واضحة.</p>
+                                                <p>لم يتم العثور على مخاطر واضحة.</p>
                                             </div>
+                                        )}
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="item-5">
+                                    <AccordionTrigger className="font-bold text-base">
+                                        <div className="flex items-center">
+                                            <Lightbulb className="ml-2 h-5 w-5 text-primary"/>توصيات المستشار
+                                            <Badge variant="outline" className="mr-2">
+                                                {analysisResult.recommendations.length}
+                                            </Badge>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="space-y-2 text-sm pr-2">
+                                        {analysisResult.recommendations.length > 0 ? (
+                                            <ul className="list-disc list-outside space-y-1 pl-4">
+                                                {analysisResult.recommendations.map((rec, index) => (
+                                                    <li key={index}>{rec}</li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>لا توجد توصيات محددة.</p>
                                         )}
                                     </AccordionContent>
                                 </AccordionItem>

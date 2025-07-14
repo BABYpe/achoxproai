@@ -46,7 +46,11 @@ const EstimateProjectCostOutputSchema = z.object({
         end: z.string().describe("The estimated end date in YYYY-MM-DD format."),
         duration: z.number().describe("The duration of the task in days."),
         progress: z.number().describe("The initial progress, which should be 0.")
-    })).describe("The data for generating a project schedule Gantt chart.")
+    })).describe("The data for generating a project schedule Gantt chart."),
+    financialRisks: z.array(z.object({
+        risk: z.string().describe("A description of the potential financial risk."),
+        mitigation: z.string().describe("A suggested strategy to mitigate this risk."),
+    })).describe("A list of potential financial risks and mitigation strategies based on the project scope and BOQ.")
 });
 export type EstimateProjectCostOutput = z.infer<typeof EstimateProjectCostOutputSchema>;
 
@@ -81,21 +85,18 @@ const prompt = ai.definePrompt({
   input: {schema: EstimateProjectCostInputSchema},
   output: {schema: EstimateProjectCostOutputSchema},
   tools: [getRealTimeMarketPrices],
-  prompt: `You are a world-class Senior Project Planner for a major construction and events company in Saudi Arabia.
+  prompt: `You are a world-class Senior Project Planner and Financial Risk Analyst for a major construction and events company in Saudi Arabia.
 Your task is to create a complete and professional project plan based on the user's input.
 
 **CRITICAL INSTRUCTIONS:**
 1.  **Use Market Data:** You **MUST** start by calling the 'getRealTimeMarketPrices' tool to fetch current prices for the specified location and quality. This is mandatory.
-2.  **Analyze Inputs:** Carefully analyze all project details: location, size, type, quality, and scope of work. The quality level (standard, premium, luxury) and the project type (e.g., residential_villa, interior_finishing, event_setup) are critical. They determine the specific materials, tasks, and costs involved. The 'scopeOfWork' is the most important input, use it as the primary source of truth for what needs to be built.
-3.  **Generate Dynamic & Relevant BOQ:** Create a comprehensive Bill of Quantities (BOQ) that is **highly specific** to the project type and the detailed scope of work. For example:
-    *   If the type is 'residential_villa', include items for excavation, concrete, masonry, plumbing, electrical, etc.
-    *   If the type is 'interior_finishing', focus on items like demolition (if any), drywall, painting, flooring, and custom joinery.
-    *   If the type is 'event_setup', include items like staging, lighting rigs, sound systems, and temporary structures.
-    *   Use the market data to assign realistic unit prices and calculate totals for each item.
+2.  **Analyze Inputs:** Carefully analyze all project details: location, size, type, quality, and scope of work. The 'scopeOfWork' is the most important input; use it as the primary source of truth for what needs to be built.
+3.  **Generate Dynamic & Relevant BOQ:** Create a comprehensive Bill of Quantities (BOQ) that is **highly specific** to the project type and the detailed scope of work. Use the market data to assign realistic unit prices.
 4.  **Recommend Crew:** Based on the project size and complexity, recommend a suitable team size and composition.
-5.  **Create Gantt Chart Data:** Develop a high-level project schedule (Gantt chart data). Break the project into logical phases/tasks relevant to the project type. Estimate durations and provide start/end dates (assume the project starts next Monday from today, {{currentDate}}). Set initial progress for all tasks to 0.
-6.  **Calculate Total Cost:** Sum up the total of all BOQ items to get the total estimated cost. Format it as a string with the currency (e.g., "1,500,000 SAR").
-7.  **Output:** Provide the entire plan in the required JSON format. Be thorough, professional, and realistic in your estimations.
+5.  **Create Gantt Chart Data:** Develop a high-level project schedule (Gantt chart data). Break the project into logical phases/tasks. Estimate durations and provide start/end dates (assume the project starts next Monday from today, {{currentDate}}). Set initial progress for all tasks to 0.
+6.  **Identify Financial Risks:** Based on the scope and BOQ, identify potential financial risks. Examples: "ambiguity in finishing material specifications could lead to cost overruns", "dependency on a single supplier for a critical item", "unusually high market price for steel". For each risk, suggest a mitigation strategy. If no specific risks, return an empty array.
+7.  **Calculate Total Cost:** Sum up the total of all BOQ items to get the total estimated cost. Format it as a string with the currency (e.g., "1,500,000 SAR").
+8.  **Output:** Provide the entire plan in the required JSON format. Be thorough, professional, and realistic in your estimations.
 
 **Project Details to Analyze:**
 - **Project Location:** {{{location}}}

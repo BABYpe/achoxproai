@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast'
 import { estimateProjectCost, type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost'
-import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser, DraftingCompass, PlusCircle, Trash2 } from 'lucide-react'
+import { Loader, Wand2, DollarSign, FileText, Users, GanttChartSquare, ClipboardList, Milestone, MapPin, Eraser, DraftingCompass, PlusCircle, Trash2, AlertTriangle, ShieldCheck } from 'lucide-react'
 import { Textarea } from "@/components/ui/textarea"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from "@/components/ui/progress"
@@ -289,7 +289,7 @@ function CostEstimationContent() {
                     <Card className="shadow-xl rounded-2xl sticky top-20">
                         <CardHeader>
                             <CardTitle>معلومات المشروع</CardTitle>
-                            <CardDescription>أدخل تفاصيل مشروعك ليقوم الذكاء الاصطناعي ببناء خطة متكاملة.</CardDescription>
+                            <CardDescription>أدخل تفاصيل مشروعك ليقوم المستشار الذكي ببناء خطة متكاملة.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-4">
@@ -405,7 +405,7 @@ function CostEstimationContent() {
                         <Card className="w-full shadow-xl rounded-2xl min-h-[600px] flex items-center justify-center">
                             <div className="text-center text-muted-foreground p-8">
                                 <Loader className="h-16 w-16 mx-auto mb-4 animate-spin text-primary" />
-                                <h3 className="text-xl font-semibold text-foreground">يقوم الذكاء الاصطناعي ببناء الخطة...</h3>
+                                <h3 className="text-xl font-semibold text-foreground">يقوم المستشار الذكي ببناء الخطة...</h3>
                                 <p>قد تستغرق هذه العملية بضع لحظات.</p>
                             </div>
                         </Card>
@@ -421,6 +421,29 @@ function CostEstimationContent() {
                                 </CardContent>
                             </Card>
 
+                            {result.financialRisks.length > 0 && (
+                                <Card className="shadow-xl rounded-2xl">
+                                    <CardHeader className="flex flex-row items-center gap-2">
+                                        <AlertTriangle className="w-6 h-6 text-destructive" />
+                                        <CardTitle>تحليل المخاطر المالية</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        {result.financialRisks.map((risk, index) => (
+                                            <div key={index} className="p-3 bg-destructive/10 rounded-lg">
+                                                <p className="font-semibold text-destructive-foreground">
+                                                    <AlertTriangle className="inline-block ml-2 h-4 w-4" />
+                                                    {risk.risk}
+                                                </p>
+                                                <p className="text-sm text-muted-foreground mt-1 pr-6">
+                                                     <ShieldCheck className="inline-block ml-2 h-4 w-4 text-green-600" />
+                                                    <strong>مقترح للتخفيف:</strong> {risk.mitigation}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </CardContent>
+                                </Card>
+                            )}
+                            
                             <Card className="shadow-xl rounded-2xl">
                                 <CardHeader className="flex flex-row items-center gap-2">
                                     <Users className="w-6 h-6 text-primary" />
@@ -512,7 +535,3 @@ export default function CostEstimationPage() {
         </Suspense>
     )
 }
-
-    
-
-    

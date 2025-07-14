@@ -1,8 +1,5 @@
-
-import '@/ai/flows/analyze-blueprint.ts';
-import '@/ai/flows/estimate-project-cost.ts';
-import '@/ai/flows/generate-report.ts';
-import '@/ai/flows/analyze-project-description.ts';
-import '@/ai/flows/generate-comprehensive-plan.ts';
-import '@/ai/flows/generate-marketing-outreach.ts';
-
+// This file is intentionally left blank in development.
+// Genkit flows are automatically discovered and loaded by Next.js
+// when they are called from a Server Action or other server-side code.
+// Keeping this file empty prevents all flows from being bundled together
+// at build time, which significantly improves startup performance.

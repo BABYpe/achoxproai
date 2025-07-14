@@ -143,6 +143,7 @@ function NewProjectPageContent() {
                 manager: "علي محمد", // Default manager
                 endDate: generatedPlan.costEstimation.ganttChartData.slice(-1)[0]?.end || "",
                 ganttChartData: generatedPlan.costEstimation.ganttChartData,
+                // --- Storing the crucial analysis data ---
                 projectType: generatedPlan.projectAnalysis.projectType,
                 quality: generatedPlan.projectAnalysis.quality,
                 scopeOfWork: generatedPlan.blueprintAnalysis?.scopeOfWork || generatedPlan.projectAnalysis.initialBlueprintPrompt || '',

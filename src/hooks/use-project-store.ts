@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import {
   collection,
@@ -14,8 +15,8 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { initialProjects } from '@/lib/initial-projects';
-import { type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost';
-import { type AnalyzeProjectDescriptionOutput } from '@/ai/flows/analyze-project-description';
+import { type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost.types';
+import { type AnalyzeProjectDescriptionOutput } from '@/ai/flows/analyze-project-description.types';
 
 export interface Project {
     id?: string; // Firestore ID
@@ -70,6 +71,17 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       const unsubscribe = onSnapshot(q, (snapshot) => {
         if (snapshot.empty && initialProjects.length > 0) {
             console.log('Firebase is empty, using initial mock data.');
+            // This is a workaround for development to populate the DB.
+            // In a real production app, you might not want this.
+            initialProjects.forEach(async (project) => {
+              const { id, ...projectData } = project;
+              try {
+                await addDoc(collection(db, 'projects'), {
+                  ...projectData,
+                  createdAt: Timestamp.now()
+                });
+              } catch (e) { console.error("Error adding initial project:", e); }
+            });
             set({ projects: initialProjects, isLoading: false });
             return;
         }

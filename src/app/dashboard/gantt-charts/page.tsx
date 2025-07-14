@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useProjectStore, Project } from '@/hooks/use-project-store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -33,6 +33,13 @@ export default function GanttChartsPage() {
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const { toast } = useToast();
+
+    // Effect to auto-select the first project if none is selected
+    useEffect(() => {
+        if (!projectsLoading && projects.length > 0 && !selectedProjectId) {
+            setSelectedProjectId(projects[0].id!);
+        }
+    }, [projects, projectsLoading, selectedProjectId]);
 
     const selectedProject = useMemo(() => {
         return projects.find(p => p.id === selectedProjectId);
@@ -71,6 +78,17 @@ export default function GanttChartsPage() {
             return;
         }
 
+        // Critical check for necessary data
+        if (!selectedProject.scopeOfWork || !selectedProject.projectType || !selectedProject.quality) {
+             toast({ 
+                title: "بيانات غير كافية", 
+                description: "هذا المشروع لا يحتوي على تفاصيل كافية (مثل نطاق العمل والجودة) لتوليد جدول زمني. يرجى إنشاء المشروع عبر صفحة 'إنشاء مشروع جديد' لتضمين هذه التفاصيل.", 
+                variant: "destructive",
+                duration: 8000,
+             });
+             return;
+        }
+
         setIsGenerating(true);
         try {
              toast({ title: "جاري تحليل المشروع...", description: "يقوم الذكاء الاصطناعي ببناء الجدول الزمني." });
@@ -78,9 +96,9 @@ export default function GanttChartsPage() {
                 location: selectedProject.location,
                 // A very rough approximation of size based on budget. In a real app, this should be a stored property.
                 size: (selectedProject.budget / 7000).toFixed(0), // Kept for now, but scope is more important
-                type: selectedProject.projectType || 'residential_villa', // Use stored type
-                quality: selectedProject.quality || 'premium', // Use stored quality
-                scopeOfWork: selectedProject.scopeOfWork || `Generate a detailed timeline for the project: ${selectedProject.title}`, // Use stored scope
+                type: selectedProject.projectType, // Use stored type
+                quality: selectedProject.quality, // Use stored quality
+                scopeOfWork: selectedProject.scopeOfWork, // Use stored scope
                 currentDate: format(new Date(), 'yyyy-MM-dd'),
             });
 

@@ -13,27 +13,25 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
       </linearGradient>
     </defs>
     <g transform="translate(50,50) scale(1)">
-        {/* Main Hexagon Shape */}
+        {/* Outer Shape */}
         <path 
-            d="M0 -48 L 41.57 -24 L 41.57 24 L 0 48 L -41.57 24 L -41.57 -24 Z" 
-            fill="hsl(var(--card))" 
+            d="M -40 -40 L 40 -40 L 40 40 L -40 40 Z" 
+            fill="hsl(var(--card) / 0.5)"
             stroke="url(#logo-gradient)" 
-            strokeWidth="3" 
+            strokeWidth="2"
+            transform="rotate(45)"
         />
-        {/* Inner Geometric "A" */}
+        {/* Inner 'A' shape */}
         <path 
-            d="M 0 -24 L 20 0 L 0 24 M -20 0 L 20 0" 
-            fill="none" 
-            stroke="hsl(var(--primary))"
-            strokeWidth="6" 
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            d="M 0 -25 L 22 25 L 12 25 L 0 5 L -12 25 L -22 25 Z"
+            fill="hsl(var(--primary))"
         />
-         <path 
-            d="M -10 -12 L 10 -12" 
-            fill="none" 
+        {/* Accent line */}
+        <path
+            d="M -15 -5 L 15 -5"
+            fill="none"
             stroke="hsl(var(--accent))"
-            strokeWidth="6"
+            strokeWidth="5"
             strokeLinecap="round"
         />
     </g>

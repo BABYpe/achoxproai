@@ -15,8 +15,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useProjectStore } from "@/hooks/use-project-store"
 import React from "react"
 import { APIProvider } from "@vis.gl/react-google-maps"
+import dynamic from 'next/dynamic'
 
-const ProjectMap = React.lazy(() => import('@/components/project-map'));
+const ProjectMap = dynamic(() => import('@/components/project-map'), {
+  ssr: false,
+  loading: () => <Skeleton className="h-full w-full rounded-2xl" />
+});
 
 export default function DashboardPage() {
   const { projects, isLoading } = useProjectStore();
@@ -227,16 +231,11 @@ export default function DashboardPage() {
                  </CardContent>
             </Card>
             <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
-                 <Suspense fallback={<Skeleton className="h-full w-full rounded-2xl" />}>
-                     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                        <ProjectMap projects={projects} />
-                    </APIProvider>
-                </Suspense>
+                 <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+                    <ProjectMap projects={projects} />
+                </APIProvider>
             </Card>
        </div>
     </div>
   )
 }
-
-
-    

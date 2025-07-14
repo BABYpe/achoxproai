@@ -20,7 +20,7 @@ const AnalyzeBlueprintInputSchema = z.object({
 });
 export type AnalyzeBlueprintInput = z.infer<typeof AnalyzeBlueprintInputSchema>;
 
-const AnalyzeBlueprintOutputSchema = z.object({
+export const AnalyzeBlueprintOutputSchema = z.object({
   scopeOfWork: z.string().describe("A summary of the scope of work based on the blueprint."),
   warnings: z.array(z.string()).describe("A list of potential engineering errors, inconsistencies, or risks found in the blueprint, referencing Saudi Building Codes (SBC) where applicable."),
   recommendations: z.array(z.string()).describe("A list of actionable recommendations for design improvement or to mitigate potential issues."),

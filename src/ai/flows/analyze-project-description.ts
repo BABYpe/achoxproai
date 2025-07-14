@@ -17,7 +17,7 @@ const AnalyzeProjectDescriptionInputSchema = z.object({
 });
 export type AnalyzeProjectDescriptionInput = z.infer<typeof AnalyzeProjectDescriptionInputSchema>;
 
-const AnalyzeProjectDescriptionOutputSchema = z.object({
+export const AnalyzeProjectDescriptionOutputSchema = z.object({
     projectType: z.enum(['residential_villa', 'interior_finishing', 'commercial_building', 'event_setup', 'other']).describe('The most likely type of the project based on the description.'),
     quality: z.enum(['standard', 'premium', 'luxury']).describe('The most likely quality level based on keywords in the description (e.g., "luxury", "high-end", "basic").'),
     initialBlueprintPrompt: z.string().optional().describe('A suggested prompt for generating an initial blueprint or diagram based on the description.'),

@@ -23,7 +23,7 @@ const EstimateProjectCostInputSchema = z.object({
 });
 export type EstimateProjectCostInput = z.infer<typeof EstimateProjectCostInputSchema>;
 
-const EstimateProjectCostOutputSchema = z.object({
+export const EstimateProjectCostOutputSchema = z.object({
     totalEstimatedCost: z.string().describe('The total estimated cost for the project in the local currency (e.g., "1,250,000 SAR").'),
     boq: z.array(z.object({
         id: z.string().describe("A unique identifier for the item (e.g., 'C-202')."),

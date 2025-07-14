@@ -118,6 +118,10 @@ const resources = {
       "register.hasAccount": "Already have an account?",
       "contactSales.title": "Contact Sales",
       "contactSales.description": "Ready to take your business to the next level? Fill out the form below and one of our experts will contact you.",
+      "contactSales.firstName": "First Name",
+      "contactSales.firstNamePlaceholder": "Ahmed",
+      "contactSales.lastName": "Last Name",
+      "contactSales.lastNamePlaceholder": "Ali",
       "contactSales.workEmail": "Work Email",
       "contactSales.companyName": "Company Name",
       "contactSales.companyNamePlaceholder": "Modern Construction Co.",
@@ -129,8 +133,8 @@ const resources = {
       "contactSales.submitButton": "Submit Request",
       
       // Legal Pages
-      "privacy.pageTitle": "Privacy Policy",
-      "terms.pageTitle": "Terms of Service",
+      "privacy.title": "Privacy Policy",
+      "terms.title": "Terms of Service",
 
       // Dashboard
       "dashboard.sidebar.dashboard": "Dashboard",
@@ -288,6 +292,10 @@ const resources = {
       "register.hasAccount": "لديك حساب بالفعل؟",
       "contactSales.title": "تواصل مع فريق المبيعات",
       "contactSales.description": "هل أنت مستعد للارتقاء بأعمالك؟ املأ النموذج أدناه وسيتواصل معك أحد خبرائنا.",
+      "contactSales.firstName": "الاسم الأول",
+      "contactSales.firstNamePlaceholder": "أحمد",
+      "contactSales.lastName": "الاسم الأخير",
+      "contactSales.lastNamePlaceholder": "علي",
       "contactSales.workEmail": "البريد الإلكتروني للعمل",
       "contactSales.companyName": "اسم الشركة",
       "contactSales.companyNamePlaceholder": "شركة الإنشاءات الحديثة",
@@ -299,8 +307,8 @@ const resources = {
       "contactSales.submitButton": "إرسال الطلب",
       
       // Legal Pages
-      "privacy.pageTitle": "سياسة الخصوصية",
-      "terms.pageTitle": "شروط الخدمة",
+      "privacy.title": "سياسة الخصوصية",
+      "terms.title": "شروط الخدمة",
       
       // Dashboard
       "dashboard.sidebar.dashboard": "لوحة التحكم",

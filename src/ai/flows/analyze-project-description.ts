@@ -5,24 +5,10 @@
  * @fileOverview An AI agent to analyze a project description and suggest its type and quality.
  *
  * - analyzeProjectDescription - A function that handles the project description analysis.
- * - AnalyzeProjectDescriptionInput - The input type for the analyzeProjectDescription function.
- * - AnalyzeProjectDescriptionOutput - The return type for the analyzeProjectDescription function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'zod';
-
-const AnalyzeProjectDescriptionInputSchema = z.object({
-  description: z.string().describe('A textual description of the project provided by the user.'),
-});
-export type AnalyzeProjectDescriptionInput = z.infer<typeof AnalyzeProjectDescriptionInputSchema>;
-
-export const AnalyzeProjectDescriptionOutputSchema = z.object({
-    projectType: z.enum(['residential_villa', 'interior_finishing', 'commercial_building', 'event_setup', 'other']).describe('The most likely type of the project based on the description.'),
-    quality: z.enum(['standard', 'premium', 'luxury']).describe('The most likely quality level based on keywords in the description (e.g., "luxury", "high-end", "basic").'),
-    initialBlueprintPrompt: z.string().optional().describe('A suggested prompt for generating an initial blueprint or diagram based on the description.'),
-});
-export type AnalyzeProjectDescriptionOutput = z.infer<typeof AnalyzeProjectDescriptionOutputSchema>;
+import { AnalyzeProjectDescriptionInputSchema, AnalyzeProjectDescriptionOutputSchema, type AnalyzeProjectDescriptionInput, type AnalyzeProjectDescriptionOutput } from './analyze-project-description.types';
 
 
 export async function analyzeProjectDescription(input: AnalyzeProjectDescriptionInput): Promise<AnalyzeProjectDescriptionOutput> {

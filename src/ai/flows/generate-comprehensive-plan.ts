@@ -8,8 +8,6 @@
  * and generating a comprehensive plan by calling specialized AI flows for analysis and estimation.
  *
  * - generateComprehensivePlan - The main orchestrator function.
- * - GenerateComprehensivePlanInput - The input type for the function.
- * - GenerateComprehensivePlanOutput - The return type for the function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -17,9 +15,12 @@ import {z} from 'zod';
 import { format } from 'date-fns';
 
 // Import the flows this orchestrator will use
-import { analyzeProjectDescription, type AnalyzeProjectDescriptionOutput, AnalyzeProjectDescriptionOutputSchema } from './analyze-project-description';
-import { analyzeBlueprint, type AnalyzeBlueprintOutput, AnalyzeBlueprintOutputSchema } from './analyze-blueprint';
-import { estimateProjectCost, type EstimateProjectCostOutput, EstimateProjectCostOutputSchema } from './estimate-project-cost';
+import { analyzeProjectDescription } from './analyze-project-description';
+import { type AnalyzeProjectDescriptionOutput, AnalyzeProjectDescriptionOutputSchema } from './analyze-project-description.types';
+import { analyzeBlueprint } from './analyze-blueprint';
+import { type AnalyzeBlueprintOutput, AnalyzeBlueprintOutputSchema } from './analyze-blueprint.types';
+import { estimateProjectCost } from './estimate-project-cost';
+import { type EstimateProjectCostOutput, EstimateProjectCostOutputSchema } from './estimate-project-cost.types';
 
 
 export const GenerateComprehensivePlanInputSchema = z.object({

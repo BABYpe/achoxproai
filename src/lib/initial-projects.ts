@@ -19,7 +19,15 @@ export const initialProjects: Project[] = [
     createdAt: "2024-01-15T10:00:00Z",
     projectType: 'residential_villa',
     quality: 'luxury',
-    scopeOfWork: 'بناء فيلا سكنية فاخرة بمساحة 600 متر مربع في حي الياسمين بالرياض، تتكون من دورين وملحق علوي. يشمل العمل جميع مراحل الإنشاء من الحفر والأساسات والخرسانات والمباني، بالإضافة إلى أعمال التشطيبات الداخلية والخارجية بمستوى فاخر، وتنسيق الحدائق والمسبح الخارجي.'
+    scopeOfWork: 'بناء فيلا سكنية فاخرة بمساحة 600 متر مربع في حي الياسمين بالرياض، تتكون من دورين وملحق علوي. يشمل العمل جميع مراحل الإنشاء من الحفر والأساسات والخرسانات والمباني، بالإضافة إلى أعمال التشطيبات الداخلية والخارجية بمستوى فاخر، وتنسيق الحدائق والمسبح الخارجي.',
+    ganttChartData: [
+        { id: 1, task: 'مرحلة التصميم والترخيص', responsible: 'الاستشاري والمالك', start: '2024-01-15', end: '2024-03-15', duration: 60, progress: 100 },
+        { id: 2, task: 'أعمال الحفر والأساسات', responsible: 'المقاول', start: '2024-03-16', end: '2024-05-15', duration: 60, progress: 100 },
+        { id: 3, task: 'أعمال الهيكل الخرساني', responsible: 'المقاول', start: '2024-05-16', end: '2024-11-15', duration: 180, progress: 80 },
+        { id: 4, task: 'أعمال المباني والتشطيبات الأولية', responsible: 'المقاول', start: '2024-11-16', end: '2025-05-15', duration: 180, progress: 40 },
+        { id: 5, task: 'أعمال التشطيبات النهائية', responsible: 'المقاول', start: '2025-05-16', end: '2025-11-15', duration: 180, progress: 10 },
+        { id: 6, task: 'تنسيق الموقع والتسليم', responsible: 'المقاول والمالك', start: '2025-11-16', end: '2025-12-31', duration: 45, progress: 0 },
+    ]
   },
   {
     id: "proj_mall_2",
@@ -39,7 +47,14 @@ export const initialProjects: Project[] = [
     createdAt: "2024-05-20T11:30:00Z",
     projectType: 'retail_mall',
     quality: 'premium',
-    scopeOfWork: 'مشروع تطوير وتوسعة مول الرياض بارك، يشمل إضافة منطقة تجارية جديدة بمساحة 20,000 متر مربع، وتطوير الواجهات الخارجية، وإعادة تصميم منطقة المطاعم والترفيه.'
+    scopeOfWork: 'مشروع تطوير وتوسعة مول الرياض بارك، يشمل إضافة منطقة تجارية جديدة بمساحة 20,000 متر مربع، وتطوير الواجهات الخارجية، وإعادة تصميم منطقة المطاعم والترفيه.',
+    ganttChartData: [
+        { id: 1, task: 'إعداد التصاميم النهائية والموافقات', responsible: 'الاستشاري', start: '2024-05-20', end: '2024-09-20', duration: 120, progress: 50 },
+        { id: 2, task: 'اختيار المقاول وتوقيع العقد', responsible: 'المالك', start: '2024-09-21', end: '2024-11-20', duration: 60, progress: 0 },
+        { id: 3, task: 'بدء أعمال الإنشاءات والتوسعة', responsible: 'المقاول', start: '2024-11-21', end: '2026-05-20', duration: 540, progress: 0 },
+        { id: 4, task: 'أعمال التشطيبات والديكور', responsible: 'المقاول', start: '2026-05-21', end: '2026-09-20', duration: 120, progress: 0 },
+        { id: 5, task: 'التسليم المبدئي والنهائي', responsible: 'الجميع', start: '2026-09-21', end: '2026-10-01', duration: 10, progress: 0 },
+    ]
   },
   {
     id: "proj_tower_3",
@@ -59,7 +74,14 @@ export const initialProjects: Project[] = [
     createdAt: "2023-11-01T09:00:00Z",
     projectType: 'office_high_rise',
     quality: 'luxury',
-    scopeOfWork: 'بناء برج مكتبي بارتفاع 30 طابقًا على طريق الملك عبدالعزيز في جدة، مع واجهات زجاجية حديثة وأنظمة ذكية لإدارة المباني ومواقف سيارات متعددة الطوابق.'
+    scopeOfWork: 'بناء برج مكتبي بارتفاع 30 طابقًا على طريق الملك عبدالعزيز في جدة، مع واجهات زجاجية حديثة وأنظمة ذكية لإدارة المباني ومواقف سيارات متعددة الطوابق.',
+     ganttChartData: [
+        { id: 1, task: 'أعمال الأساسات العميقة والمواقف', responsible: 'المقاول', start: '2023-11-01', end: '2024-08-01', duration: 270, progress: 90 },
+        { id: 2, task: 'أعمال الهيكل الخرساني (Podium)', responsible: 'المقاول', start: '2024-08-02', end: '2025-02-01', duration: 180, progress: 60 },
+        { id: 3, task: 'أعمال الهيكل الخرساني (Tower)', responsible: 'المقاول', start: '2025-02-02', end: '2026-08-01', duration: 540, progress: 20 },
+        { id: 4, task: 'أعمال الواجهات والأنظمة الكهروميكانيكية', responsible: 'المقاول', start: '2026-08-02', end: '2027-03-01', duration: 210, progress: 0 },
+        { id: 5, task: 'أعمال التشطيبات والتسليم', responsible: 'المقاول', start: '2027-03-02', end: '2027-06-30', duration: 120, progress: 0 },
+    ]
   },
   {
     id: "proj_event_4",
@@ -79,7 +101,14 @@ export const initialProjects: Project[] = [
     createdAt: "2024-04-01T14:00:00Z",
     projectType: 'event_setup',
     quality: 'premium',
-    scopeOfWork: 'تجهيز كامل لفعالية إطلاق سيارة كهربائية جديدة، يشمل بناء المسرح الرئيسي، وتوفير أنظمة الصوت والإضاءة والشاشات، وتصميم وتصنيع أجنحة العرض، وتنظيم منطقة استقبال كبار الشخصيات.'
+    scopeOfWork: 'تجهيز كامل لفعالية إطلاق سيارة كهربائية جديدة، يشمل بناء المسرح الرئيسي، وتوفير أنظمة الصوت والإضاءة والشاشات، وتصميم وتصنيع أجنحة العرض، وتنظيم منطقة استقبال كبار الشخصيات.',
+     ganttChartData: [
+        { id: 1, task: 'التصميم والتعاقدات', responsible: 'المنظم', start: '2024-04-01', end: '2024-04-30', duration: 30, progress: 100 },
+        { id: 2, task: 'تصنيع الديكورات والأجنحة', responsible: 'الموردون', start: '2024-05-01', end: '2024-05-30', duration: 30, progress: 100 },
+        { id: 3, task: 'التركيب والتجهيز في الموقع', responsible: 'فريق العمل', start: '2024-06-01', end: '2024-06-13', duration: 13, progress: 100 },
+        { id: 4, task: 'يوم الفعالية', responsible: 'الجميع', start: '2024-06-14', end: '2024-06-14', duration: 1, progress: 100 },
+        { id: 5, task: 'التفكيك والتسليم', responsible: 'فريق العمل', start: '2024-06-15', end: '2024-06-15', duration: 1, progress: 100 },
+    ]
   },
   {
     id: "proj_warehouse_5",
@@ -99,7 +128,13 @@ export const initialProjects: Project[] = [
     createdAt: "2023-09-10T08:00:00Z",
      projectType: 'industrial_warehouse',
     quality: 'standard',
-    scopeOfWork: 'بناء مستودع لوجستي بمساحة 15,000 متر مربع، مع أرضيات خرسانية مصقولة، وأنظمة تخزين عالية، ومنطقة مخصصة للشحن والتفريغ.'
+    scopeOfWork: 'بناء مستودع لوجستي بمساحة 15,000 متر مربع، مع أرضيات خرسانية مصقولة، وأنظمة تخزين عالية، ومنطقة مخصصة للشحن والتفريغ.',
+     ganttChartData: [
+        { id: 1, task: 'أعمال الموقع والأساسات', responsible: 'المقاول', start: '2023-09-10', end: '2023-12-10', duration: 90, progress: 100 },
+        { id: 2, task: 'تركيب الهيكل المعدني', responsible: 'المقاول', start: '2023-12-11', end: '2024-03-10', duration: 90, progress: 100 },
+        { id: 3, task: 'أعمال الأرضيات والتشطيبات', responsible: 'المقاول', start: '2024-03-11', end: '2024-07-10', duration: 120, progress: 50 },
+        { id: 4, task: 'تركيب الأنظمة والتسليم', responsible: 'المقاول', start: '2024-07-11', end: '2024-08-30', duration: 50, progress: 10 },
+    ]
   },
   {
     id: "proj_hotel_6",
@@ -119,6 +154,13 @@ export const initialProjects: Project[] = [
     createdAt: "2023-07-01T12:00:00Z",
     projectType: 'hospitality_hotel',
     quality: 'luxury',
-    scopeOfWork: 'أعمال التشطيبات الداخلية الفاخرة لفندق 5 نجوم، تشمل 200 غرفة وجناح، بالإضافة إلى البهو الرئيسي والمطاعم والقاعات والسبا، باستخدام مواد عالية الجودة وتصاميم مخصصة.'
+    scopeOfWork: 'أعمال التشطيبات الداخلية الفاخرة لفندق 5 نجوم، تشمل 200 غرفة وجناح، بالإضافة إلى البهو الرئيسي والمطاعم والقاعات والسبا، باستخدام مواد عالية الجودة وتصاميم مخصصة.',
+    ganttChartData: [
+        { id: 1, task: 'تجهيز الموقع وأعمال الكهروميكانيك الأولية', responsible: 'المقاول', start: '2023-07-01', end: '2023-12-01', duration: 150, progress: 100 },
+        { id: 2, task: 'تشطيبات الغرف والأجنحة (نموذج)', responsible: 'المقاول', start: '2023-12-02', end: '2024-03-01', duration: 90, progress: 100 },
+        { id: 3, task: 'تشطيبات الغرف والأجنحة (باقي الطوابق)', responsible: 'المقاول', start: '2024-03-02', end: '2024-12-01', duration: 270, progress: 50 },
+        { id: 4, task: 'تشطيبات المناطق العامة (اللوبي، المطاعم)', responsible: 'المقاول', start: '2024-09-01', end: '2025-01-31', duration: 150, progress: 30 },
+        { id: 5, task: 'التأثيث والتسليم النهائي', responsible: 'المقاول والمالك', start: '2025-02-01', end: '2025-02-28', duration: 28, progress: 0 },
+    ]
   },
 ];

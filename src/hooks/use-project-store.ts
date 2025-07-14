@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { initialProjects } from '@/lib/initial-projects';
+import { type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost';
 
 export interface Project {
     id?: string; // Firestore ID
@@ -31,6 +32,7 @@ export interface Project {
     manager: string;
     endDate: string;
     createdAt: any;
+    ganttChartData?: EstimateProjectCostOutput['ganttChartData']; // Add this line
 }
 
 interface ProjectState {
@@ -61,7 +63,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        if (snapshot.empty) {
+        if (snapshot.empty && initialProjects.length > 0) {
+            console.log('Firebase is empty, using initial mock data.');
             set({ projects: initialProjects, isLoading: false });
             return;
         }
@@ -97,6 +100,9 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             return { id: docSnap.id, ...data } as Project;
         } else {
              console.log("No such document in Firestore.");
+             // Fallback to initialProjects if not found in Firestore but might exist in mock data
+             const mockProject = initialProjects.find(p => p.id === projectId);
+             if (mockProject) return mockProject;
              return null;
         }
     } catch (error) {

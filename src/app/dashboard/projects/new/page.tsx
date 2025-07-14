@@ -115,6 +115,7 @@ export default function NewProjectPage() {
                 lng: 46.6753,
                 manager: "علي محمد", // Default manager
                 endDate: generatedPlan.costEstimation.ganttChartData.slice(-1)[0]?.end || "",
+                ganttChartData: generatedPlan.costEstimation.ganttChartData,
             };
 
             await addProject(newProject);

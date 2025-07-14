@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Building, DollarSign, User, Calendar, Percent, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus, Milestone, Handshake, Briefcase } from "lucide-react";
+import { ArrowLeft, Building, DollarSign, User, Calendar, Percent, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus, Milestone, Handshake, Briefcase, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -23,18 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-// Mock data for project details - will be replaced with real data in the future
-const mockRoadmap = [
-    { type: "milestone", status: "completed", title: "توقيع العقد واستلام الموقع", date: "2024-05-15", icon: Handshake },
-    { type: "task", status: "completed", title: "أعمال الحفر والأساسات", date: "2024-06-15" },
-    { type: "task", status: "in-progress", title: "بناء الهيكل الخرساني للدور الأرضي", date: "2024-07-25" },
-    { type: "milestone", status: "in-progress", title: "الوصول إلى منتصف الجدول الزمني", date: "2024-08-01", icon: Milestone },
-    { type: "task", status: "planned", title: "أعمال المباني والتشطيبات الخارجية", date: "2024-08-30" },
-    { type: "task", status: "planned", title: "أعمال التمديدات الكهربائية والصحية", date: "2024-09-15" },
-    { type: "milestone", status: "planned", title: "تسليم المشروع الابتدائي", date: "2024-10-30", icon: Briefcase },
-];
-
-
+// Mock data for project details that aren't yet in the main project object
 const mockTeam = [
     { name: "علي محمد", role: "مدير المشروع" },
     { name: "سارة عبدالله", role: "مهندس موقع" },
@@ -52,6 +41,7 @@ const mockFiles = [
     { name: "المخططات المعمارية المعتمدة.dwg", size: "15.2 MB", type: "DWG" },
     { name: "جدول الكميات.xlsx", size: "850 KB", type: "XLSX" },
 ]
+
 
 export default function ProjectDetailsPage() {
     const params = useParams();
@@ -121,6 +111,35 @@ export default function ProjectDetailsPage() {
         );
     }
     
+    // Dynamically determine roadmap status
+    const today = new Date();
+    const roadmap = project.ganttChartData ? project.ganttChartData.map(task => {
+        const endDate = new Date(task.end);
+        const startDate = new Date(task.start);
+        let status: 'completed' | 'in-progress' | 'planned' = 'planned';
+
+        if (endDate < today) {
+            status = 'completed';
+        } else if (startDate <= today && endDate >= today) {
+            status = 'in-progress';
+        }
+
+        const isMilestone = /contract|milestone|delivery|تسليم|عقد|مرحلة/i.test(task.task);
+        let Icon = CheckCircle;
+        if (isMilestone) {
+            if (/contract|عقد/i.test(task.task)) Icon = Handshake;
+            else if (/delivery|تسليم/i.test(task.task)) Icon = Briefcase;
+            else Icon = Milestone;
+        }
+
+        return {
+            ...task,
+            status,
+            type: isMilestone ? 'milestone' : 'task',
+            icon: Icon
+        };
+    }) : [];
+
     const getStatusStyles = (status: string) => {
         switch (status) {
             case "completed": return "bg-green-500";
@@ -212,13 +231,13 @@ export default function ProjectDetailsPage() {
                                 <div className="absolute right-6 top-0 bottom-0 w-0.5 bg-border"></div>
 
                                 <div className="space-y-8">
-                                    {mockRoadmap.map((item, index) => {
-                                        const Icon = item.icon || null;
+                                    {roadmap.map((item, index) => {
+                                        const Icon = item.icon;
                                         return (
                                         <div key={index} className="relative flex items-start gap-4">
                                             {/* Dot/Icon on the line */}
                                             <div className="absolute top-1/2 -translate-y-1/2 right-6 translate-x-1/2 z-10 flex items-center justify-center">
-                                                {Icon ? (
+                                                {item.type === 'milestone' ? (
                                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${getStatusStyles(item.status)} ring-4 ring-background`}>
                                                         <Icon className="h-5 w-5" />
                                                     </div>
@@ -228,8 +247,8 @@ export default function ProjectDetailsPage() {
                                             </div>
 
                                             <div className="flex-1 space-y-1 pr-12">
-                                                <p className="font-semibold text-foreground">{item.title}</p>
-                                                <p className="text-sm text-muted-foreground">{item.date}</p>
+                                                <p className="font-semibold text-foreground">{item.task}</p>
+                                                <p className="text-sm text-muted-foreground">{item.start} &rarr; {item.end}</p>
                                             </div>
                                              <Badge variant={item.status === "completed" ? "secondary" : item.status === "in-progress" ? "default" : "outline"}>
                                                 {item.status === 'completed' ? 'مكتمل' : item.status === 'in-progress' ? 'قيد التنفيذ' : 'مخطط له'}

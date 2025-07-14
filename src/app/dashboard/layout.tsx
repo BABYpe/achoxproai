@@ -38,6 +38,8 @@ import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useProjectStore } from '@/hooks/use-project-store';
 import { Separator } from '@/components/ui/separator';
+import { GanttChartIcon } from '@/components/icons/gantt-chart-icon';
+import { UsersGroupIcon } from '@/components/icons/users-group-icon';
 
 export default function DashboardLayout({
   children,
@@ -53,7 +55,6 @@ export default function DashboardLayout({
 
   const isActive = (path: string) => pathname === path;
   const isProjectsActive = pathname.startsWith('/dashboard/projects');
-  const isProjectDetailsActive = /^\/dashboard\/projects\/[^/]+$/.test(pathname);
 
   return (
     <SidebarProvider>
@@ -80,25 +81,8 @@ export default function DashboardLayout({
               </SidebarMenuItem>
 
               <Separator className="my-2" />
+              <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التخطيط</p>
               
-              <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التخطيط والمناقصات</p>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isProjectsActive || isProjectDetailsActive} tooltip="المشاريع">
-                  <Link href="/dashboard/projects">
-                    <Briefcase />
-                    <span>المشاريع</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/blueprints')} tooltip="تحليل المخططات">
-                  <Link href="/dashboard/blueprints">
-                    <FileText />
-                    <span>تحليل المخططات</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/cost-estimation')} tooltip="تقدير التكاليف">
                   <Link href="/dashboard/cost-estimation">
@@ -107,35 +91,82 @@ export default function DashboardLayout({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-
-              <Separator className="my-2" />
-
-              <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">إدارة وتشغيل</p>
-              
                <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/financial-intelligence')} tooltip="الذكاء المالي">
-                  <Link href="/dashboard/financial-intelligence">
-                    <CircleDollarSign />
-                    <span>الذكاء المالي</span>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/gantt-charts')} tooltip="مخطط جانت">
+                  <Link href="/dashboard/gantt-charts">
+                    <GanttChartIcon />
+                    <span>مخطط جانت</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/procurement')} tooltip="المشتريات والموردون">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/crew-planner')} tooltip="مخطط الطاقم">
+                  <Link href="/dashboard/crew-planner">
+                    <UsersGroupIcon />
+                    <span>مخطط الطاقم</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <Separator className="my-2" />
+              <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التنفيذ</p>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isProjectsActive} tooltip="المشاريع">
+                  <Link href="/dashboard/projects">
+                    <Briefcase />
+                    <span>المشاريع</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/procurement')} tooltip="المشتريات">
                   <Link href="/dashboard/procurement">
                     <ShoppingCart />
                     <span>المشتريات</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/inventory')} tooltip="المخزون والمستودعات">
-                  <Link href="/dashboard/inventory">
-                    <Warehouse />
-                    <span>المخزون</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
+               <Separator className="my-2" />
+               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التحليل</p>
+
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/financial-intelligence')} tooltip="الذكاء المالي">
+                    <Link href="/dashboard/financial-intelligence">
+                        <CircleDollarSign />
+                        <span>الذكاء المالي</span>
+                    </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/reports')} tooltip="التقارير">
+                    <Link href="/dashboard/reports">
+                        <FilePieChart />
+                        <span>التقارير</span>
+                    </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/blueprints')} tooltip="تحليل المخططات">
+                    <Link href="/dashboard/blueprints">
+                        <FileText />
+                        <span>تحليل المخططات</span>
+                    </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+               
+               <Separator className="my-2" />
+               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">الموارد</p>
+
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/inventory')} tooltip="المخزون">
+                    <Link href="/dashboard/inventory">
+                        <Warehouse />
+                        <span>المخزون</span>
+                    </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
                <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive('/dashboard/assets')} tooltip="الأصول والموارد">
                   <Link href="/dashboard/assets">
@@ -144,23 +175,11 @@ export default function DashboardLayout({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-
-               <Separator className="my-2" />
-               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">أدوات مساعدة</p>
-
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive('/dashboard/boq')} tooltip="جداول الكميات">
                   <Link href="/dashboard/boq">
                     <ListChecks />
                     <span>جداول الكميات</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/reports')} tooltip="التقارير">
-                  <Link href="/dashboard/reports">
-                    <FilePieChart />
-                    <span>التقارير</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

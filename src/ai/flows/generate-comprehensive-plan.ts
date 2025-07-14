@@ -17,9 +17,9 @@ import {z} from 'zod';
 import { format } from 'date-fns';
 
 // Import the flows this orchestrator will use
-import { analyzeProjectDescription, type AnalyzeProjectDescriptionOutput } from './analyze-project-description';
-import { analyzeBlueprint, type AnalyzeBlueprintOutput } from './analyze-blueprint';
-import { estimateProjectCost, type EstimateProjectCostOutput } from './estimate-project-cost';
+import { analyzeProjectDescription, type AnalyzeProjectDescriptionOutput, AnalyzeProjectDescriptionOutputSchema } from './analyze-project-description';
+import { analyzeBlueprint, type AnalyzeBlueprintOutput, AnalyzeBlueprintOutputSchema } from './analyze-blueprint';
+import { estimateProjectCost, type EstimateProjectCostOutput, EstimateProjectCostOutputSchema } from './estimate-project-cost';
 
 
 export const GenerateComprehensivePlanInputSchema = z.object({
@@ -35,9 +35,9 @@ export type GenerateComprehensivePlanInput = z.infer<typeof GenerateComprehensiv
 export const GenerateComprehensivePlanOutputSchema = z.object({
     projectName: z.string(),
     location: z.string(),
-    projectAnalysis: z.custom<AnalyzeProjectDescriptionOutput>(),
-    blueprintAnalysis: z.custom<AnalyzeBlueprintOutput>().optional(),
-    costEstimation: z.custom<EstimateProjectCostOutput>(),
+    projectAnalysis: AnalyzeProjectDescriptionOutputSchema,
+    blueprintAnalysis: AnalyzeBlueprintOutputSchema.optional(),
+    costEstimation: EstimateProjectCostOutputSchema,
 });
 export type GenerateComprehensivePlanOutput = z.infer<typeof GenerateComprehensivePlanOutputSchema>;
 

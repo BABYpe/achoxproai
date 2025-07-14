@@ -4,6 +4,8 @@ import { Cairo } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
 import ClientLayout from './client-layout';
+import { ThemeProvider } from '@/components/theme-provider';
+import { CookieBanner } from '@/components/cookie-banner';
 
 const cairo = Cairo({
   subsets: ['latin'],
@@ -32,11 +34,17 @@ export default function RootLayout({
         <meta name="description" content={metadata.description!} />
       </head>
       <body className={`${cairo.variable} font-body antialiased bg-background`}>
-        {children}
-        <Toaster />
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
+            {children}
+            <Toaster />
+            <CookieBanner />
+        </ThemeProvider>
       </body>
     </ClientLayout>
   );
 }
-
-    

@@ -33,7 +33,7 @@ export default function HomePage() {
         <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
             <Logo className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold">A.D.A.M</span>
+            <span className="text-xl font-bold">MDAMAI</span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm md:flex">
             <Link href="#features" className="font-medium text-muted-foreground transition-colors hover:text-primary">
@@ -349,7 +349,7 @@ export default function HomePage() {
                 <div>
                      <Link href="/" className="flex items-center gap-2 font-bold text-lg">
                         <Logo className="h-8 w-8 text-primary" />
-                        <span className="text-xl font-bold">A.D.A.M</span>
+                        <span className="text-xl font-bold">MDAMAI</span>
                     </Link>
                     <p className="text-muted-foreground mt-2">{t('landing.footer.description')}</p>
                 </div>

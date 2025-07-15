@@ -15,8 +15,8 @@ const cairo = Cairo({
 
 // Default metadata
 export const metadata: Metadata = {
-  title: 'A.D.A.M | منصة إدارة المشاريع الذكية',
-  description: 'منصة A.D.A.M هي شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة.',
+  title: 'MDAMAI | منصة إدارة المشاريع الذكية',
+  description: 'منصة MDAMAI هي شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة.',
   robots: "index, follow",
 };
 

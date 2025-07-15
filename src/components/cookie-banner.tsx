@@ -13,15 +13,23 @@ export function CookieBanner() {
 
   useEffect(() => {
     // This code runs only on the client
-    const consent = localStorage.getItem('cookie_consent');
-    if (consent !== 'true') {
-      setShowBanner(true);
+    try {
+        const consent = localStorage.getItem('cookie_consent');
+        if (consent !== 'true') {
+          setShowBanner(true);
+        }
+    } catch (e) {
+        console.error("Could not access localStorage", e);
     }
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem('cookie_consent', 'true');
-    setShowBanner(false);
+    try {
+        localStorage.setItem('cookie_consent', 'true');
+        setShowBanner(false);
+    } catch (e) {
+         console.error("Could not access localStorage", e);
+    }
   };
 
   if (!showBanner) {

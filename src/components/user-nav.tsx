@@ -1,7 +1,6 @@
 
 "use client"
 
-import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -22,19 +21,21 @@ import {
 import { CreditCard, LogOut, Settings, User, Moon, Sun, Globe } from "lucide-react"
 import { useToast } from "@/hooks/use-toast";
 import { useCurrentUser } from "@/lib/auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function UserNav() {
-  const router = useRouter();
   const { setTheme } = useTheme();
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const currentUser = useCurrentUser();
+  const router = useRouter();
+
 
   const handleLogout = () => {
-    // In a real app, you'd clear the user session here
     router.push('/login');
   };
-
+  
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   }

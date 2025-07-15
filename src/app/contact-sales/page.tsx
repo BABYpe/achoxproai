@@ -1,4 +1,6 @@
 
+"use client";
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,11 +17,10 @@ import { ArrowLeft } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
-import i18n from "../i18n"
 
 
-export default async function ContactSalesPage() {
-  const { t } = await i18n.changeLanguage(i18n.language);
+export default function ContactSalesPage() {
+  const { t } = useTranslation();
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden">
         <Image

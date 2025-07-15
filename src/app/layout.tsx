@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
 
   return (
-    <ClientLayout>
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
          <link rel="sitemap" href="/sitemap.xml" />
@@ -40,11 +40,13 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
+          <ClientLayout>
             {children}
             <Toaster />
             <CookieBanner />
+          </ClientLayout>
         </ThemeProvider>
       </body>
-    </ClientLayout>
+    </html>
   );
 }

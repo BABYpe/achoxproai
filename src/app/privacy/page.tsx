@@ -1,13 +1,12 @@
 
-"use client";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 
-export default function PrivacyPage() {
-    const { t } = useTranslation();
+
+export default async function PrivacyPage() {
+    const { t } = await i18n.changeLanguage(i18n.language);
 
     return (
         <main className="bg-background">

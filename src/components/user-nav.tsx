@@ -23,6 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCurrentUser } from "@/lib/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function UserNav() {
   const { setTheme } = useTheme();
@@ -30,6 +31,10 @@ export function UserNav() {
   const { toast } = useToast();
   const currentUser = useCurrentUser();
   const router = useRouter();
+
+  // Hydration safety
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => setIsClient(true), []);
 
 
   const handleLogout = () => {
@@ -52,6 +57,10 @@ export function UserNav() {
             description: "ستكون ميزة الفوترة متاحة في الإصدارات القادمة للخطط المدفوعة."
         })
     }
+  }
+  
+  if (!isClient) {
+    return null; // Or a skeleton loader
   }
 
   return (

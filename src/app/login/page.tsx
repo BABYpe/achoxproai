@@ -1,8 +1,5 @@
 
-"use client";
-
 import Link from "next/link"
-import { useTranslation } from 'react-i18next';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -15,10 +12,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/logo";
 import Image from "next/image";
+import i18n from "../i18n"
 
-export default function LoginPage() {
-  const { t } = useTranslation();
 
+export default async function LoginPage() {
+  const { t } = await i18n.changeLanguage(i18n.language);
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden">
         <Image

@@ -16,10 +16,11 @@ const compressionMiddleware = compression();
 app.prepare().then(() => {
   createServer((req, res) => {
     const parsedUrl = parse(req.url, true)
+    const host = req.headers.host;
+    const proto = req.headers['x-forwarded-proto'];
 
     // Force HTTPS redirection in production.
-    if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
-      const { host } = req.headers;
+    if (process.env.NODE_ENV === 'production' && proto === 'http') {
       res.writeHead(301, { Location: `https://${host}${req.url}` });
       res.end();
       return;

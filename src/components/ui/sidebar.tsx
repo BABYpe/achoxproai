@@ -70,17 +70,11 @@ const SidebarProvider = React.forwardRef<
   ) => {
     const isMobile = useIsMobile()
     const [openMobile, setOpenMobile] = React.useState(false)
+    const [isClient, setIsClient] = React.useState(false)
 
     // Set initial state from cookie only on the client
-    const [isClient, setIsClient] = React.useState(false)
-    React.useEffect(() => {
-        setIsClient(true)
-    }, [])
-    
-    const getInitialOpenState = () => {
-        if (typeof window === 'undefined') {
-            return defaultOpen;
-        }
+    const getInitialOpenState = React.useCallback(() => {
+        if (typeof window === 'undefined') return defaultOpen;
         const cookieValue = document.cookie
             .split("; ")
             .find((row) => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`));
@@ -88,9 +82,14 @@ const SidebarProvider = React.forwardRef<
             return cookieValue.split("=")[1] === "true";
         }
         return defaultOpen;
-    }
+    }, [defaultOpen]);
 
     const [_open, _setOpen] = React.useState(getInitialOpenState());
+
+     React.useEffect(() => {
+        setIsClient(true);
+        _setOpen(getInitialOpenState());
+    }, [getInitialOpenState]);
 
     const open = openProp ?? _open
     const setOpen = React.useCallback(
@@ -148,7 +147,23 @@ const SidebarProvider = React.forwardRef<
     )
     
     if (!isClient) {
-        return null;
+        return <div
+            style={
+              {
+                "--sidebar-width": SIDEBAR_WIDTH,
+                "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+                ...style,
+              } as React.CSSProperties
+            }
+            className={cn(
+              "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
+              className
+            )}
+            ref={ref}
+            {...props}
+          >
+            {children}
+          </div>;
     }
 
     return (

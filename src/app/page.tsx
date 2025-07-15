@@ -378,7 +378,7 @@ export default function HomePage() {
                 </div>
             </div>
             <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground">
-                 {t('landing.footer.copyright', { year: new Date().getFullYear() })}
+                 {t('copyright', { year: new Date().getFullYear() })}
             </div>
         </div>
       </footer>

@@ -1,7 +1,4 @@
-
 import type {NextConfig} from 'next';
-
-const isDev = process.env.NODE_ENV !== 'production';
 
 const nextConfig: NextConfig = {
   env: {
@@ -40,7 +37,9 @@ const nextConfig: NextConfig = {
   },
   // Add the following line to allow cross-origin requests from the specified domain.
   // This is often needed in development environments like cloud workstations.
-  ...(isDev && { allowedDevOrigins: ["*.cloudworkstations.dev"] }),
+  ...(process.env.NODE_ENV !== 'production' && { allowedDevOrigins: ["*.cloudworkstations.dev"] }),
 };
 
 export default nextConfig;
+
+    

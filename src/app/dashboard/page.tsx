@@ -236,7 +236,7 @@ export default function DashboardPage() {
                     ))}
                  </CardContent>
             </Card>
-            <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
+             <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
                 <Suspense fallback={<Skeleton className="h-full w-full" />}>
                      <ProjectMap projects={projects} />
                 </Suspense>
@@ -245,3 +245,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+    

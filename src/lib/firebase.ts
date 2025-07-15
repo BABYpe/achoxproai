@@ -1,11 +1,10 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
-import { getAnalytics, isSupported } from "firebase/analytics";
+import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
+import { getFirestore, type Firestore } from "firebase/firestore";
+import { getStorage, type FirebaseStorage } from "firebase/storage";
+import { getAnalytics, isSupported, type Analytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBmo6oykjhmjq2zKRokuxFj_OAiT7kJfzQ",
   authDomain: "achox-pro.firebaseapp.com",
@@ -17,14 +16,13 @@ const firebaseConfig = {
   measurementId: "G-D57PQVJXJW"
 };
 
-
-// Initialize Firebase for client-side
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore(app);
-const storage = getStorage(app);
+// Initialize Firebase for SSR and client-side
+const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const db: Firestore = getFirestore(app);
+const storage: FirebaseStorage = getStorage(app);
 
 // Initialize Analytics only on the client and if supported
-let analytics;
+let analytics: Analytics | null = null;
 if (typeof window !== 'undefined') {
   isSupported().then(yes => {
     if (yes) {

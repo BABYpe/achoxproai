@@ -5,13 +5,12 @@ import {
   addDoc,
   deleteDoc,
   doc,
-  onSnapshot,
-  serverTimestamp,
-  query,
-  orderBy,
-  updateDoc,
   getDoc,
-  Timestamp
+  getDocs,
+  Timestamp,
+  updateDoc,
+  query,
+  orderBy
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { initialProjects } from '@/lib/initial-projects';
@@ -43,58 +42,52 @@ export interface Project {
 interface ProjectState {
   projects: Project[];
   isLoading: boolean;
-  unsubscribe: (() => void) | null;
-  fetchProjects: () => void;
+  fetchProjects: () => Promise<void>;
   getProjectById: (projectId: string) => Promise<Project | null>;
-  addProject: (project: Omit<Project, 'id' | 'createdAt'>) => Promise<void>;
+  addProject: (project: Omit<Project, 'id' | 'createdAt'>) => Promise<string>;
   deleteProject: (projectId: string) => Promise<void>;
   updateProject: (projectId: string, updatedData: Partial<Project>) => Promise<void>;
   updateProjectGanttData: (projectId: string, ganttData: EstimateProjectCostOutput['ganttChartData']) => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
-  projects: [], // Start with an empty array
+  projects: [],
   isLoading: true,
-  unsubscribe: null,
 
-  fetchProjects: () => {
-    // Prevent multiple listeners
-    if (get().unsubscribe) {
-        set({ isLoading: false });
-        // Manually trigger a re-render by creating a new array
-        set(state => ({ projects: [...state.projects] }));
-        return;
+  fetchProjects: async () => {
+    if (!get().isLoading) {
+        set({isLoading: true});
     }
-    set({ isLoading: true });
     try {
       const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        if (snapshot.empty && initialProjects.length > 0) {
-            console.log('Firebase is empty, using initial mock data.');
-            // This is a workaround for development to populate the DB.
-            // In a real production app, you might not want this.
-            initialProjects.forEach(async (project) => {
-              const { id, ...projectData } = project;
-              try {
-                await addDoc(collection(db, 'projects'), {
-                  ...projectData,
-                  createdAt: Timestamp.now()
-                });
-              } catch (e) { console.error("Error adding initial project:", e); }
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.log('Firebase is empty, seeding with initial projects.');
+        // This is a safe seeding mechanism. It only runs if the collection is truly empty.
+        // In production, this might be removed or handled differently.
+        const seedingPromises = initialProjects.map(project => {
+            const { id, ...projectData } = project; // exclude mock ID
+            return addDoc(collection(db, 'projects'), {
+              ...projectData,
+              createdAt: Timestamp.now()
             });
-            set({ projects: initialProjects, isLoading: false });
-            return;
-        }
-        const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+        });
+        await Promise.all(seedingPromises);
+        // After seeding, fetch again to get the correct IDs.
+        const newQuerySnapshot = await getDocs(q);
+        const projects = newQuerySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
         set({ projects, isLoading: false });
-      }, (error) => {
-        console.error("Error fetching projects:", error);
-        set({ isLoading: false, projects: initialProjects }); // Fallback to initial data on error
-      });
-      set({ unsubscribe });
+
+      } else {
+        const projects = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+        set({ projects, isLoading: false });
+      }
+
     } catch (error) {
-        console.error("Failed to fetch projects:", error);
-        set({ isLoading: false, projects: initialProjects }); // Fallback to initial data on error
+        console.error("Error fetching projects from Firestore:", error);
+        // Fallback to mock data in case of a connection error
+        set({ projects: initialProjects, isLoading: false });
     }
   },
 
@@ -110,11 +103,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             }
             return { id: docSnap.id, ...data } as Project;
         } else {
-             console.log("No such document in Firestore.");
-             // Fallback to initialProjects if not found in Firestore but might exist in mock data
-             const mockProject = initialProjects.find(p => p.id === projectId);
-             if (mockProject) return mockProject;
-             return null;
+            console.log("No such document in Firestore, checking mock data.");
+            return initialProjects.find(p => p.id === projectId) || null;
         }
     } catch (error) {
         console.error("Error getting document:", error);
@@ -124,10 +114,13 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
 
   addProject: async (project) => {
     try {
-      await addDoc(collection(db, 'projects'), {
+      const docRef = await addDoc(collection(db, 'projects'), {
           ...project,
           createdAt: Timestamp.now()
       });
+      // After adding, refresh the project list to include the new one
+      await get().fetchProjects();
+      return docRef.id;
     } catch (error) {
       console.error("Error adding project:", error);
       throw error;
@@ -137,6 +130,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   deleteProject: async (projectId) => {
     try {
       await deleteDoc(doc(db, 'projects', projectId));
+      // After deleting, update the local state for immediate feedback
+       set(state => ({
+        projects: state.projects.filter(p => p.id !== projectId)
+      }));
     } catch (error) {
       console.error("Error deleting project:", error);
       throw error;
@@ -146,6 +143,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   updateProject: async (projectId, updatedData) => {
     try {
       await updateDoc(doc(db, 'projects', projectId), updatedData);
+       // After updating, refresh the project list
+      await get().fetchProjects();
     } catch (error) {
       console.error("Error updating project:", error);
       throw error;

@@ -116,7 +116,7 @@ function DrawingMap({ onPolygonComplete, onClear, coordinates, setCoordinates, m
 
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="lg:col-span-2 flex flex-col gap-8">
             <Card className="shadow-xl rounded-2xl">
                 <CardHeader>
                     <CardTitle>تحديد المساحة والموقع من الخريطة</CardTitle>
@@ -268,7 +268,7 @@ function CostEstimationContent() {
             <h1 className="text-2xl font-bold">مخطط المشاريع الذكي</h1>
             
             <div className="grid lg:grid-cols-3 gap-8 items-start">
-                {/* Left Column: Input Form (Sticky) */}
+                
                 <div className="lg:col-span-1 lg:sticky top-20 flex flex-col gap-8">
                     <Card className="shadow-xl rounded-2xl">
                         <CardHeader>
@@ -364,16 +364,15 @@ function CostEstimationContent() {
                         </CardContent>
                     </Card>
                 </div>
-                
-                {/* Right Column: Map and Results (Scrollable) */}
+
                 <div className="lg:col-span-2 flex flex-col gap-8">
-                           <DrawingMap 
-                                onPolygonComplete={handlePolygonComplete} 
-                                onClear={clearDrawing} 
-                                coordinates={coordinates}
-                                setCoordinates={setCoordinates}
-                                manualUpdate={handleManualUpdate}
-                            />
+                    <DrawingMap 
+                        onPolygonComplete={handlePolygonComplete} 
+                        onClear={clearDrawing} 
+                        coordinates={coordinates}
+                        setCoordinates={setCoordinates}
+                        manualUpdate={handleManualUpdate}
+                    />
                     {!result && !isLoading && (
                         <Card className="w-full shadow-xl rounded-2xl min-h-[600px] flex items-center justify-center">
                             <div className="text-center text-muted-foreground p-8">
@@ -511,9 +510,21 @@ function CostEstimationContent() {
 }
 
 function CostEstimationPageWrapper() {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+    if (!apiKey) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <p className="text-destructive">
+                    Google Maps API Key is missing. Please set NEXT_PUBLIC_GOOGLE_MAPS_API_KEY environment variable.
+                </p>
+            </div>
+        );
+    }
+    
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={['drawing', 'geometry', 'places']}>
+            <APIProvider apiKey={apiKey} libraries={['drawing', 'geometry', 'places']}>
                 <CostEstimationContent />
             </APIProvider>
         </Suspense>

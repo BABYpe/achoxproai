@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState, useEffect, Suspense, useRef } from 'react'
+import { useState, useEffect, Suspense, useRef, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -17,29 +17,25 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from '@/components/ui/badge';
 import { APIProvider, Map, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { format } from 'date-fns'
+import { PlacesAutocomplete } from '@/components/places-autocomplete'
 
 
-function DrawingMap({ onPolygonComplete, onClear, onLocationDetect, coordinates, setCoordinates, manualUpdate }: { 
+function DrawingMap({ onPolygonComplete, onClear, coordinates, setCoordinates, manualUpdate }: { 
     onPolygonComplete: (polygon: google.maps.Polygon, area: number, path: google.maps.LatLngLiteral[]) => void, 
     onClear: () => void, 
-    onLocationDetect: (location: string) => void,
     coordinates: google.maps.LatLngLiteral[],
     setCoordinates: React.Dispatch<React.SetStateAction<google.maps.LatLngLiteral[]>>,
     manualUpdate: () => void
 }) {
     const map = useMap();
     const drawingLibrary = useMapsLibrary('drawing');
-    const geocodingLibrary = useMapsLibrary('geocoding');
     const geometryLibrary = useMapsLibrary('geometry');
 
     const [drawingManager, setDrawingManager] = useState<google.maps.drawing.DrawingManager | null>(null);
-    const [geocoder, setGeocoder] = useState<google.maps.Geocoder | null>(null);
     const [currentPolygon, setCurrentPolygon] = useState<google.maps.Polygon | null>(null);
 
     useEffect(() => {
-        if (!map || !drawingLibrary || !geocodingLibrary) return;
-
-        if (!geocoder) setGeocoder(new geocodingLibrary.Geocoder());
+        if (!map || !drawingLibrary) return;
 
         if (!drawingManager) {
             const newDrawingManager = new drawingLibrary.DrawingManager({
@@ -62,29 +58,16 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect, coordinates,
         return () => {
             if (drawingManager) google.maps.event.clearInstanceListeners(drawingManager);
         };
-    }, [map, drawingLibrary, geocodingLibrary, geocoder, drawingManager]);
+    }, [map, drawingLibrary, drawingManager]);
     
      useEffect(() => {
-        if (!drawingManager || !geocoder || !geometryLibrary) return;
+        if (!drawingManager || !geometryLibrary) return;
         
         const handlePolygonUpdate = (polygon: google.maps.Polygon) => {
              const path = polygon.getPath().getArray().map(latLng => ({ lat: latLng.lat(), lng: latLng.lng() }));
              const areaInSquareMeters = geometryLibrary.spherical.computeArea(polygon.getPath());
              
              onPolygonComplete(polygon, areaInSquareMeters, path);
-
-             const bounds = new google.maps.LatLngBounds();
-             polygon.getPath().forEach(latLng => bounds.extend(latLng));
-             const center = bounds.getCenter();
-
-             if (center && geocoder) {
-                 geocoder.geocode({ location: center }, (results, status) => {
-                     if (status === 'OK' && results?.[0]) {
-                        const address = results[0].formatted_address;
-                        onLocationDetect(address);
-                     }
-                 });
-             }
         }
 
         const polygonCompleteListener = google.maps.event.addListener(drawingManager, 'polygoncomplete', (polygon: google.maps.Polygon) => {
@@ -103,7 +86,7 @@ function DrawingMap({ onPolygonComplete, onClear, onLocationDetect, coordinates,
         return () => {
              google.maps.event.removeListener(polygonCompleteListener);
         }
-    }, [drawingManager, geocoder, geometryLibrary, onPolygonComplete, onLocationDetect, currentPolygon]);
+    }, [drawingManager, geometryLibrary, onPolygonComplete, currentPolygon]);
 
     const handleDrawClick = () => {
        if (drawingManager) drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
@@ -194,6 +177,7 @@ function CostEstimationContent() {
     const [result, setResult] = useState<EstimateProjectCostOutput | null>(null)
     const { toast } = useToast()
     const searchParams = useSearchParams()
+    const map = useMap();
 
     const [size, setSize] = useState('');
     const [location, setLocation] = useState('Riyadh');
@@ -218,13 +202,12 @@ function CostEstimationContent() {
          toast({ title: "قيد التطوير", description: "سيتم تفعيل ميزة تحديث الخريطة من الإحداثيات قريبًا."});
     }
 
-    const handleLocationDetect = (detectedLocation: string) => {
-        setLocation(detectedLocation);
-        toast({
-            title: "تم تحديث الموقع والمساحة",
-            description: `الموقع: ${detectedLocation}`,
-        });
-    }
+    const onPlaceSelect = useCallback((place: google.maps.places.PlaceResult | null) => {
+        if (place?.geometry?.location && map) {
+            map.panTo(place.geometry.location);
+            setLocation(place.formatted_address || place.name || '');
+        }
+    }, [map]);
 
     const clearDrawing = () => {
         if(polygon) {
@@ -243,7 +226,7 @@ function CostEstimationContent() {
 
         const formData = new FormData(event.currentTarget)
         const data = {
-            location: formData.get('location') as string,
+            location: location, // Use state for location
             size: formData.get('size') as string,
             type: formData.get('type') as string,
             quality: formData.get('quality') as "standard" | "premium" | "luxury",
@@ -295,7 +278,7 @@ function CostEstimationContent() {
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="space-y-1">
                                     <Label htmlFor="location">موقع المشروع</Label>
-                                    <Input id="location" name="location" placeholder="مثال: الرياض" value={location} onChange={(e) => setLocation(e.target.value)} required />
+                                    <PlacesAutocomplete onPlaceSelect={onPlaceSelect} />
                                 </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="size">مساحة المشروع (متر مربع)</Label>
@@ -382,16 +365,13 @@ function CostEstimationContent() {
                 </div>
 
                 <div className="lg:col-span-2 flex flex-col gap-8">
-                     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={['drawing', 'geometry', 'geocoding']}>
                            <DrawingMap 
                                 onPolygonComplete={handlePolygonComplete} 
                                 onClear={clearDrawing} 
-                                onLocationDetect={handleLocationDetect}
                                 coordinates={coordinates}
                                 setCoordinates={setCoordinates}
                                 manualUpdate={handleManualUpdate}
                             />
-                       </APIProvider>
                     {!result && !isLoading && (
                         <Card className="w-full shadow-xl rounded-2xl min-h-[600px] flex items-center justify-center">
                             <div className="text-center text-muted-foreground p-8">
@@ -528,10 +508,20 @@ function CostEstimationContent() {
     )
 }
 
+function CostEstimationPageWrapper() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={['drawing', 'geometry', 'places']}>
+                <CostEstimationContent />
+            </APIProvider>
+        </Suspense>
+    );
+}
+
 export default function CostEstimationPage() {
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <CostEstimationContent />
+            <CostEstimationPageWrapper />
         </Suspense>
-    )
+    );
 }

@@ -1,8 +1,7 @@
 'use client';
 
-import { I18nextProvider, useTranslation } from 'react-i18next';
+import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
-import { useTheme } from 'next-themes';
 import { useEffect } from 'react';
 
 export default function ClientLayout({
@@ -10,14 +9,22 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { i18n: i18nInstance } = useTranslation();
-  const { theme } = useTheme();
 
   useEffect(() => {
-    const language = i18nInstance.language;
-    document.documentElement.lang = language;
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-  }, [i18nInstance.language]);
+    const handleLanguageChange = (lng: string) => {
+      document.documentElement.lang = lng;
+      document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
+    };
+
+    i18n.on('languageChanged', handleLanguageChange);
+    
+    // Set initial language and direction
+    handleLanguageChange(i18n.language);
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, []);
 
   return (
     <I18nextProvider i18n={i18n}>

@@ -42,9 +42,9 @@ export default function RootLayout({
         >
           <ClientLayout>
             {children}
-            <Toaster />
-            <CookieBanner />
           </ClientLayout>
+          <Toaster />
+          <CookieBanner />
         </ThemeProvider>
       </body>
     </html>

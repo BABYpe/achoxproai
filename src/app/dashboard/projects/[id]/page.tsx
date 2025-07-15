@@ -129,11 +129,13 @@ export default function ProjectDetailsPage() {
         }
 
         const isMilestone = /contract|milestone|delivery|تسليم|عقد|مرحلة/i.test(task.task);
-        let Icon = CheckCircle;
+        let Icon;
         if (isMilestone) {
             if (/contract|عقد/i.test(task.task)) Icon = Handshake;
             else if (/delivery|تسليم/i.test(task.task)) Icon = Briefcase;
             else Icon = Milestone;
+        } else {
+            Icon = CheckCircle;
         }
 
         return {
@@ -321,3 +323,5 @@ export default function ProjectDetailsPage() {
         </div>
     );
 }
+
+    

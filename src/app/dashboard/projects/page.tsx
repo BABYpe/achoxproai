@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useProjectStore } from "@/hooks/use-project-store";
+import { useProjectStore, Project } from "@/hooks/use-project-store";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -55,11 +55,16 @@ export default function ProjectsPage() {
     }
   }
   
-  const handleEditNavigation = (id?: string) => {
-    toast({
-        title: "قيد التطوير",
-        description: `سيتم تفعيل صفحة تعديل المشروع قريبًا.`
-    })
+  const handleEditNavigation = (project: Project) => {
+    const query = new URLSearchParams({
+        template: JSON.stringify({
+            id: project.id,
+            projectName: project.title,
+            location: project.location,
+            projectDescription: project.scopeOfWork || `مشروع جديد مبني على قالب: ${project.title}`,
+        }),
+    }).toString();
+    router.push(`/dashboard/projects/new?${query}`);
   }
 
   return (
@@ -126,7 +131,7 @@ export default function ProjectsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onSelect={() => router.push(`/dashboard/projects/${project.id}`)}>عرض التفاصيل</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleEditNavigation(project.id)}>تعديل المشروع</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleEditNavigation(project)}>تعديل المشروع</DropdownMenuItem>
                         <AlertDialogTrigger asChild>
                           <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>حذف المشروع</DropdownMenuItem>
                         </AlertDialogTrigger>
@@ -189,3 +194,5 @@ export default function ProjectsPage() {
     </div>
   )
 }
+
+    

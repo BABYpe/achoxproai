@@ -90,7 +90,7 @@ export const initialProjects: Project[] = [
     variant: "secondary",
     location: "الدمام، مركز المعارض",
     imageUrl: "https://images.unsplash.com/photo-1531058020387-3be344556be6?q=80&w=600",
-    imageHint: "event setup stage",
+    imageHint: "event stage setup",
     progress: 100,
     budget: 850000,
     currency: "SAR",

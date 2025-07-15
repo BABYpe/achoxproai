@@ -48,19 +48,69 @@ function useSidebar() {
   return context
 }
 
+// Custom hook to manage sidebar state with client-side logic
+function useSidebarState(defaultOpen = true) {
+    const isMobile = useIsMobile();
+    const [openMobile, setOpenMobile] = React.useState(false);
+    
+    const getInitialOpenState = React.useCallback(() => {
+        if (typeof window === 'undefined') return defaultOpen;
+        const cookieValue = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`));
+        return cookieValue ? cookieValue.split("=")[1] === "true" : defaultOpen;
+    }, [defaultOpen]);
+
+    const [open, setOpen] = React.useState(getInitialOpenState());
+
+    React.useEffect(() => {
+        setOpen(getInitialOpenState());
+    }, [getInitialOpenState]);
+
+    const setOpenWithCookie = React.useCallback((value: boolean) => {
+        setOpen(value);
+        if (typeof window !== 'undefined') {
+            document.cookie = `${SIDEBAR_COOKIE_NAME}=${value}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        }
+    }, []);
+
+    const toggleSidebar = React.useCallback(() => {
+      isMobile ? setOpenMobile((v) => !v) : setOpenWithCookie(!open);
+    }, [isMobile, open, setOpenWithCookie]);
+    
+    // Keyboard shortcut to toggle sidebar
+    React.useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
+                event.preventDefault();
+                toggleSidebar();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [toggleSidebar]);
+
+    return {
+        state: open ? "expanded" : "collapsed",
+        open,
+        setOpen: setOpenWithCookie,
+        isMobile,
+        openMobile,
+        setOpenMobile,
+        toggleSidebar,
+    };
+}
+
+
 const SidebarProvider = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
     defaultOpen?: boolean
-    open?: boolean
-    onOpenChange?: (open: boolean) => void
   }
 >(
   (
     {
       defaultOpen = true,
-      open: openProp,
-      onOpenChange: setOpenProp,
       className,
       style,
       children,
@@ -68,106 +118,10 @@ const SidebarProvider = React.forwardRef<
     },
     ref
   ) => {
-    const isMobile = useIsMobile()
-    const [openMobile, setOpenMobile] = React.useState(false)
-    const [isClient, setIsClient] = React.useState(false)
-
-    // Set initial state from cookie only on the client
-    const getInitialOpenState = React.useCallback(() => {
-        if (typeof window === 'undefined') return defaultOpen;
-        const cookieValue = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`));
-        if (cookieValue) {
-            return cookieValue.split("=")[1] === "true";
-        }
-        return defaultOpen;
-    }, [defaultOpen]);
-
-    const [_open, _setOpen] = React.useState(getInitialOpenState());
-
-     React.useEffect(() => {
-        setIsClient(true);
-        _setOpen(getInitialOpenState());
-    }, [getInitialOpenState]);
-
-    const open = openProp ?? _open
-    const setOpen = React.useCallback(
-      (value: boolean | ((value: boolean) => boolean)) => {
-        const openState = typeof value === "function" ? value(open) : value
-        if (setOpenProp) {
-          setOpenProp(openState)
-        } else {
-          _setOpen(openState)
-        }
-
-        if (typeof window !== 'undefined') {
-          document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
-        }
-      },
-      [setOpenProp, open]
-    )
-
-    // Helper to toggle the sidebar.
-    const toggleSidebar = React.useCallback(() => {
-      return isMobile
-        ? setOpenMobile((open) => !open)
-        : setOpen((open) => !open)
-    }, [isMobile, setOpen, setOpenMobile])
-
-    // Adds a keyboard shortcut to toggle the sidebar.
-    React.useEffect(() => {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (
-          event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
-          (event.metaKey || event.ctrlKey)
-        ) {
-          event.preventDefault()
-          toggleSidebar()
-        }
-      }
-
-      window.addEventListener("keydown", handleKeyDown)
-      return () => window.removeEventListener("keydown", handleKeyDown)
-    }, [toggleSidebar])
-
-    const state = open ? "expanded" : "collapsed"
-
-    const contextValue = React.useMemo<SidebarContext>(
-      () => ({
-        state,
-        open,
-        setOpen,
-        isMobile,
-        openMobile,
-        setOpenMobile,
-        toggleSidebar,
-      }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
-    )
-    
-    if (!isClient) {
-        return <div
-            style={
-              {
-                "--sidebar-width": SIDEBAR_WIDTH,
-                "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
-                ...style,
-              } as React.CSSProperties
-            }
-            className={cn(
-              "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
-              className
-            )}
-            ref={ref}
-            {...props}
-          >
-            {children}
-          </div>;
-    }
+    const sidebarState = useSidebarState(defaultOpen);
 
     return (
-      <SidebarContext.Provider value={contextValue}>
+      <SidebarContext.Provider value={sidebarState}>
         <TooltipProvider delayDuration={0}>
           <div
             style={

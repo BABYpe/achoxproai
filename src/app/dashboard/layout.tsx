@@ -42,7 +42,8 @@ import { Separator } from '@/components/ui/separator';
 import { GanttChartIcon } from '@/components/icons/gantt-chart-icon';
 import { UsersGroupIcon } from '@/components/icons/users-group-icon';
 
-export default function DashboardLayout({
+
+function DashboardLayoutContent({
   children,
 }: {
   children: React.ReactNode;
@@ -56,9 +57,8 @@ export default function DashboardLayout({
 
   const isActive = (path: string) => pathname === path;
   const isProjectsActive = pathname.startsWith('/dashboard/projects');
-
+  
   return (
-    <SidebarProvider>
       <div className="min-h-screen flex">
         <Sidebar>
           <SidebarHeader className="h-20 flex items-center justify-center text-center p-2">
@@ -242,6 +242,21 @@ export default function DashboardLayout({
           </div>
         </main>
       </div>
+  )
+}
+
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+
+  return (
+    <SidebarProvider>
+      <DashboardLayoutContent>
+        {children}
+      </DashboardLayoutContent>
     </SidebarProvider>
   );
 }

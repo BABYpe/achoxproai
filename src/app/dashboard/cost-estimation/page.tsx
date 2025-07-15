@@ -116,7 +116,7 @@ function DrawingMap({ onPolygonComplete, onClear, coordinates, setCoordinates, m
 
 
     return (
-        <div className="sticky top-20 flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
             <Card className="shadow-xl rounded-2xl">
                 <CardHeader>
                     <CardTitle>تحديد المساحة والموقع من الخريطة</CardTitle>
@@ -268,8 +268,9 @@ function CostEstimationContent() {
             <h1 className="text-2xl font-bold">مخطط المشاريع الذكي</h1>
             
             <div className="grid lg:grid-cols-3 gap-8 items-start">
-                <div className="lg:col-span-1 flex flex-col gap-8">
-                    <Card className="shadow-xl rounded-2xl sticky top-20">
+                {/* Left Column: Input Form (Sticky) */}
+                <div className="lg:col-span-1 lg:sticky top-20 flex flex-col gap-8">
+                    <Card className="shadow-xl rounded-2xl">
                         <CardHeader>
                             <CardTitle>معلومات المشروع</CardTitle>
                             <CardDescription>أدخل تفاصيل مشروعك ليقوم المستشار الذكي ببناء خطة متكاملة.</CardDescription>
@@ -363,7 +364,8 @@ function CostEstimationContent() {
                         </CardContent>
                     </Card>
                 </div>
-
+                
+                {/* Right Column: Map and Results (Scrollable) */}
                 <div className="lg:col-span-2 flex flex-col gap-8">
                            <DrawingMap 
                                 onPolygonComplete={handlePolygonComplete} 

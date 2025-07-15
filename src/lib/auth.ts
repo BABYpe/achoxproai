@@ -1,3 +1,4 @@
+
 // In a real application, this would be a more sophisticated system involving a proper auth provider,
 // user roles stored in a database, and a secure way to check permissions.
 // For the purpose of this prototype, we'll use a simple, hardcoded approach.

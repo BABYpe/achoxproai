@@ -15,8 +15,8 @@ const cairo = Cairo({
 
 // Default metadata
 export const metadata: Metadata = {
-  title: 'AchoX Pro AI | منصة إدارة المشاريع الذكية',
-  description: 'منصة AchoX Pro AI هي شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة.',
+  title: 'A.D.A.M | منصة إدارة المشاريع الذكية',
+  description: 'منصة A.D.A.M هي شريكك الذكي الذي يقرأ كراسات الشروط، يحلل المخططات، يسعّر المشاريع بدقة، ويولد خطط عمل متكاملة.',
   robots: "index, follow",
 };
 

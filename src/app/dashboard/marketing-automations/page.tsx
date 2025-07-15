@@ -34,7 +34,7 @@ export default function MarketingAutomationsPage() {
         try {
             const outreachPlan = await generateMarketingOutreach({
                 targetAudienceDescription: targetAudience,
-                senderCompanyName: "AchoX Pro Contracting", // This would be dynamic in a real app
+                senderCompanyName: "A.D.A.M Contracting", // This would be dynamic in a real app
                 senderCompanySpecialty: "متخصصون في إدارة المشاريع الهندسية والإنشاءات باستخدام أحدث تقنيات الذكاء الاصطناعي."
             });
             setResult(outreachPlan);

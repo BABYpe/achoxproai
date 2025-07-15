@@ -64,7 +64,7 @@ export default function DashboardLayout({
           <SidebarHeader className="h-20 flex items-center justify-center text-center p-2">
             <Link href="/dashboard" className="flex flex-col items-center gap-1 group-data-[collapsible=icon]:hidden">
               <Logo className="h-12 w-12 text-primary" />
-              <SidebarTitle className="text-lg font-bold">AchoX Pro AI</SidebarTitle>
+              <SidebarTitle className="text-lg font-bold">A.D.A.M</SidebarTitle>
             </Link>
             <Link href="/dashboard" className="hidden group-data-[collapsible=icon]:flex">
               <Logo className="w-8 h-8 text-primary" />

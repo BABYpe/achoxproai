@@ -59,22 +59,21 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         set({isLoading: true});
     }
     try {
-      const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+      const projectsCollection = collection(db, "projects");
+      const q = query(projectsCollection, orderBy("createdAt", "desc"));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
         console.log('Firebase is empty, seeding with initial projects.');
-        // This is a safe seeding mechanism. It only runs if the collection is truly empty.
-        // In production, this might be removed or handled differently.
         const seedingPromises = initialProjects.map(project => {
             const { id, ...projectData } = project; // exclude mock ID
-            return addDoc(collection(db, 'projects'), {
+            return addDoc(projectsCollection, {
               ...projectData,
               createdAt: Timestamp.now()
             });
         });
         await Promise.all(seedingPromises);
-        // After seeding, fetch again to get the correct IDs.
+        
         const newQuerySnapshot = await getDocs(q);
         const projects = newQuerySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
         set({ projects, isLoading: false });
@@ -86,8 +85,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
 
     } catch (error) {
         console.error("Error fetching projects from Firestore:", error);
-        // Fallback to mock data in case of a connection error
-        set({ projects: initialProjects, isLoading: false });
+        set({ projects: [], isLoading: false });
     }
   },
 
@@ -97,14 +95,13 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
-            // Convert Firestore Timestamps to serializable format if they exist
             if (data.createdAt && data.createdAt instanceof Timestamp) {
                 data.createdAt = data.createdAt.toDate().toISOString();
             }
             return { id: docSnap.id, ...data } as Project;
         } else {
-            console.log("No such document in Firestore, checking mock data.");
-            return initialProjects.find(p => p.id === projectId) || null;
+            console.warn("No such document in Firestore with ID:", projectId);
+            return null;
         }
     } catch (error) {
         console.error("Error getting document:", error);
@@ -118,7 +115,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
           ...project,
           createdAt: Timestamp.now()
       });
-      // After adding, refresh the project list to include the new one
       await get().fetchProjects();
       return docRef.id;
     } catch (error) {
@@ -130,7 +126,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   deleteProject: async (projectId) => {
     try {
       await deleteDoc(doc(db, 'projects', projectId));
-      // After deleting, update the local state for immediate feedback
        set(state => ({
         projects: state.projects.filter(p => p.id !== projectId)
       }));
@@ -143,7 +138,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   updateProject: async (projectId, updatedData) => {
     try {
       await updateDoc(doc(db, 'projects', projectId), updatedData);
-       // After updating, refresh the project list
       await get().fetchProjects();
     } catch (error) {
       console.error("Error updating project:", error);
@@ -156,7 +150,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         const projectRef = doc(db, 'projects', projectId);
         await updateDoc(projectRef, { ganttChartData: ganttData });
         
-        // Update local state as well for immediate feedback
         set(state => ({
             projects: state.projects.map(p => 
                 p.id === projectId ? { ...p, ganttChartData: ganttData } : p

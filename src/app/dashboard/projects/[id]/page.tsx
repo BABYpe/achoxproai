@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import { Button } from "@/components/ui/button";
@@ -78,10 +78,7 @@ export default function ProjectDetailsPage() {
     };
     
     const handleEdit = () => {
-        toast({
-            title: "قيد التطوير",
-            description: "سيتم تفعيل صفحة تعديل المشروع قريبًا."
-        });
+        router.push(`/dashboard/projects/new?templateId=${projectId}`);
     }
 
     if (isLoading) {

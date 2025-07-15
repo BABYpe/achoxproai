@@ -22,7 +22,7 @@ body {
     --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 142 91% 60%; /* Vibrant Green */
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 72% 51%; /* Darker Red for better contrast */
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
@@ -60,7 +60,7 @@ body {
     --muted-foreground: 215 20% 65%;
     --accent: 142 80% 65%; /* Vibrant Green */
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 40%;
+    --destructive: 0 63% 51%; /* Darker Red for better contrast */
     --destructive-foreground: 210 40% 98%;
     --border: 224 71% 10%;
     --input: 224 71% 10%;

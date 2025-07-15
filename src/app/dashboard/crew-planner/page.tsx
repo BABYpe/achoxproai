@@ -1,8 +1,8 @@
 
 "use client"
 
-import React, { useState, useMemo } from 'react';
-import { useProjectStore, Project } from '@/hooks/use-project-store';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useProjectStore } from '@/hooks/use-project-store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader, UserCheck } from 'lucide-react';
@@ -20,6 +20,12 @@ export default function CrewPlannerPage() {
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const [crew, setCrew] = useState<CrewRecommendation | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
+    
+    useEffect(() => {
+        if (!projectsLoading && projects.length > 0 && !selectedProjectId) {
+            setSelectedProjectId(projects[0].id!);
+        }
+    }, [projects, projectsLoading, selectedProjectId]);
 
     const selectedProject = useMemo(() => {
         return projects.find(p => p.id === selectedProjectId);
@@ -31,17 +37,27 @@ export default function CrewPlannerPage() {
             return;
         }
 
+        if (!selectedProject.scopeOfWork || !selectedProject.projectType || !selectedProject.quality) {
+             toast({ 
+                title: "بيانات غير كافية", 
+                description: "هذا المشروع لا يحتوي على تفاصيل كافية لتوليد فريق عمل. يرجى استخدام ميزة 'استخدام كقالب' من صفحة القوالب لتحديث المشروع.", 
+                variant: "destructive",
+                duration: 8000,
+             });
+             return;
+        }
+
+
         setIsGenerating(true);
         setCrew(null);
 
         try {
-            // Re-run the estimation flow to get the crew details, as they are not stored.
             const estimation = await estimateProjectCost({
                 location: selectedProject.location,
                 size: (selectedProject.budget / 7000).toFixed(0), // Approximate size
-                type: 'residential_villa', // This should be stored in the project object in a real app
-                quality: 'premium', // This also should be stored
-                scopeOfWork: `إعادة حساب الطاقم لمشروع: ${selectedProject.title}`,
+                type: selectedProject.projectType, 
+                quality: selectedProject.quality,
+                scopeOfWork: selectedProject.scopeOfWork,
                 currentDate: format(new Date(), 'yyyy-MM-dd'),
             });
             setCrew(estimation.crewRecommendation);
@@ -61,16 +77,18 @@ export default function CrewPlannerPage() {
                 <h1 className="text-3xl font-bold">مخطط فريق العمل</h1>
                 <div className="flex items-center gap-2">
                      <div className="w-[300px]">
-                         <Select onValueChange={v => {setSelectedProjectId(v); setCrew(null);}} value={selectedProjectId || ''}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="اختر مشروعاً" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {projects.map(p => (
-                                    <SelectItem key={p.id} value={p.id!}>{p.title}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                         {projectsLoading ? <Loader className="animate-spin" /> : (
+                            <Select onValueChange={v => {setSelectedProjectId(v); setCrew(null);}} value={selectedProjectId || ''}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="اختر مشروعاً" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {projects.map(p => (
+                                        <SelectItem key={p.id} value={p.id!}>{p.title}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                         )}
                     </div>
                      <Button onClick={handleGenerateCrew} disabled={!selectedProjectId || isGenerating}>
                         {isGenerating && <Loader className="ml-2 h-4 w-4 animate-spin" />}
@@ -114,8 +132,14 @@ export default function CrewPlannerPage() {
                     ) : (
                          <div className="flex flex-col items-center justify-center gap-4 py-20 text-muted-foreground">
                             <UsersGroupIcon className="h-16 w-16" />
-                            <p className="font-semibold text-lg">الرجاء اختيار مشروع والضغط على زر الحساب</p>
-                            <p>لعرض الفريق المقترح من قبل الذكاء الاصطناعي.</p>
+                             {projects.length > 0 ? (
+                                <>
+                                 <p className="font-semibold text-lg">الرجاء اختيار مشروع والضغط على زر الحساب</p>
+                                 <p>لعرض الفريق المقترح من قبل الذكاء الاصطناعي.</p>
+                                </>
+                             ): (
+                                 <p className="font-semibold text-lg">لا توجد مشاريع لعرضها.</p>
+                             )}
                         </div>
                     )}
                 </CardContent>

@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useProjectStore, type Project } from "@/hooks/use-project-store"
-import { Loader, ArrowLeft, Wand2, FileText, Users, GanttChartSquare, ClipboardList } from "lucide-react"
+import { Loader, ArrowLeft, Wand2, FileText, Users, GanttChartSquare, ClipboardList, Info } from "lucide-react"
 import Link from "next/link"
 import { FileUploader } from "@/components/file-uploader"
 import { uploadFile } from "@/services/storage"
@@ -21,8 +21,10 @@ import { generateComprehensivePlan, type GenerateComprehensivePlanOutput } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 const projectSchema = z.object({
+    id: z.string().optional(), // For editing existing projects
     projectName: z.string().min(1, "اسم المشروع مطلوب"),
     projectDescription: z.string().min(10, "يرجى تقديم وصف لا يقل عن 10 أحرف."),
     location: z.string().min(1, "موقع المشروع مطلوب"),
@@ -34,11 +36,12 @@ function NewProjectPageContent() {
     const { toast } = useToast()
     const router = useRouter()
     const searchParams = useSearchParams();
-    const addProject = useProjectStore((state) => state.addProject);
+    const { addProject, updateProject } = useProjectStore.getState();
     
     const [isLoading, setIsLoading] = useState(false);
     const [blueprintFile, setBlueprintFile] = useState<File | null>(null);
     const [generatedPlan, setGeneratedPlan] = useState<GenerateComprehensivePlanOutput | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
 
     const { control, handleSubmit, formState: { errors }, reset } = useForm<ProjectFormData>({
         resolver: zodResolver(projectSchema),
@@ -54,11 +57,21 @@ function NewProjectPageContent() {
         if (templateParam) {
             try {
                 const templateData = JSON.parse(templateParam);
-                reset(templateData); // Set form values from template
-                 toast({
-                    title: "تم تحميل القالب",
-                    description: "يمكنك الآن تعديل التفاصيل أو إنشاء الخطة مباشرة.",
-                });
+                reset(templateData);
+                
+                if (templateData.id) {
+                    setIsEditing(true);
+                     toast({
+                        title: "وضع التعديل",
+                        description: "تم تحميل بيانات المشروع. يمكنك الآن تعديلها وإنشاء خطة محدثة.",
+                    });
+                } else {
+                    setIsEditing(false);
+                    toast({
+                        title: "تم تحميل القالب",
+                        description: "يمكنك الآن تعديل التفاصيل أو إنشاء الخطة مباشرة.",
+                    });
+                }
             } catch (error) {
                 console.error("Failed to parse template data:", error);
                 toast({
@@ -101,7 +114,7 @@ function NewProjectPageContent() {
             setGeneratedPlan(result);
             toast({
                 title: "تم إنشاء الخطة بنجاح!",
-                description: "يمكنك الآن مراجعة الخطة وحفظ المشروع.",
+                description: `يمكنك الآن مراجعة الخطة و${isEditing ? 'تحديث' : 'حفظ'} المشروع.`,
             });
 
         } catch (error) {
@@ -119,6 +132,8 @@ function NewProjectPageContent() {
     const handleSaveProject = async () => {
         if (!generatedPlan) return;
         setIsLoading(true);
+        const formData = control._formValues;
+
         try {
             let imageUrl = "https://placehold.co/600x400.png";
             let imageHint = "construction site";
@@ -128,37 +143,45 @@ function NewProjectPageContent() {
                  imageHint = "custom project image"
             }
             
-            const newProject: Omit<Project, 'id' | 'createdAt'> = {
+            const projectData: Partial<Project> = {
                 title: generatedPlan.projectName,
                 status: "مخطط له",
                 variant: "outline",
                 location: generatedPlan.location,
-                imageUrl,
-                imageHint,
+                // Only update image if a new one was uploaded
+                ...(blueprintFile && { imageUrl, imageHint }),
                 progress: 0,
                 budget: parseFloat(generatedPlan.costEstimation.totalEstimatedCost.replace(/[^0-9.]/g, '')),
                 currency: generatedPlan.costEstimation.totalEstimatedCost.replace(/[0-9,.\s]/g, ''),
-                lat: 24.7136, // Default, can be improved with geocoding
+                lat: 24.7136,
                 lng: 46.6753,
-                manager: "علي محمد", // Default manager
+                manager: "علي محمد",
                 endDate: generatedPlan.costEstimation.ganttChartData.slice(-1)[0]?.end || "",
                 ganttChartData: generatedPlan.costEstimation.ganttChartData,
-                // --- Storing the crucial analysis data ---
                 projectType: generatedPlan.projectAnalysis.projectType,
                 quality: generatedPlan.projectAnalysis.quality,
                 scopeOfWork: generatedPlan.blueprintAnalysis?.scopeOfWork || generatedPlan.projectAnalysis.initialBlueprintPrompt || '',
             };
 
-            await addProject(newProject);
-             toast({
-                title: "تم حفظ المشروع بنجاح!",
-                description: "تمت إضافة المشروع الجديد إلى قاعدة البيانات.",
-            })
-            router.push("/dashboard/projects");
+            if (isEditing && formData.id) {
+                await updateProject(formData.id, projectData);
+                 toast({
+                    title: "تم تحديث المشروع بنجاح!",
+                })
+                router.push(`/dashboard/projects/${formData.id}`);
+            } else {
+                 await addProject(projectData as Omit<Project, 'id' | 'createdAt'>);
+                 toast({
+                    title: "تم حفظ المشروع بنجاح!",
+                    description: "تمت إضافة المشروع الجديد إلى قاعدة البيانات.",
+                })
+                router.push("/dashboard/projects");
+            }
+
 
         } catch (error) {
             console.error("Failed to save project", error);
-            toast({ title: "فشل حفظ المشروع", variant: "destructive" });
+            toast({ title: `فشل ${isEditing ? 'تحديث' : 'حفظ'} المشروع`, variant: "destructive" });
         } finally {
             setIsLoading(false);
         }
@@ -167,7 +190,7 @@ function NewProjectPageContent() {
     return (
         <div className="flex flex-col gap-8">
              <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">إنشاء مشروع جديد بالذكاء الاصطناعي</h1>
+                <h1 className="text-2xl font-bold">{isEditing ? 'تعديل المشروع' : 'إنشاء مشروع جديد بالذكاء الاصطناعي'}</h1>
                 <Button variant="outline" asChild>
                     <Link href="/dashboard/projects">
                         <ArrowLeft className="ml-2 h-4 w-4" />
@@ -184,6 +207,15 @@ function NewProjectPageContent() {
                             <CardDescription>أدخل التفاصيل الأساسية، وسيقوم العقل المدبر بتوليد خطة متكاملة.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
+                            {isEditing && (
+                                 <Alert>
+                                    <Info className="h-4 w-4" />
+                                    <AlertTitle>أنت في وضع التعديل</AlertTitle>
+                                    <AlertDescription>
+                                        يمكنك تحديث البيانات وتوليد خطة جديدة للمشروع الحالي.
+                                    </AlertDescription>
+                                </Alert>
+                            )}
                             <div className="space-y-2">
                                 <Label htmlFor="projectName">اسم المشروع</Label>
                                 <Controller name="projectName" control={control} render={({ field }) => <Input {...field} placeholder="مثال: بناء فيلا سكنية بحي الياسمين" />} />
@@ -244,7 +276,7 @@ function NewProjectPageContent() {
                                 <CardHeader className="flex-row items-center justify-between">
                                     <CardTitle className="text-2xl text-white">الخطة المتكاملة لمشروع: {generatedPlan.projectName}</CardTitle>
                                      <Button onClick={handleSaveProject} disabled={isLoading} variant="secondary">
-                                        {isLoading ? "جاري الحفظ..." : "اعتماد الخطة وحفظ المشروع"}
+                                        {isLoading ? "جاري الحفظ..." : `اعتماد الخطة و${isEditing ? 'تحديث' : 'حفظ'} المشروع`}
                                     </Button>
                                 </CardHeader>
                                 <CardContent>

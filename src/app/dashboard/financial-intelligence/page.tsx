@@ -65,7 +65,7 @@ export default function FinancialIntelligencePage() {
 
   const projectTransactions = useMemo(() => {
     if (!selectedProjectId) return [];
-    return transactions[selectedProjectId]?.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()) || [];
+    return transactions[selectedProjectId]?.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()) || [];
   }, [selectedProjectId, transactions]);
 
   const stats = useMemo(() => {
@@ -86,7 +86,9 @@ export default function FinancialIntelligencePage() {
 
   const spendingOverTimeData = useMemo(() => {
     let cumulativeAmount = 0;
-    return projectTransactions.map(t => {
+    // Sort transactions by date ascending for the chart
+    const sortedTransactions = [...projectTransactions].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return sortedTransactions.map(t => {
       cumulativeAmount += t.amount;
       return {
         date: new Date(t.date).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' }),
@@ -268,11 +270,15 @@ export default function FinancialIntelligencePage() {
           </>
         ) : (
           <Card className="shadow-lg rounded-2xl flex items-center justify-center min-h-[400px]">
-            <div className="text-center text-muted-foreground">
-              <Scale className="w-12 h-12 mx-auto mb-4" />
-              <p className="font-semibold">الرجاء اختيار مشروع من القائمة أعلاه</p>
-              <p className="text-sm">لعرض بياناته المالية وإدارة معاملاته.</p>
-            </div>
+             {projectsLoading ? (
+                 <Loader className="w-12 h-12 animate-spin text-primary" />
+             ) : (
+                <div className="text-center text-muted-foreground">
+                    <Scale className="w-12 h-12 mx-auto mb-4" />
+                    <p className="font-semibold">الرجاء اختيار مشروع من القائمة أعلاه</p>
+                    <p className="text-sm">لعرض بياناته المالية وإدارة معاملاته.</p>
+                </div>
+             )}
           </Card>
         )}
       </div>

@@ -1,12 +1,12 @@
 
 "use client"
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Building, DollarSign, User, Calendar, Percent, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus, Milestone, Handshake, Briefcase, CheckCircle } from "lucide-react";
+import { ArrowLeft, Building, DollarSign, User, Calendar, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus, Milestone, Handshake, Briefcase, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +23,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-// Mock data for project details that aren't yet in the main project object
 const mockUpdates = [
     { date: "2024-07-20", author: "علي محمد", text: "تم الانتهاء من صب خرسانة الدور الأول. واجهنا تأخيرًا بسيطًا بسبب الطقس ولكن تم تعويضه. سنبدأ في أعمال المباني الأسبوع القادم." },
     { date: "2024-07-18", author: "سارة عبدالله", text: "تم تحديد خطر محتمل يتعلق بتوريد مواد العزل. تم التواصل مع مورد بديل كخطة احتياطية." },
@@ -78,7 +77,16 @@ export default function ProjectDetailsPage() {
     };
     
     const handleEdit = () => {
-        router.push(`/dashboard/projects/new?templateId=${projectId}`);
+        if (!project) return;
+        const query = new URLSearchParams({
+            template: JSON.stringify({
+                id: project.id,
+                projectName: project.title,
+                location: project.location,
+                projectDescription: project.scopeOfWork || `مشروع جديد مبني على قالب: ${project.title}`,
+            }),
+        }).toString();
+        router.push(`/dashboard/projects/new?${query}`);
     }
 
     if (isLoading) {
@@ -108,7 +116,6 @@ export default function ProjectDetailsPage() {
         { name: "أحمد خان", role: "مشرف عمال" },
     ]
 
-    // Dynamically determine roadmap status
     const today = new Date();
     const roadmap = project.ganttChartData ? project.ganttChartData.map(task => {
         const endDate = new Date(task.end);
@@ -223,37 +230,37 @@ export default function ProjectDetailsPage() {
                             <CardTitle>خريطة طريق المشروع</CardTitle>
                         </CardHeader>
                         <CardContent>
-                           <div className="relative pl-6">
-                                {/* Vertical line */}
-                                <div className="absolute right-6 top-0 bottom-0 w-0.5 bg-border"></div>
-
-                                <div className="space-y-8">
-                                    {roadmap.map((item, index) => {
-                                        const Icon = item.icon;
-                                        return (
-                                        <div key={index} className="relative flex items-start gap-4">
-                                            {/* Dot/Icon on the line */}
-                                            <div className="absolute top-1/2 -translate-y-1/2 right-6 translate-x-1/2 z-10 flex items-center justify-center">
-                                                {item.type === 'milestone' ? (
-                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${getStatusStyles(item.status)} ring-4 ring-background`}>
-                                                        <Icon className="h-5 w-5" />
-                                                    </div>
-                                                ) : (
-                                                    <div className={`w-4 h-4 rounded-full ${getStatusStyles(item.status)} ring-4 ring-background`}></div>
-                                                )}
+                            {roadmap.length > 0 ? (
+                                <div className="relative pl-6">
+                                    <div className="absolute right-6 top-0 bottom-0 w-0.5 bg-border"></div>
+                                    <div className="space-y-8">
+                                        {roadmap.map((item, index) => {
+                                            const Icon = item.icon;
+                                            return (
+                                            <div key={index} className="relative flex items-start gap-4">
+                                                <div className="absolute top-1/2 -translate-y-1/2 right-6 translate-x-1/2 z-10 flex items-center justify-center">
+                                                    {item.type === 'milestone' ? (
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${getStatusStyles(item.status)} ring-4 ring-background`}>
+                                                            <Icon className="h-5 w-5" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`w-4 h-4 rounded-full ${getStatusStyles(item.status)} ring-4 ring-background`}></div>
+                                                    )}
+                                                </div>
+                                                <div className="flex-1 space-y-1 pr-12">
+                                                    <p className="font-semibold text-foreground">{item.task}</p>
+                                                    <p className="text-sm text-muted-foreground">{item.start} &rarr; {item.end}</p>
+                                                </div>
+                                                <Badge variant={item.status === "completed" ? "secondary" : item.status === "in-progress" ? "default" : "outline"}>
+                                                    {item.status === 'completed' ? 'مكتمل' : item.status === 'in-progress' ? 'قيد التنفيذ' : 'مخطط له'}
+                                                </Badge>
                                             </div>
-
-                                            <div className="flex-1 space-y-1 pr-12">
-                                                <p className="font-semibold text-foreground">{item.task}</p>
-                                                <p className="text-sm text-muted-foreground">{item.start} &rarr; {item.end}</p>
-                                            </div>
-                                             <Badge variant={item.status === "completed" ? "secondary" : item.status === "in-progress" ? "default" : "outline"}>
-                                                {item.status === 'completed' ? 'مكتمل' : item.status === 'in-progress' ? 'قيد التنفيذ' : 'مخطط له'}
-                                            </Badge>
-                                        </div>
-                                    )})}
+                                        )})}
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <p className="text-muted-foreground text-center py-4">لا يوجد جدول زمني لهذا المشروع.</p>
+                            )}
                         </CardContent>
                     </Card>
 

@@ -1,13 +1,14 @@
+
 const { createServer } = require('http')
 const { parse } = require('url')
 const next = require('next')
 const compression = require('compression')
 
 const dev = process.env.NODE_ENV !== 'production'
-const hostname = 'localhost'
 const port = process.env.PORT || 3000
-// when using middleware `hostname` and `port` must be provided below
-const app = next({ dev, hostname, port })
+
+// Initialize Next.js without explicit hostname and port for production compatibility.
+const app = next({ dev })
 const handle = app.getRequestHandler()
 
 const compressionMiddleware = compression();
@@ -31,6 +32,7 @@ app.prepare().then(() => {
 
   }).listen(port, (err) => {
     if (err) throw err
-    console.log(`> Ready on http://${hostname}:${port}`)
+    // In production, hostname will be determined by the environment.
+    console.log(`> Ready on http://localhost:${port}`)
   })
 })

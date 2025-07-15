@@ -11,7 +11,7 @@ const firebaseConfig = {
   authDomain: "achox-pro.firebaseapp.com",
   databaseURL: "https://achox-pro-default-rtdb.firebaseio.com",
   projectId: "achox-pro",
-  storageBucket: "achox-pro.appspot.com",
+  storageBucket: "achox-pro.firebasestorage.app",
   messagingSenderId: "25667835163",
   appId: "1:25667835163:web:fafe4897001a75f3822fbe",
   measurementId: "G-D57PQVJXJW"

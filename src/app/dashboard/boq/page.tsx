@@ -40,10 +40,6 @@ const masterBoqItems = [
   { id: "MAS-001", category: "أعمال مباني وبياض", description: "بناء بلوك أسمنتي مصمت 20 سم", unit: "م²", quantity: 1, unitPrice: 65, total: 65 },
   { id: "MAS-002", category: "أعمال مباني وبياض", description: "بناء بلوك أسمنتي مفرغ 20 سم", unit: "م²", quantity: 1, unitPrice: 55, total: 55 },
   { id: "MAS-003", category: "أعمال مباني وبياض", description: "بناء طوب أحمر فخاري", unit: "م²", quantity: 1, unitPrice: 75, total: 75 },
-  { id: "SIP-001", category: "أعمال مباني وبياض", description: "بلوك سيپوركس 10 * 20 * 60", unit: "م³", quantity: 1, unitPrice: 180.00, total: 180.00 },
-  { id: "SIP-002", category: "أعمال مباني وبياض", description: "بلوك سيپوركس 15 * 20 * 60", unit: "م³", quantity: 1, unitPrice: 180.00, total: 180.00 },
-  { id: "SIP-003", category: "أعمال مباني وبياض", description: "بلوك سيپوركس 20 * 20 * 60", unit: "م³", quantity: 1, unitPrice: 180.00, total: 180.00 },
-  { id: "SIP-004", category: "أعمال مباني وبياض", description: "بلوك سيپوركس 20 * 25 * 60", unit: "م³", quantity: 1, unitPrice: 180.00, total: 180.00 },
   { id: "MAS-004", category: "أعمال مباني وبياض", description: "لياسة (بياض) داخلية مع شبك فايبر", unit: "م²", quantity: 1, unitPrice: 32, total: 32 },
   { id: "MAS-005", category: "أعمال مباني وبياض", description: "لياسة (بياض) خارجية مع طبقة طرطشة", unit: "م²", quantity: 1, unitPrice: 40, total: 40 },
   { id: "MAS-006", category: "أعمال مباني وبياض", description: "سلم مباني 15 سم (القباني)", unit: "قطعة", quantity: 1, unitPrice: 4.60, total: 4.60 },
@@ -51,6 +47,13 @@ const masterBoqItems = [
   { id: "MAS-008", category: "أعمال مباني وبياض", description: "سلم مباني 10 سم (القباني)", unit: "قطعة", quantity: 1, unitPrice: 4.60, total: 4.60 },
   { id: "MAS-009", category: "أعمال مباني وبياض", description: "سلم مباني 5 سم (القباني)", unit: "قطعة", quantity: 1, unitPrice: 4.60, total: 4.60 },
   { id: "MAS-010", category: "أعمال مباني وبياض", description: "زاوية مباني (القباني)", unit: "قطعة", quantity: 1, unitPrice: 0.90, total: 0.90 },
+
+  // --- بلوك سيپوركس ---
+  { id: "SIP-001", category: "بلوك سيپوركس", description: "بلوك سيپوركس 10 * 20 * 60", unit: "م³", quantity: 1, unitPrice: 180.00, total: 180.00 },
+  { id: "SIP-002", category: "بلوك سيپوركس", description: "بلوك سيپوركس 15 * 20 * 60", unit: "م³", quantity: 1, unitPrice: 180.00, total: 180.00 },
+  { id: "SIP-003", category: "بلوك سيپوركس", description: "بلوك سيپوركس 20 * 20 * 60", unit: "م³", quantity: 1, unitPrice: 180.00, total: 180.00 },
+  { id: "SIP-004", category: "بلوك سيپوركس", description: "بلوك سيپوركس 20 * 25 * 60", unit: "م³", quantity: 1, unitPrice: 180.00, total: 180.00 },
+  { id: "SIP-005", category: "بلوك سيپوركس", description: "منشار سيپوركس", unit: "قطعة", quantity: 1, unitPrice: 5.00, total: 5.00 },
   
   // --- أعمال العزل ---
   { id: "INS-001", category: "أعمال عزل", description: "عزل مائي للأسطح (لفائف بيتومين)", unit: "م²", quantity: 1, unitPrice: 40, total: 40 },
@@ -83,7 +86,7 @@ const masterBoqItems = [
   { id: "DW-003", category: "أعمال الأبواب والشبابيك", description: "توريد وتركيب أبواب حديد خارجية", unit: "م²", quantity: 1, unitPrice: 650, total: 650 },
   { id: "DW-004", category: "أعمال الأبواب والشبابيك", description: "توريد وتركيب شبابيك ألومنيوم (زجاج مزدوج)", unit: "م²", quantity: 1, unitPrice: 550, total: 550 },
   
-  // --- الأعمال الكهربائية ---
+  // --- لوازم كهربائية ---
   { id: "ELE-001", category: "لوازم كهربائية", description: "تأسيس نقطة إنارة (مواسير وعلب)", unit: "نقطة", quantity: 1, unitPrice: 180, total: 180 },
   { id: "ELE-002", category: "لوازم كهربائية", description: "تأسيس نقطة فيش كهرباء (بريزة)", unit: "نقطة", quantity: 1, unitPrice: 160, total: 160 },
   { id: "ELE-003", category: "لوازم كهربائية", description: "توريد وتركيب لوحة توزيع فرعية", unit: "عدد", quantity: 1, unitPrice: 800, total: 800 },
@@ -101,7 +104,7 @@ const masterBoqItems = [
   { id: "SUP-ELE-009", category: "لوازم كهربائية", description: "مسمار 6 سم جرام 2000", unit: "قطعة", quantity: 1, unitPrice: 8.70, total: 8.70 },
   { id: "SUP-ELE-010", category: "لوازم كهربائية", description: "قسام 2016", unit: "قطعة", quantity: 1, unitPrice: 3.48, total: 3.48 },
 
-  // --- الأعمال الميكانيكية (السباكة والتكييف) ---
+  // --- لوازم سباكة وتكييف ---
   { id: "MEC-001", category: "لوازم سباكة وتكييف", description: "تأسيس نقطة تغذية مياه (حار/بارد)", unit: "نقطة", quantity: 1, unitPrice: 250, total: 250 },
   { id: "MEC-002", category: "لوازم سباكة وتكييف", description: "تأسيس نقطة صرف صحي (PVC)", unit: "نقطة", quantity: 1, unitPrice: 200, total: 200 },
   { id: "MEC-003", category: "لوازم سباكة وتكييف", description: "توريد وتركيب وحدة تكييف سبليت (2 طن)", unit: "عدد", quantity: 1, unitPrice: 2800, total: 2800 },
@@ -229,8 +232,6 @@ const masterBoqItems = [
   { id: "EVT-006", category: "خدمات مساندة للفعاليات", description: "خدمات تنظيم وإدارة حشود (للساعة/للفرد)", unit: "ساعة/فرد", quantity: 1, unitPrice: 120, total: 120 },
   { id: "EVT-007", category: "خدمات مساندة للفعاليات", description: "تأجير أثاث للفعالية (كرسي، طاولة)", unit: "قطعة/يوم", quantity: 1, unitPrice: 50, total: 50 },
   { id: "EVT-008", category: "تجهيزات فنية وتقنية (فعاليات)", description: "تصوير وتغطية فيديو للفعالية", unit: "مقطوعة", quantity: 1, unitPrice: 8000, total: 8000 },
-  { id: "SIP-005", category: "أدوات وملحقات", description: "منشار سيپوركس", unit: "قطعة", quantity: 1, unitPrice: 5.00, total: 5.00 },
-
 ];
 
 
@@ -409,5 +410,7 @@ export default function BoqPage() {
     </>
   )
 }
+
+    
 
     

@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useProjectStore } from '@/hooks/use-project-store';
 import { useFinancialStore, Transaction } from '@/hooks/use-financial-store';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -16,9 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/hooks/use-toast";
-import { PlusCircle, Loader, TrendingUp, TrendingDown, Scale, PieChart as PieChartIcon, AreaChart } from 'lucide-react';
+import { PlusCircle, Loader, TrendingUp, TrendingDown, Scale, PieChart as PieChartIcon, AreaChart, Wand2, AlertTriangle, ShieldCheck, FileText } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, Legend, Area, XAxis, YAxis, CartesianGrid, AreaChart as RechartsAreaChart, ResponsiveContainer } from 'recharts';
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { analyzeFinancials, type AnalyzeFinancialsOutput } from '@/ai/flows/analyze-financials';
 
 
 const transactionSchema = z.object({
@@ -41,6 +42,8 @@ export default function FinancialIntelligencePage() {
   const { transactions, addTransaction } = useFinancialStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<AnalyzeFinancialsOutput | null>(null);
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm<TransactionForm>({
     resolver: zodResolver(transactionSchema),
@@ -53,7 +56,6 @@ export default function FinancialIntelligencePage() {
   });
 
   useEffect(() => {
-    // If there are projects and no project is selected, select the first one.
     if (!projectsLoading && projects.length > 0 && !selectedProjectId) {
       setSelectedProjectId(projects[0].id!);
     }
@@ -86,7 +88,6 @@ export default function FinancialIntelligencePage() {
 
   const spendingOverTimeData = useMemo(() => {
     let cumulativeAmount = 0;
-    // Sort transactions by date ascending for the chart
     const sortedTransactions = [...projectTransactions].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     return sortedTransactions.map(t => {
       cumulativeAmount += t.amount;
@@ -126,6 +127,40 @@ export default function FinancialIntelligencePage() {
     }
   };
 
+  const handleAnalyzeFinancials = async () => {
+    if (!selectedProject) {
+        toast({ title: "خطأ", description: "الرجاء اختيار مشروع أولاً.", variant: "destructive" });
+        return;
+    }
+
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+
+    try {
+        const result = await analyzeFinancials({
+            project: {
+                title: selectedProject.title,
+                status: selectedProject.status,
+                progress: selectedProject.progress,
+                budget: selectedProject.budget,
+                currency: selectedProject.currency
+            },
+            transactions: projectTransactions,
+        });
+        setAnalysisResult(result);
+        toast({ title: "نجاح!", description: "اكتمل التحليل المالي." });
+    } catch (error) {
+        console.error("Financial analysis failed:", error);
+        toast({
+            title: "فشل التحليل",
+            description: "حدث خطأ أثناء تحليل البيانات المالية. الرجاء المحاولة مرة أخرى.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsAnalyzing(false);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col gap-8">
@@ -133,7 +168,7 @@ export default function FinancialIntelligencePage() {
           <h1 className="text-2xl font-bold">الذكاء المالي</h1>
           <div className="flex gap-2 items-center">
             {projectsLoading ? <Loader className="animate-spin" /> : (
-              <Select onValueChange={setSelectedProjectId} value={selectedProjectId || ''}>
+              <Select onValueChange={(v) => { setSelectedProjectId(v); setAnalysisResult(null); }} value={selectedProjectId || ''}>
                 <SelectTrigger className="w-[280px]">
                   <SelectValue placeholder="اختر مشروعاً لعرض بياناته المالية" />
                 </SelectTrigger>
@@ -186,6 +221,60 @@ export default function FinancialIntelligencePage() {
               </Card>
             </div>
             
+            <Card>
+                <CardHeader>
+                    <CardTitle>تقرير المحلل المالي الذكي</CardTitle>
+                    <CardDescription>احصل على تحليل فوري ورؤى استراتيجية حول الوضع المالي لمشروعك.</CardDescription>
+                </CardHeader>
+                 <CardContent>
+                    {!analysisResult && !isAnalyzing && (
+                        <div className="flex flex-col items-center justify-center gap-4 text-center text-muted-foreground p-8 bg-secondary/50 rounded-lg">
+                           <Wand2 className="w-12 h-12 text-primary" />
+                           <p className="font-semibold text-lg">بانتظار الأوامر لتحليل البيانات المالية</p>
+                           <p>اضغط على الزر أدناه ليقوم المحلل الذكي بمراجعة الأرقام وتقديم تقريره.</p>
+                        </div>
+                    )}
+                     {isAnalyzing && (
+                         <div className="flex flex-col items-center justify-center gap-4 text-center text-muted-foreground p-8">
+                            <Loader className="w-12 h-12 text-primary animate-spin" />
+                            <p className="font-semibold text-lg">يقوم المحلل الذكي بمراجعة الأرقام...</p>
+                         </div>
+                     )}
+                     {analysisResult && (
+                         <div className="space-y-6">
+                            <Card>
+                                <CardHeader><CardTitle className="flex items-center gap-2"><FileText className="text-primary"/> ملخص تنفيذي</CardTitle></CardHeader>
+                                <CardContent><p className="text-muted-foreground">{analysisResult.executiveSummary}</p></CardContent>
+                            </Card>
+                            <div className="grid md:grid-cols-2 gap-6">
+                               <Card className="border-destructive/50">
+                                    <CardHeader><CardTitle className="flex items-center gap-2 text-destructive"><AlertTriangle/> المخاطر المحتملة</CardTitle></CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-2 list-disc pl-5 text-destructive/90">
+                                            {analysisResult.risks.map((risk, i) => <li key={i}>{risk}</li>)}
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+                                 <Card className="border-accent/50">
+                                    <CardHeader><CardTitle className="flex items-center gap-2 text-accent"><ShieldCheck /> توصيات استراتيجية</CardTitle></CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-2 list-disc pl-5 text-accent/90">
+                                            {analysisResult.recommendations.map((rec, i) => <li key={i}>{rec}</li>)}
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                         </div>
+                     )}
+                </CardContent>
+                <CardFooter>
+                    <Button onClick={handleAnalyzeFinancials} disabled={isAnalyzing || !selectedProject} size="lg" className="w-full">
+                        {isAnalyzing ? <Loader className="ml-2 h-4 w-4 animate-spin" /> : <Wand2 className="ml-2 h-4 w-4" />}
+                        {isAnalyzing ? 'جاري التحليل...' : 'تحليل البيانات المالية'}
+                    </Button>
+                </CardFooter>
+            </Card>
+
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <Card className="shadow-xl rounded-2xl lg:col-span-3">
                     <CardHeader>

@@ -20,6 +20,7 @@ import {
   Wrench,
   ClipboardType,
   Send,
+  ShieldAlert,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -153,6 +154,14 @@ function DashboardLayoutContent({
                     <Link href="/dashboard/blueprints">
                         <FileText />
                         <span>تحليل المخططات</span>
+                    </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/risk-analysis')} tooltip="تحليل المخاطر">
+                    <Link href="/dashboard/risk-analysis">
+                        <ShieldAlert />
+                        <span>تحليل المخاطر</span>
                     </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>

@@ -2,6 +2,7 @@
 "use client"
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,36 +14,38 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
-const mockPurchaseOrders = [
-  { id: "PO-2024-001", supplier: "شركة مواد البناء الحديثة", date: "2024-07-15", status: "تم التسليم", total: "15,450.00 ر.س", variant: "default" },
-  { id: "PO-2024-002", supplier: "مصنع الخرسانة الجاهزة", date: "2024-07-18", status: "قيد المعالجة", total: "88,000.00 ر.س", variant: "secondary" },
-  { id: "PO-2024-003", supplier: "تكنو للأدوات الكهربائية", date: "2024-07-20", status: "بانتظار الموافقة", total: "9,200.00 ر.س", variant: "outline" },
-  { id: "PO-2024-004", supplier: "شركة مواد البناء الحديثة", date: "2024-07-21", status: "ملغي", total: "12,100.00 ر.س", variant: "destructive" },
-  { id: "PO-2024-005", supplier: "مورد مواد السباكة", date: "2024-07-22", status: "تم التسليم", total: "23,500.00 ر.س", variant: "default" },
-];
-
-const mockSuppliers = [
-  { id: 1, name: "شركة مواد البناء الحديثة", specialty: "مواد بناء عامة", rating: 4.8, phone: "011-456-7890", email: "sales@modernb.com" },
-  { id: 2, name: "مصنع الخرسانة الجاهزة", specialty: "خرسانة وحديد", rating: 4.5, phone: "012-654-3210", email: "info@readymix.sa" },
-  { id: 3, name: "تكنو للأدوات الكهربائية", specialty: "كهرباء وإضاءة", rating: 4.2, phone: "013-789-0123", email: "contact@techno-electric.com" },
-  { id: 4, name: "مورد مواد السباكة", specialty: "سباكة وصرف صحي", rating: 4.6, phone: "055-123-4567", email: "plumbing.supplies@email.com" },
-];
+import { useProcurementStore } from "@/hooks/use-procurement-store";
 
 export default function ProcurementPage() {
     const { toast } = useToast();
+    const { suppliers, purchaseOrders, addSupplier } = useProcurementStore();
     const [isSupplierDialogOpen, setIsSupplierDialogOpen] = useState(false);
-    const [isPoDialogOpen, setIsPoDialogOpen] = useState(false);
 
     const handleAddSupplier = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const newSupplier = {
+            id: suppliers.length + 1,
+            name: formData.get("s-name") as string,
+            specialty: formData.get("s-spec") as string,
+            rating: 4.0, // Default rating
+            phone: formData.get("s-phone") as string,
+            email: formData.get("s-email") as string,
+        };
+        addSupplier(newSupplier);
         toast({ title: "تمت إضافة المورد بنجاح" });
         setIsSupplierDialogOpen(false);
+        e.currentTarget.reset();
     }
-     const handleAddPo = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        toast({ title: "تم إنشاء طلب الشراء بنجاح" });
-        setIsPoDialogOpen(false);
+    
+    const getStatusVariant = (status: string) => {
+        switch (status) {
+            case "تم التسليم": return "default";
+            case "قيد المعالجة": return "secondary";
+            case "بانتظار الموافقة": return "outline";
+            case "ملغي": return "destructive";
+            default: return "outline";
+        }
     }
 
   return (
@@ -55,9 +58,11 @@ export default function ProcurementPage() {
                     <PlusCircle className="h-4 w-4" />
                     إضافة مورد جديد
                 </Button>
-                <Button className="gap-1" variant="default" onClick={() => setIsPoDialogOpen(true)}>
-                    <PlusCircle className="h-4 w-4" />
-                    إنشاء طلب شراء
+                <Button asChild className="gap-1" variant="default">
+                    <Link href="/dashboard/procurement/purchase-order/new">
+                        <PlusCircle className="h-4 w-4" />
+                        إنشاء طلب شراء
+                    </Link>
                 </Button>
             </div>
         </div>
@@ -85,15 +90,21 @@ export default function ProcurementPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {mockPurchaseOrders.map((po) => (
+                                {purchaseOrders.length > 0 ? purchaseOrders.map((po) => (
                                 <TableRow key={po.id}>
                                     <TableCell className="font-mono">{po.id}</TableCell>
                                     <TableCell className="font-medium">{po.supplier}</TableCell>
                                     <TableCell>{po.date}</TableCell>
-                                    <TableCell><Badge variant={po.variant as any}>{po.status}</Badge></TableCell>
-                                    <TableCell className="text-right font-mono font-semibold">{po.total}</TableCell>
+                                    <TableCell><Badge variant={getStatusVariant(po.status)}>{po.status}</Badge></TableCell>
+                                    <TableCell className="text-right font-mono font-semibold">{po.total.toLocaleString('ar-SA', { style: 'currency', currency: 'SAR' })}</TableCell>
                                 </TableRow>
-                                ))}
+                                )) : (
+                                     <TableRow>
+                                        <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
+                                            لا توجد أوامر شراء بعد. ابدأ بإنشاء طلب جديد.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
                     </CardContent>
@@ -101,7 +112,7 @@ export default function ProcurementPage() {
             </TabsContent>
             <TabsContent value="suppliers">
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {mockSuppliers.map(supplier => (
+                    {suppliers.map(supplier => (
                         <Card key={supplier.id} className="shadow-lg rounded-2xl hover:shadow-2xl transition-shadow duration-300">
                              <CardHeader className="flex flex-row items-start justify-between">
                                 <div>
@@ -125,7 +136,7 @@ export default function ProcurementPage() {
                             <CardContent className="space-y-3">
                                 <div className="flex items-center gap-1 text-primary font-bold">
                                     <Star className="h-5 w-5 fill-current" />
-                                    <span>{supplier.rating} / 5.0</span>
+                                    <span>{supplier.rating.toFixed(1)} / 5.0</span>
                                 </div>
                                 <div className="text-sm text-muted-foreground space-y-2">
                                     <div className="flex items-center gap-2">
@@ -154,36 +165,13 @@ export default function ProcurementPage() {
                 <DialogDescription>أدخل بيانات المورد لإضافته إلى قاعدة البيانات.</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-                <div className="space-y-1"><Label htmlFor="s-name">اسم المورد</Label><Input id="s-name" placeholder="شركة التوريدات الممتازة" /></div>
-                <div className="space-y-1"><Label htmlFor="s-spec">التخصص</Label><Input id="s-spec" placeholder="مواد بناء، كهرباء، سباكة..." /></div>
-                <div className="space-y-1"><Label htmlFor="s-phone">رقم الهاتف</Label><Input id="s-phone" type="tel" placeholder="05xxxxxxxx" /></div>
-                <div className="space-y-1"><Label htmlFor="s-email">البريد الإلكتروني</Label><Input id="s-email" type="email" placeholder="contact@supplier.com" /></div>
+                <div className="space-y-1"><Label htmlFor="s-name">اسم المورد</Label><Input id="s-name" name="s-name" placeholder="شركة التوريدات الممتازة" required /></div>
+                <div className="space-y-1"><Label htmlFor="s-spec">التخصص</Label><Input id="s-spec" name="s-spec" placeholder="مواد بناء، كهرباء، سباكة..." required /></div>
+                <div className="space-y-1"><Label htmlFor="s-phone">رقم الهاتف</Label><Input id="s-phone" name="s-phone" type="tel" placeholder="05xxxxxxxx" required /></div>
+                <div className="space-y-1"><Label htmlFor="s-email">البريد الإلكتروني</Label><Input id="s-email" name="s-email" type="email" placeholder="contact@supplier.com" required /></div>
             </div>
             <DialogFooter>
                 <Button type="submit">حفظ المورد</Button>
-                <DialogClose asChild><Button type="button" variant="secondary">إلغاء</Button></DialogClose>
-            </DialogFooter>
-        </form>
-    </DialogContent>
-    </Dialog>
-
-    {/* Create PO Dialog */}
-    <Dialog open={isPoDialogOpen} onOpenChange={setIsPoDialogOpen}>
-    <DialogContent className="sm:max-w-lg">
-         <form onSubmit={handleAddPo}>
-            <DialogHeader>
-                <DialogTitle>إنشاء طلب شراء جديد</DialogTitle>
-                <DialogDescription>املأ تفاصيل طلب الشراء لإرساله للمورد.</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-                 {/* In a real app, this would be a search/select component */}
-                <div className="space-y-1"><Label htmlFor="po-supplier">المورد</Label><Input id="po-supplier" placeholder="ابحث عن مورد..." /></div>
-                <div className="space-y-1"><Label htmlFor="po-project">المشروع</Label><Input id="po-project" placeholder="اختر المشروع المرتبط بالطلب" /></div>
-                 {/* Items would be added dynamically in a real app */}
-                <div className="space-y-1"><Label>البنود</Label><div className="border rounded-lg p-4 text-center text-muted-foreground">منطقة إضافة البنود (قيد التطوير)</div></div>
-            </div>
-            <DialogFooter>
-                <Button type="submit">إرسال الطلب</Button>
                 <DialogClose asChild><Button type="button" variant="secondary">إلغاء</Button></DialogClose>
             </DialogFooter>
         </form>

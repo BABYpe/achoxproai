@@ -121,7 +121,7 @@ function DashboardLayoutContent({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/procurement')} tooltip="المشتريات">
+                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/procurement')} tooltip="المشتريات">
                   <Link href="/dashboard/procurement">
                     <ShoppingCart />
                     <span>المشتريات</span>

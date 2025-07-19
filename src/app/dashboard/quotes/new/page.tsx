@@ -74,7 +74,7 @@ export default function NewQuotePage() {
 
         try {
             const result = await generateQuote({
-                companyName: "شركة المشاريع الإبداعية (MDAMAI)",
+                companyName: "AchoX Pro Contracting",
                 clientName: data.clientName,
                 consultantName: data.consultantName,
                 projectName: selectedProject.title,

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -32,7 +33,7 @@ export default function HomePage() {
         <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
             <Logo className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold">MDAMAI</span>
+            <span className="text-xl font-bold">AchoX Pro</span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm md:flex">
             <Link href="#features" className="font-medium text-muted-foreground transition-colors hover:text-primary">
@@ -84,12 +85,12 @@ export default function HomePage() {
 
             <div className="container relative z-20 mx-auto px-4">
                 <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl">
-                    {t('landing.hero.title1')}
+                    بناء المستقبل يبدأ هنا.
                     <br />
-                    <span className="text-primary">{t('landing.hero.title2')}</span> {t('landing.hero.title3')}
+                    <span className="text-primary">AchoX Pro</span> شريكك الذكي في إدارة المشاريع.
                 </h1>
                 <p className="mx-auto mt-6 max-w-3xl text-lg text-foreground/90">
-                    {t('landing.hero.description')}
+                    منصة AchoX Pro تحول تعقيدات المشاريع الهندسية والفعاليات إلى عمليات مبسطة وذكية. حلل، سعّر، وخطط لمشاريعك بدقة وكفاءة لا مثيل لها.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" asChild className="w-full sm:w-auto text-lg py-7 px-8 shadow-lg shadow-primary/30">
@@ -189,7 +190,7 @@ export default function HomePage() {
             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
                     <CardContent className="p-0">
-                        <p className="text-muted-foreground mb-4">"{t('landing.testimonials.1.quote')}"</p>
+                        <p className="text-muted-foreground mb-4">"منصة AchoX Pro غيرت طريقة عملنا تمامًا. أصبح تقدير التكاليف وتوليد جداول الكميات أسرع وأكثر دقة بنسبة 95%."</p>
                         <div className="flex items-center gap-4 pt-4 border-t">
                             <Image src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=48" width={48} height={48} alt="User 1" className="rounded-full" data-ai-hint="person face" />
                             <div>
@@ -201,7 +202,7 @@ export default function HomePage() {
                 </Card>
                 <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
                     <CardContent className="p-0">
-                        <p className="text-muted-foreground mb-4">"{t('landing.testimonials.2.quote')}"</p>
+                        <p className="text-muted-foreground mb-4">"أداة تخطيط المشاريع مذهلة! أصبح بإمكاني تجهيز خطة متكاملة لأي فعالية، من التكاليف إلى الجدول الزمني، في دقائق معدودة."</p>
                          <div className="flex items-center gap-4 pt-4 border-t">
                             <Image src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=48" width={48} height={48} alt="User 2" className="rounded-full" data-ai-hint="woman face" />
                             <div>
@@ -213,7 +214,7 @@ export default function HomePage() {
                 </Card>
                 <Card className="p-6 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
                     <CardContent className="p-0">
-                       <p className="text-muted-foreground mb-4">"{t('landing.testimonials.3.quote')}"</p>
+                       <p className="text-muted-foreground mb-4">"أفضل استثمار قمنا به هذا العام. التقارير التلقائية والجداول الزمنية تساعدنا على اتخاذ قرارات أفضل وتتبع الإنجاز بدقة."</p>
                          <div className="flex items-center gap-4 pt-4 border-t">
                             <Image src="https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=48" width={48} height={48} alt="User 3" className="rounded-full" data-ai-hint="man face" />
                             <div>
@@ -348,7 +349,7 @@ export default function HomePage() {
                 <div>
                      <Link href="/" className="flex items-center gap-2 font-bold text-lg">
                         <Logo className="h-8 w-8 text-primary" />
-                        <span className="text-xl font-bold">MDAMAI</span>
+                        <span className="text-xl font-bold">AchoX Pro</span>
                     </Link>
                     <p className="text-muted-foreground mt-2">{t('landing.footer.description')}</p>
                 </div>

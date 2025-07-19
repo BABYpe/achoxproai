@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react";
@@ -36,7 +37,7 @@ export default function RegisterPage() {
           <div className="mx-auto mb-4">
             <Logo className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold">{t('register.title')}</CardTitle>
+          <CardTitle className="text-2xl font-bold">إنشاء حساب جديد في AchoX Pro</CardTitle>
           <CardDescription>
             {t('register.description')}
           </CardDescription>

@@ -1,3 +1,4 @@
+
 import * as React from "react";
 
 export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
@@ -13,25 +14,17 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
       </linearGradient>
     </defs>
     <g transform="translate(50,50) scale(1)">
-        {/* Outer Shape */}
+        {/* Abstract 'A' Shape */}
         <path 
-            d="M -40 -40 L 40 -40 L 40 40 L -40 40 Z" 
-            fill="hsl(var(--card) / 0.5)"
-            stroke="url(#logo-gradient)" 
-            strokeWidth="2"
-            transform="rotate(45)"
+            d="M 0 -35 L 30 35 L 15 35 L 0 -10 L -15 35 L -30 35 Z"
+            fill="url(#logo-gradient)"
         />
-        {/* Inner 'A' shape */}
-        <path 
-            d="M 0 -25 L 22 25 L 12 25 L 0 5 L -12 25 L -22 25 Z"
-            fill="hsl(var(--primary))"
-        />
-        {/* Accent line */}
+        {/* 'X' Shape / Crossbar */}
         <path
-            d="M -15 -5 L 15 -5"
+            d="M -18 5 L 18 5 M 0 -10 L 0 20"
             fill="none"
-            stroke="hsl(var(--accent))"
-            strokeWidth="5"
+            stroke="hsl(var(--background))"
+            strokeWidth="6"
             strokeLinecap="round"
         />
     </g>

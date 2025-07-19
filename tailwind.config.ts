@@ -96,7 +96,7 @@ export default {
         },
         'scroll': {
           'to': {
-            transform: 'translate(calc(-50% - 2rem))', // Adjust based on gap
+            transform: 'translate(calc(-50% - 4rem))',
           },
         },
       },

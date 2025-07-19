@@ -24,7 +24,14 @@ export default function HomePage() {
     i18n.changeLanguage(lng);
   };
   
-  const trustedPartners = ["NEOM", "ROSHN", "ARAMCO", "Red Sea Global", "Saudi Electricity Co.", "SABIC"];
+  const trustedPartners = [
+    { name: "NEOM", logo: "http://googleusercontent.com/image_collection/image_retrieval/6086757951784302499_0" },
+    { name: "ROSHN", logo: "http://googleusercontent.com/image_collection/image_retrieval/13911354721851855870_0" },
+    { name: "ARAMCO", logo: "http://googleusercontent.com/image_collection/image_retrieval/16267047371006203810_0" },
+    { name: "Red Sea Global", logo: "http://googleusercontent.com/image_collection/image_retrieval/1535280643469310482_0" },
+    { name: "Saudi Electricity Co.", logo: "http://googleusercontent.com/image_collection/image_retrieval/12834529307996913438_0" },
+    { name: "SABIC", logo: "http://googleusercontent.com/image_collection/image_retrieval/10227539669089527744_0" },
+  ];
   
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground font-body">
@@ -105,18 +112,18 @@ export default function HomePage() {
                 </div>
                  <div className="mt-12 text-center">
                     <span className="text-sm font-semibold text-muted-foreground">{t('landing.hero.trustedBy')}</span>
-                    <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-4">
-                      <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-scroll">
+                     <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-4">
+                      <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-scroll">
                         {trustedPartners.map((partner, index) => (
-                          <li key={`${partner}-${index}`} className="text-muted-foreground font-bold text-lg">
-                            {partner}
+                          <li key={`${partner.name}-${index}`}>
+                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all" />
                           </li>
                         ))}
                       </ul>
-                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-scroll" aria-hidden="true">
+                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-scroll" aria-hidden="true">
                          {trustedPartners.map((partner, index) => (
-                          <li key={`${partner}-clone-${index}`} className="text-muted-foreground font-bold text-lg">
-                            {partner}
+                           <li key={`${partner.name}-clone-${index}`}>
+                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all" />
                           </li>
                         ))}
                       </ul>

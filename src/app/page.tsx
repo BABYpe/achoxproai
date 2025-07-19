@@ -113,14 +113,14 @@ export default function HomePage() {
                  <div className="mt-12 text-center">
                     <span className="text-sm font-semibold text-muted-foreground">{t('landing.hero.trustedBy')}</span>
                      <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-4">
-                      <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-scroll">
+                      <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll">
                         {trustedPartners.map((partner, index) => (
                           <li key={`${partner.name}-${index}`}>
                             <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all" />
                           </li>
                         ))}
                       </ul>
-                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-scroll" aria-hidden="true">
+                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll" aria-hidden="true">
                          {trustedPartners.map((partner, index) => (
                            <li key={`${partner.name}-clone-${index}`}>
                             <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all" />

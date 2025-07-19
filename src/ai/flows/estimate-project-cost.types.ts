@@ -41,3 +41,5 @@ export const EstimateProjectCostOutputSchema = z.object({
     })).describe("A list of potential financial risks and mitigation strategies based on the project scope and BOQ.")
 });
 export type EstimateProjectCostOutput = z.infer<typeof EstimateProjectCostOutputSchema>;
+
+    

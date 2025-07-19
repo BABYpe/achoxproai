@@ -24,3 +24,5 @@ export const GenerateComprehensivePlanOutputSchema = z.object({
     costEstimation: EstimateProjectCostOutputSchema,
 });
 export type GenerateComprehensivePlanOutput = z.infer<typeof GenerateComprehensivePlanOutputSchema>;
+
+    

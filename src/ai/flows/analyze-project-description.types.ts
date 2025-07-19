@@ -12,3 +12,5 @@ export const AnalyzeProjectDescriptionOutputSchema = z.object({
     initialBlueprintPrompt: z.string().optional().describe('A suggested prompt for generating an initial blueprint or diagram based on the description.'),
 });
 export type AnalyzeProjectDescriptionOutput = z.infer<typeof AnalyzeProjectDescriptionOutputSchema>;
+
+    

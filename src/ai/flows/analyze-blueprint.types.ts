@@ -1,5 +1,5 @@
 // src/ai/flows/analyze-blueprint.types.ts
-import {z} from 'genkit';
+import {z} from 'zod';
 
 export const AnalyzeBlueprintInputSchema = z.object({
   blueprintDataUri: z
@@ -27,3 +27,5 @@ export const AnalyzeBlueprintOutputSchema = z.object({
   })).describe("A list of required items or materials to execute the plan."),
 });
 export type AnalyzeBlueprintOutput = z.infer<typeof AnalyzeBlueprintOutputSchema>;
+
+    

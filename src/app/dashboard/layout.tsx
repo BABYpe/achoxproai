@@ -21,6 +21,7 @@ import {
   ClipboardType,
   Send,
   ShieldAlert,
+  FileSignature,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -33,6 +34,9 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarTitle,
+  SidebarSub,
+  SidebarSubTrigger,
+  SidebarSubContent,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,6 +62,8 @@ function DashboardLayoutContent({
 
   const isActive = (path: string) => pathname === path;
   const isProjectsActive = pathname.startsWith('/dashboard/projects');
+  const isProcurementActive = pathname.startsWith('/dashboard/procurement');
+  const isQuotesActive = pathname.startsWith('/dashboard/quotes');
   
   return (
       <div className="min-h-screen flex">
@@ -121,27 +127,36 @@ function DashboardLayoutContent({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/procurement')} tooltip="المشتريات">
-                  <Link href="/dashboard/procurement">
-                    <ShoppingCart />
-                    <span>المشتريات</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                <SidebarSub>
+                  <SidebarSubTrigger isActive={isProcurementActive || isQuotesActive} tooltip="العقود والماليات">
+                     <ShoppingCart />
+                    <span>العقود والماليات</span>
+                  </SidebarSubTrigger>
+                  <SidebarSubContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                            <SidebarMenuSubButton asChild isActive={isProcurementActive}>
+                                <Link href="/dashboard/procurement">أوامر الشراء</Link>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                             <SidebarMenuSubButton asChild isActive={isQuotesActive}>
+                                <Link href="/dashboard/quotes">عروض الأسعار</Link>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                         <SidebarMenuSubItem>
+                             <SidebarMenuSubButton asChild isActive={isActive('/dashboard/financial-intelligence')}>
+                                <Link href="/dashboard/financial-intelligence">الذكاء المالي</Link>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                  </SidebarSubContent>
+              </SidebarSub>
               
                <Separator className="my-2" />
                <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التحليل والنمو</p>
 
                 <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive('/dashboard/financial-intelligence')} tooltip="الذكاء المالي">
-                    <Link href="/dashboard/financial-intelligence">
-                        <CircleDollarSign />
-                        <span>الذكاء المالي</span>
-                    </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-                 <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive('/dashboard/reports')} tooltip="التقارير">
                     <Link href="/dashboard/reports">
                         <FilePieChart />

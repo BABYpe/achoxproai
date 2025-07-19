@@ -28,12 +28,24 @@ export interface PurchaseOrder {
   notes?: string;
 }
 
+export interface Quote {
+    id: string;
+    projectId: string;
+    projectName: string;
+    clientName: string;
+    date: string;
+    totalAmount: number;
+    status: 'مسودة' | 'تم الإرسال' | 'مقبول' | 'مرفوض';
+    markdownContent: string;
+}
+
 interface ProcurementState {
   suppliers: Supplier[];
   purchaseOrders: PurchaseOrder[];
+  quotes: Quote[];
   addSupplier: (supplier: Supplier) => void;
   addPurchaseOrder: (po: PurchaseOrder) => void;
-  // In a real app, you would add methods for updating and deleting
+  addQuote: (quote: Quote) => void;
 }
 
 const initialSuppliers: Supplier[] = [
@@ -54,6 +66,7 @@ export const useProcurementStore = create<ProcurementState>()(
     (set) => ({
       suppliers: initialSuppliers,
       purchaseOrders: initialPOs,
+      quotes: [],
       addSupplier: (supplier) => {
         set((state) => ({
           suppliers: [...state.suppliers, supplier],
@@ -64,6 +77,11 @@ export const useProcurementStore = create<ProcurementState>()(
           purchaseOrders: [po, ...state.purchaseOrders],
         }));
       },
+      addQuote: (quote) => {
+        set((state) => ({
+            quotes: [quote, ...state.quotes],
+        }))
+      }
     }),
     {
       name: 'procurement-storage',

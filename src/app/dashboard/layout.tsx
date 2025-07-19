@@ -37,6 +37,9 @@ import {
   SidebarSub,
   SidebarSubTrigger,
   SidebarSubContent,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

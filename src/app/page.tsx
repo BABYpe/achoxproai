@@ -25,12 +25,12 @@ export default function HomePage() {
   };
   
   const trustedPartners = [
-    { name: "NEOM", logo: "https://www.neom.com/content/dam/neom/neom-legacy/neom-logo-white-ar.svg" },
-    { name: "ROSHN", logo: "https://www.roshn.sa/sites/default/files/logo_1.svg" },
-    { name: "ARAMCO", logo: "https://www.aramco.com/-/media/images/aramco-logo-90-years.svg" },
-    { name: "Red Sea Global", logo: "https://www.redseaglobal.com/dist/assets/images/logo-dark-2e118c46.svg" },
-    { name: "Saudi Electricity Co.", logo: "https://www.se.com.sa/PublishingImages/ar/SVG/sec-logo.svg" },
-    { name: "SABIC", logo: "https://www.sabic.com/static/images/logo.svg" },
+    { name: "NEOM", logo: "https://raw.githubusercontent.com/BABYpe/achoxproai/main/NEOM.jpg" },
+    { name: "ROSHN", logo: "https://raw.githubusercontent.com/BABYpe/achoxproai/main/Roshn_Logo.svg.png" },
+    { name: "ARAMCO", logo: "https://raw.githubusercontent.com/BABYpe/achoxproai/main/Aramco-logo.png" },
+    { name: "Red Sea Global", logo: "https://raw.githubusercontent.com/BABYpe/achoxproai/main/RSG_Logo.png" },
+    { name: "Saudi Electricity Co.", logo: "https://raw.githubusercontent.com/BABYpe/achoxproai/main/Logo_Saudi_Electric_Company.svg.png" },
+    { name: "SABIC", logo: "https://raw.githubusercontent.com/BABYpe/achoxproai/main/SABIC-LOGO_tcm1010-14323.svg" },
   ];
   
   return (

@@ -61,6 +61,12 @@ const nextConfig = {
         hostname: 'www.sabic.com',
         port: '',
         pathname: '/**',
+      },
+       {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

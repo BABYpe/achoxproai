@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, Wand2, PenRuler, BarChart, Image as ImageIcon, Building, RefreshCw, ZoomIn } from "lucide-react";
+import { Loader, Wand2, BarChart, Image as ImageIcon, Building, RefreshCw, ZoomIn, FileText } from "lucide-react";
 import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -119,7 +119,7 @@ export default function AiDesignerPage() {
                     {generationResult ? (
                         <div className="space-y-6">
                              <Alert>
-                                <PenRuler className="h-4 w-4" />
+                                <Wand2 className="h-4 w-4" />
                                 <AlertTitle>نجاح!</AlertTitle>
                                 <AlertDescription>
                                     هذه هي التصاميم الأولية بناءً على وصفك. يمكنك الآن تحليل المخطط أو إعادة المحاولة بوصف مختلف.
@@ -127,7 +127,7 @@ export default function AiDesignerPage() {
                             </Alert>
 
                             <div>
-                                <h3 className="font-semibold text-lg flex items-center gap-2 mb-2"><ImageIcon className="text-primary"/> مخطط معماري (2D)</h3>
+                                <h3 className="font-semibold text-lg flex items-center gap-2 mb-2"><FileText className="text-primary"/> مخطط معماري (2D)</h3>
                                 <div className="relative w-full h-96 bg-secondary rounded-lg overflow-hidden border group">
                                     <Image src={generationResult.blueprintDataUri} alt="المخطط المعماري المولد" layout="fill" objectFit="contain" />
                                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
@@ -157,7 +157,7 @@ export default function AiDesignerPage() {
                        </div>
                     ) : !isLoading && (
                          <div className="flex flex-col items-center justify-center gap-4 py-20 text-muted-foreground">
-                            <PenRuler className="h-16 w-16" />
+                            <Wand2 className="h-16 w-16" />
                             <p className="text-center font-semibold text-lg">بانتظار إبداعك</p>
                             <p className="text-center">اكتب وصفًا للتصميم الذي تحلم به في اللوحة الجانبية، ودع المصمم الذكي يحوله إلى حقيقة.</p>
                         </div>

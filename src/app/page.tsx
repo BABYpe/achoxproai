@@ -25,12 +25,12 @@ export default function HomePage() {
   };
   
   const trustedPartners = [
-    { name: "NEOM", logo: "http://googleusercontent.com/image_collection/image_retrieval/6086757951784302499_0" },
-    { name: "ROSHN", logo: "http://googleusercontent.com/image_collection/image_retrieval/13911354721851855870_0" },
-    { name: "ARAMCO", logo: "http://googleusercontent.com/image_collection/image_retrieval/16267047371006203810_0" },
-    { name: "Red Sea Global", logo: "http://googleusercontent.com/image_collection/image_retrieval/1535280643469310482_0" },
-    { name: "Saudi Electricity Co.", logo: "http://googleusercontent.com/image_collection/image_retrieval/12834529307996913438_0" },
-    { name: "SABIC", logo: "http://googleusercontent.com/image_collection/image_retrieval/10227539669089527744_0" },
+    { name: "NEOM", logo: "https://www.neom.com/content/dam/neom/neom-legacy/neom-logo-white-ar.svg" },
+    { name: "ROSHN", logo: "https://www.roshn.sa/sites/default/files/logo_1.svg" },
+    { name: "ARAMCO", logo: "https://www.aramco.com/-/media/images/aramco-logo-90-years.svg" },
+    { name: "Red Sea Global", logo: "https://www.redseaglobal.com/dist/assets/images/logo-dark-2e118c46.svg" },
+    { name: "Saudi Electricity Co.", logo: "https://www.se.com.sa/PublishingImages/ar/SVG/sec-logo.svg" },
+    { name: "SABIC", logo: "https://www.sabic.com/static/images/logo.svg" },
   ];
   
   return (
@@ -116,14 +116,14 @@ export default function HomePage() {
                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll">
                         {trustedPartners.map((partner, index) => (
                           <li key={`${partner.name}-${index}`}>
-                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all" />
+                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain brightness-0 invert hover:brightness-100 hover:invert-0 transition-all" />
                           </li>
                         ))}
                       </ul>
                        <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll" aria-hidden="true">
                          {trustedPartners.map((partner, index) => (
                            <li key={`${partner.name}-clone-${index}`}>
-                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain grayscale hover:grayscale-0 transition-all" />
+                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain brightness-0 invert hover:brightness-100 hover:invert-0 transition-all" />
                           </li>
                         ))}
                       </ul>

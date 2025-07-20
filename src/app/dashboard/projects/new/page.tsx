@@ -161,6 +161,7 @@ function NewProjectPageContent() {
                 projectType: generatedPlan.projectAnalysis.projectType,
                 quality: generatedPlan.projectAnalysis.quality,
                 scopeOfWork: generatedPlan.blueprintAnalysis?.scopeOfWork || generatedPlan.projectAnalysis.initialBlueprintPrompt || '',
+                costEstimation: generatedPlan.costEstimation,
             };
 
             if (isEditing && formData.id) {
@@ -376,5 +377,3 @@ export default function NewProjectPage() {
         </Suspense>
     )
 }
-
-    

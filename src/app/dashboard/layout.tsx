@@ -140,8 +140,8 @@ function DashboardLayoutContent({
                 </SidebarMenuButton>
               </SidebarMenuItem>
                 <SidebarSub>
-                  <SidebarSubTrigger isActive={isProcurementActive || isQuotesActive} tooltip="العقود والماليات">
-                     <ShoppingCart />
+                  <SidebarSubTrigger isActive={isProcurementActive || isQuotesActive || pathname.startsWith('/dashboard/financial-intelligence')} tooltip="العقود والماليات">
+                     <FileSignature />
                     <span>العقود والماليات</span>
                   </SidebarSubTrigger>
                   <SidebarSubContent>

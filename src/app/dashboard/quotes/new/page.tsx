@@ -18,6 +18,7 @@ import { generateQuote, type GenerateQuoteOutput } from '@/ai/flows/generate-quo
 import { Loader, ArrowLeft, Wand2, FileSignature, Save } from 'lucide-react';
 import Link from 'next/link';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
+import { useCurrentUser } from '@/lib/auth';
 
 const quoteRequestSchema = z.object({
   projectId: z.string().min(1, "يجب اختيار مشروع"),
@@ -32,6 +33,7 @@ export default function NewQuotePage() {
     const { toast } = useToast();
     const { addQuote } = useProcurementStore();
     const { projects, getProjectById } = useProjectStore();
+    const currentUser = useCurrentUser();
 
     const [isLoading, setIsLoading] = useState(false);
     const [generatedQuote, setGeneratedQuote] = useState<GenerateQuoteOutput | null>(null);
@@ -50,12 +52,12 @@ export default function NewQuotePage() {
                 const project = await getProjectById(projectId);
                 setSelectedProject(project);
 
-                if (project?.costEstimation?.boq) {
+                if (project && 'costEstimation' in project && project.costEstimation && 'boq' in project.costEstimation && project.costEstimation.boq) {
                     setBoq(project.costEstimation.boq);
                 } else {
                     // Fallback to generating a mock BOQ if none exists
                     setBoq([
-                        { id: '1', description: `أعمال إنشائية لمشروع: ${project?.title}`, unit: 'مقطوعية', quantity: 1, unitPrice: project?.budget || 100000, total: project?.budget || 100000 }
+                        { id: '1', description: `الأعمال الكاملة لمشروع: ${project?.title}`, unit: 'مقطوعية', quantity: 1, unitPrice: project?.budget || 100000, total: project?.budget || 100000 }
                     ]);
                 }
             }
@@ -65,7 +67,7 @@ export default function NewQuotePage() {
 
     const handleGenerate = async (data: QuoteRequestForm) => {
         if (!selectedProject || boq.length === 0) {
-            toast({ title: "بيانات غير كافية", description: "المشروع المختار لا يحتوي على جدول كميات.", variant: "destructive" });
+            toast({ title: "بيانات غير كافية", description: "المشروع المختار لا يحتوي على جدول كميات. قم بإنشاء خطة له أولاً.", variant: "destructive" });
             return;
         }
 

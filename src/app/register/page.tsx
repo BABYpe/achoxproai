@@ -85,11 +85,11 @@ export default function RegisterPage() {
                   </Link>
                 </label>
               </div>
-
-              <Link href="/dashboard" passHref>
-                  <Button asChild type="submit" className="w-full font-bold text-lg py-6" disabled={!agreed}>
-                    <a>{t('register.createAccount')}</a>
-                  </Button>
+              
+              <Link href="/dashboard" passHref legacyBehavior>
+                <Button type="submit" className="w-full font-bold text-lg py-6" disabled={!agreed}>
+                    {t('register.createAccount')}
+                </Button>
               </Link>
             </div>
           </form>

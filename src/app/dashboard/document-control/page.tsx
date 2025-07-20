@@ -1,17 +1,17 @@
 
 "use client"
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Bot, Download, Filter, FileText, FileSignature, FilePieChart, Briefcase } from "lucide-react";
+import { Search, Filter, FileText, FileSignature, FilePieChart, Briefcase, Download, Bot, History, CheckCircle, FileUp, MoreVertical, FilePlus2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { StatCard } from "@/components/stat-card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-// Mock data simulating documents and activities from across the platform
 const documentLog = [
     { id: 'DOC-001', type: 'مخطط', name: 'المخططات المعمارية المعتمدة', project: 'بناء فيلا فاخرة في حي الياسمين', version: 3, status: 'معتمد', date: '2024-07-20', by: 'علي محمد' },
     { id: 'DOC-002', type: 'عقد', name: 'عقد المقاول الرئيسي', project: 'بناء فيلا فاخرة في حي الياسمين', version: 1, status: 'موقع', date: '2024-07-18', by: 'سارة عبدالله' },
@@ -21,16 +21,26 @@ const documentLog = [
     { id: 'DOC-006', type: 'عرض سعر', name: 'QT-2024-1055 - عرض سعر لشركة العميل', project: 'تجهيز فعالية إطلاق سيارة كهربائية', version: 2, status: 'تم الإرسال', date: '2024-07-19', by: 'نورة القحطاني' },
 ];
 
+const auditLog = [
+    { id: 'AUD-001', icon: FilePlus2, text: "قام <strong>علي محمد</strong> بإنشاء مشروع <strong>بناء فيلا فاخرة</strong>.", timestamp: "2024-07-22T10:00:00Z" },
+    { id: 'AUD-002', icon: FileUp, text: "قام <strong>المستشار الذكي</strong> بتحليل المخطط <strong>'مخطط الواجهة'</strong>.", timestamp: "2024-07-21T14:30:00Z" },
+    { id: 'AUD-003', icon: History, text: "تم تحديث حالة المشروع <strong>تجهيز فعالية</strong> إلى <strong>مكتمل</strong>.", timestamp: "2024-07-21T09:15:00Z" },
+    { id: 'AUD-004', icon: CheckCircle, text: "تم اعتماد المستند <strong>'المخططات المعمارية v2'</strong> بواسطة <strong>سارة عبدالله</strong>.", timestamp: "2024-07-20T11:00:00Z" },
+    { id: 'AUD-005', icon: FilePieChart, text: "قام <strong>روبوت التقارير</strong> بتوليد تقرير أسبوعي لمشروع <strong>برج المكاتب</strong>.", timestamp: "2024-07-19T17:00:00Z" },
+    { id: 'AUD-006', icon: FileSignature, text: "تم إصدار أمر الشراء <strong>PO-2024-002</strong> للمورد <strong>مصنع الخرسانة</strong>.", timestamp: "2024-07-18T16:45:00Z" },
+];
+
+
 const getStatusVariant = (status: string) => {
     switch (status) {
         case 'معتمد':
         case 'موقع':
-        case 'موزع':
             return 'default';
+        case 'موزع':
+        case 'تم الإرسال':
+             return 'secondary';
         case 'قيد المراجعة':
         case 'قيد المعالجة':
-            return 'secondary';
-        case 'تم الإرسال':
             return 'outline';
         default:
             return 'destructive';
@@ -39,13 +49,13 @@ const getStatusVariant = (status: string) => {
 
 const getTypeIcon = (type: string) => {
     switch (type) {
-        case 'مخطط': return <FileText className="h-4 w-4" />;
+        case 'مخطط': return <FileText className="h-4 w-4 text-muted-foreground" />;
         case 'عقد':
         case 'أمر شراء':
         case 'عرض سعر': 
-            return <FileSignature className="h-4 w-4" />;
-        case 'تقرير': return <FilePieChart className="h-4 w-4" />;
-        default: return <Briefcase className="h-4 w-4" />;
+            return <FileSignature className="h-4 w-4 text-muted-foreground" />;
+        case 'تقرير': return <FilePieChart className="h-4 w-4 text-muted-foreground" />;
+        default: return <Briefcase className="h-4 w-4 text-muted-foreground" />;
     }
 }
 
@@ -68,56 +78,64 @@ export default function DocumentControlPage() {
             </div>
         </div>
 
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <StatCard title="إجمالي الوثائق" value={documentLog.length.toString()} icon={Briefcase} />
+            <StatCard title="وثائق قيد المراجعة" value={documentLog.filter(d => d.status.includes("قيد")).length.toString()} icon={History} description="بانتظار الموافقة" />
+            <StatCard title="وثائق معتمدة" value={documentLog.filter(d => d.status === "معتمد" || d.status === "موقع").length.toString()} icon={CheckCircle} description="مكتملة ومؤرشفة" />
+            <StatCard title="أنشطة اليوم" value={auditLog.filter(a => new Date(a.timestamp).toDateString() === new Date().toDateString()).length.toString()} icon={Bot} description="تم توثيقها آليًا" />
+        </div>
+
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-                 <Tabs defaultValue="all">
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="all">كل الوثائق</TabsTrigger>
-                        <TabsTrigger value="blueprints">المخططات</TabsTrigger>
-                        <TabsTrigger value="contracts">العقود والمشتريات</TabsTrigger>
-                        <TabsTrigger value="reports">التقارير</TabsTrigger>
-                    </TabsList>
-                    <Card className="shadow-xl rounded-2xl mt-4">
-                        <CardHeader>
-                            <CardTitle>سجل الوثائق المركزي</CardTitle>
-                            <CardDescription>قائمة بجميع المستندات والوثائق عبر كل المشاريع.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                    <TableHead>اسم الوثيقة</TableHead>
-                                    <TableHead>المشروع</TableHead>
-                                    <TableHead>الإصدار</TableHead>
-                                    <TableHead>الحالة</TableHead>
-                                    <TableHead className="text-right">إجراء</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {documentLog.map((doc) => (
-                                    <TableRow key={doc.id}>
-                                        <TableCell className="font-medium">
-                                            <div className="flex items-center gap-2">
-                                                {getTypeIcon(doc.type)}
-                                                <span>{doc.name}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-muted-foreground">{doc.project}</TableCell>
-                                        <TableCell className="font-mono">v{doc.version}.0</TableCell>
-                                        <TableCell><Badge variant={getStatusVariant(doc.status)}>{doc.status}</Badge></TableCell>
-                                        <TableCell className="text-right">
-                                            <Button variant="outline" size="sm" className="gap-1">
-                                                <Download className="h-3 w-3" />
-                                                تحميل
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
-                </Tabs>
+                 <Card className="shadow-xl rounded-2xl">
+                    <CardHeader>
+                        <CardTitle>سجل الوثائق المركزي</CardTitle>
+                        <CardDescription>قائمة بجميع المستندات والوثائق عبر كل المشاريع.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                <TableHead>اسم الوثيقة</TableHead>
+                                <TableHead>المشروع</TableHead>
+                                <TableHead>الإصدار</TableHead>
+                                <TableHead>الحالة</TableHead>
+                                <TableHead className="text-right">إجراء</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {documentLog.map((doc) => (
+                                <TableRow key={doc.id}>
+                                    <TableCell className="font-medium">
+                                        <div className="flex items-center gap-2">
+                                            {getTypeIcon(doc.type)}
+                                            <span>{doc.name}</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-muted-foreground">{doc.project}</TableCell>
+                                    <TableCell className="font-mono">v{doc.version}.0</TableCell>
+                                    <TableCell><Badge variant={getStatusVariant(doc.status)}>{doc.status}</Badge></TableCell>
+                                    <TableCell className="text-right">
+                                         <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem>مراجعة وتدقيق</DropdownMenuItem>
+                                                <DropdownMenuItem>توزيع على المعنيين</DropdownMenuItem>
+                                                <DropdownMenuItem>تنزيل الوثيقة</DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
             </div>
 
             <div className="lg:col-span-1">
@@ -132,21 +150,20 @@ export default function DocumentControlPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4 max-h-[60vh] overflow-y-auto">
-                        {documentLog.map(log => (
-                             <div key={log.id} className="flex gap-3">
-                                <Avatar className="w-8 h-8 border-2 border-primary/50">
-                                    <AvatarFallback>{log.by.substring(0,1)}</AvatarFallback>
-                                </Avatar>
-                                <div className="text-sm">
-                                    <p>
-                                        <span className="font-semibold">{log.by}</span> 
-                                        {` قام بإنشاء وثيقة (${log.type}) جديدة للمشروع `}
-                                        <span className="font-medium text-primary">{log.project}</span>.
-                                    </p>
-                                    <p className="text-xs text-muted-foreground mt-1">{new Date(log.date).toLocaleString('ar-SA')}</p>
+                        {auditLog.map(log => {
+                             const LogIcon = log.icon;
+                             return (
+                                 <div key={log.id} className="flex gap-3">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary">
+                                       <LogIcon className="w-4 h-4 text-muted-foreground"/>
+                                    </div>
+                                    <div className="text-sm">
+                                        <p dangerouslySetInnerHTML={{ __html: log.text }} />
+                                        <p className="text-xs text-muted-foreground mt-1">{new Date(log.timestamp).toLocaleString('ar-SA')}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </CardContent>
                  </Card>
             </div>

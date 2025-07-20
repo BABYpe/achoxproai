@@ -105,3 +105,34 @@ body {
       background-image: radial-gradient(ellipse 80% 50% at 50% 120%, hsl(var(--primary) / 0.15), transparent);
     }
 }
+
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    .print\:hidden {
+        display: none !important;
+    }
+    .print\:block {
+        display: block !important;
+    }
+    .print\:shadow-none {
+        box-shadow: none !important;
+    }
+    .print\:border-none {
+        border: none !important;
+    }
+    .print\:p-0 {
+        padding: 0 !important;
+    }
+    .print\:bg-transparent {
+      background-color: transparent !important;
+    }
+    .print\:col-span-1 {
+      grid-column: span 1 / span 1 !important;
+    }
+    .print\:gap-0 {
+      gap: 0 !important;
+    }
+}

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, Wand2, BarChart, ImageIcon, Building, RefreshCw, ZoomIn, FileText } from "lucide-react";
+import { Loader, Wand2, BarChart, ImageIcon, Building, RefreshCw, ZoomIn, FileText, Download } from "lucide-react";
 import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -56,12 +56,18 @@ export default function AiDesignerPage() {
 
   const handleAnalyzeGeneratedBlueprint = () => {
     if (!generationResult?.blueprintDataUri) return;
-    // We can't send the data URI directly in a GET request.
-    // In a real app, we might store it temporarily and pass an ID,
-    // but for this prototype, we'll just navigate to the page with a flag.
     sessionStorage.setItem('generatedBlueprint', generationResult.blueprintDataUri);
     router.push('/dashboard/blueprints?from=designer');
   }
+
+  const handleDownloadImage = (dataUri: string, filename: string) => {
+    const link = document.createElement("a");
+    link.href = dataUri;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
 
   return (
@@ -127,7 +133,13 @@ export default function AiDesignerPage() {
                             </Alert>
 
                             <div>
-                                <h3 className="font-semibold text-lg flex items-center gap-2 mb-2"><FileText className="text-primary"/> مخطط معماري (2D)</h3>
+                                <div className="flex justify-between items-center mb-2">
+                                  <h3 className="font-semibold text-lg flex items-center gap-2"><FileText className="text-primary"/> مخطط معماري (2D)</h3>
+                                  <Button variant="outline" size="sm" onClick={() => handleDownloadImage(generationResult.blueprintDataUri, `blueprint-2d-${Date.now()}.png`)}>
+                                    <Download className="w-4 h-4 ml-2"/>
+                                    تنزيل
+                                  </Button>
+                                </div>
                                 <div className="relative w-full h-96 bg-secondary rounded-lg overflow-hidden border group">
                                     <Image src={generationResult.blueprintDataUri} alt="المخطط المعماري المولد" layout="fill" objectFit="contain" />
                                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
@@ -136,7 +148,13 @@ export default function AiDesignerPage() {
                                 </div>
                             </div>
                              <div>
-                                <h3 className="font-semibold text-lg flex items-center gap-2 mb-2"><Building className="text-primary"/> تصور خارجي (3D)</h3>
+                                 <div className="flex justify-between items-center mb-2">
+                                  <h3 className="font-semibold text-lg flex items-center gap-2"><Building className="text-primary"/> تصور خارجي (3D)</h3>
+                                   <Button variant="outline" size="sm" onClick={() => handleDownloadImage(generationResult.perspectiveDataUri, `perspective-3d-${Date.now()}.png`)}>
+                                    <Download className="w-4 h-4 ml-2"/>
+                                    تنزيل
+                                  </Button>
+                                </div>
                                 <div className="relative w-full h-80 bg-secondary rounded-lg overflow-hidden border group">
                                    <Image src={generationResult.perspectiveDataUri} alt="التصور الخارجي المولد" layout="fill" objectFit="cover" />
                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">

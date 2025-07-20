@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useProcurementStore } from '@/hooks/use-procurement-store';
 import { useProjectStore } from '@/hooks/use-project-store';
 import { generateQuote, type GenerateQuoteOutput } from '@/ai/flows/generate-quote';
-import { Loader, ArrowLeft, Wand2, FileSignature, Save } from 'lucide-react';
+import { Loader, ArrowLeft, Wand2, FileSignature, Save, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
 import { useCurrentUser } from '@/lib/auth';
@@ -55,7 +55,6 @@ export default function NewQuotePage() {
                 if (project && 'costEstimation' in project && project.costEstimation && 'boq' in project.costEstimation && project.costEstimation.boq) {
                     setBoq(project.costEstimation.boq);
                 } else {
-                    // Fallback to generating a mock BOQ if none exists
                     setBoq([
                         { id: '1', description: `الأعمال الكاملة لمشروع: ${project?.title}`, unit: 'مقطوعية', quantity: 1, unitPrice: project?.budget || 100000, total: project?.budget || 100000 }
                     ]);
@@ -113,9 +112,14 @@ export default function NewQuotePage() {
         router.push('/dashboard/quotes');
     }
 
+    const handlePrint = () => {
+        window.print();
+    }
+
+
     return (
-        <div className="flex flex-col gap-8">
-            <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-8 print:gap-0">
+            <div className="flex items-center justify-between print:hidden">
                 <h1 className="text-3xl font-bold">إنشاء عرض سعر جديد</h1>
                 <Button variant="outline" asChild>
                     <Link href="/dashboard/quotes">
@@ -125,8 +129,8 @@ export default function NewQuotePage() {
                 </Button>
             </div>
             
-            <div className="grid lg:grid-cols-3 gap-8 items-start">
-                <Card className="lg:col-span-1 shadow-xl rounded-2xl sticky top-20">
+            <div className="grid lg:grid-cols-3 gap-8 items-start print:grid-cols-1">
+                <Card className="lg:col-span-1 shadow-xl rounded-2xl sticky top-20 print:hidden">
                     <form onSubmit={handleSubmit(handleGenerate)}>
                         <CardHeader>
                             <CardTitle>معلومات العرض</CardTitle>
@@ -169,33 +173,39 @@ export default function NewQuotePage() {
                     </form>
                 </Card>
 
-                <div className="lg:col-span-2">
-                    <Card className="shadow-xl rounded-2xl min-h-[500px]">
-                        <CardHeader className="flex flex-row justify-between items-center">
+                <div className="lg:col-span-2 print:col-span-1">
+                    <Card className="shadow-xl rounded-2xl min-h-[500px] print:shadow-none print:border-none">
+                        <CardHeader className="flex flex-row justify-between items-center print:hidden">
                             <div>
                                 <CardTitle>معاينة عرض السعر</CardTitle>
                                 <CardDescription>سيظهر عرض السعر المولد بواسطة الذكاء الاصطناعي هنا.</CardDescription>
                             </div>
                             {generatedQuote && (
-                                <Button onClick={handleSaveQuote} disabled={isLoading} className="gap-2">
-                                    <Save className="h-4 w-4"/>
-                                    حفظ
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Button variant="outline" onClick={handlePrint} className="gap-2">
+                                        <Printer className="h-4 w-4"/>
+                                        تصدير PDF
+                                    </Button>
+                                    <Button onClick={handleSaveQuote} disabled={isLoading} className="gap-2">
+                                        <Save className="h-4 w-4"/>
+                                        حفظ
+                                    </Button>
+                                </div>
                             )}
                         </CardHeader>
                         <CardContent>
                             {isLoading && (
-                                <div className="flex flex-col items-center justify-center gap-4 py-20 text-muted-foreground">
+                                <div className="flex flex-col items-center justify-center gap-4 py-20 text-muted-foreground print:hidden">
                                     <Loader className="h-12 w-12 animate-spin text-primary" />
                                     <p>يقوم مدير العقود الذكي بصياغة العرض...</p>
                                 </div>
                             )}
                             {generatedQuote ? (
-                                <div className="p-4 bg-secondary/30 rounded-lg border">
+                                <div className="p-4 bg-secondary/30 rounded-lg border print:bg-transparent print:p-0 print:border-none">
                                     <MarkdownRenderer content={generatedQuote.markdownQuote} />
                                 </div>
                             ) : !isLoading && (
-                                <div className="flex flex-col items-center justify-center gap-4 py-20 text-muted-foreground">
+                                <div className="flex flex-col items-center justify-center gap-4 py-20 text-muted-foreground print:hidden">
                                     <FileSignature className="h-12 w-12" />
                                     <p className="text-center">أدخل البيانات المطلوبة واضغط على زر الإنشاء.</p>
                                 </div>

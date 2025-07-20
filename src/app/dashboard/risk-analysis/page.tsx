@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, Wand2, ShieldAlert, ShieldCheck, ShieldQuestion, AlertTriangle } from 'lucide-react';
+import { Loader, Wand2, ShieldAlert, ShieldCheck, ShieldQuestion, AlertTriangle, Briefcase, FileText, PiggyBank, Sprout } from 'lucide-react';
 import { analyzeRisks, type AnalyzeRisksOutput } from '@/ai/flows/analyze-risks';
 import { Badge } from '@/components/ui/badge';
 import { differenceInDays } from 'date-fns';
@@ -35,11 +35,11 @@ const getProbabilityVariant = (probability: Risk['probability']) => {
 const getCategoryIcon = (category: Risk['category']) => {
     const iconClass = "w-5 h-5 mr-2";
     switch (category) {
-        case 'Operational': return <ShieldAlert className={iconClass} />;
-        case 'Financial': return <AlertTriangle className={iconClass} />;
-        case 'Technical': return <ShieldAlert className={iconClass} />;
-        case 'Legal': return <ShieldAlert className={iconClass} />;
-        case 'External': return <ShieldAlert className={iconClass} />;
+        case 'Operational': return <Briefcase className={iconClass} />;
+        case 'Financial': return <PiggyBank className={iconClass} />;
+        case 'Technical': return <Sprout className={iconClass} />;
+        case 'Legal': return <FileText className={iconClass} />;
+        case 'External': return <AlertTriangle className={iconClass} />;
         default: return <ShieldQuestion className={iconClass} />;
     }
 }
@@ -188,3 +188,5 @@ export default function RiskAnalysisPage() {
         </div>
     );
 }
+
+    

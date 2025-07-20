@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Building, DollarSign, User, Calendar, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus, Milestone, Handshake, Briefcase, CheckCircle } from "lucide-react";
+import { ArrowLeft, Building, DollarSign, User, Calendar, Loader, Edit, Trash2, FileText, Paperclip, MessageSquare, Milestone, Handshake, Briefcase, CheckCircle, Share2, Mail, Bot, Video, CalendarPlus } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const mockUpdates = [
     { date: "2024-07-20", author: "علي محمد", text: "تم الانتهاء من صب خرسانة الدور الأول. واجهنا تأخيرًا بسيطًا بسبب الطقس ولكن تم تعويضه. سنبدأ في أعمال المباني الأسبوع القادم." },
@@ -111,9 +114,10 @@ export default function ProjectDetailsPage() {
     }
     
     const mockTeam = [
-        { name: project.manager, role: "مدير المشروع" },
-        { name: "سارة عبدالله", role: "مهندس موقع" },
-        { name: "أحمد خان", role: "مشرف عمال" },
+        { name: project.manager, role: "مدير المشروع", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+        { name: "سارة عبدالله", role: "مهندس موقع", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+        { name: "أحمد خان", role: "مشرف عمال", avatar: "https://randomuser.me/api/portraits/men/46.jpg" },
+        { name: "روبوت التوثيق", role: "مراقب مستندات آلي", avatar: null, isBot: true },
     ]
 
     const today = new Date();
@@ -266,18 +270,53 @@ export default function ProjectDetailsPage() {
                         </CardContent>
                     </Card>
 
-                     <Card className="shadow-xl rounded-2xl">
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>آخر التحديثات والملاحظات</CardTitle>
-                            <Button variant="outline" size="sm"><MessageSquarePlus className="ml-2 h-4 w-4"/> إضافة تحديث</Button>
+                    <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>مراسلات المشروع (محاكاة)</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            {mockUpdates.map((update, index) => (
-                                <div key={index} className="p-3 bg-secondary/50 rounded-lg">
-                                    <p className="text-sm">{update.text}</p>
-                                    <p className="text-xs text-muted-foreground mt-2 text-left">{update.author} - {update.date}</p>
+                        <CardContent>
+                            <div className="space-y-4">
+                                <div className="p-3 bg-secondary/50 rounded-lg">
+                                    <div className="flex items-start gap-3">
+                                        <Avatar className="w-10 h-10 border">
+                                            <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
+                                            <AvatarFallback>عم</AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold">علي محمد <span className="text-xs text-muted-foreground font-normal">- 2024-07-20</span></p>
+                                            <p className="text-sm mt-1">تم الانتهاء من صب خرسانة الدور الأول. واجهنا تأخيرًا بسيطًا بسبب الطقس ولكن تم تعويضه. سنبدأ في أعمال المباني الأسبوع القادم.</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            ))}
+                                <div className="p-3 bg-secondary/50 rounded-lg">
+                                    <div className="flex items-start gap-3">
+                                        <Avatar className="w-10 h-10 border">
+                                            <AvatarImage src="https://randomuser.me/api/portraits/women/44.jpg" />
+                                            <AvatarFallback>سع</AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold">سارة عبدالله <span className="text-xs text-muted-foreground font-normal">- 2024-07-18</span></p>
+                                            <p className="text-sm mt-1">تم تحديد خطر محتمل يتعلق بتوريد مواد العزل. تم التواصل مع مورد بديل كخطة احتياطية.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+                                    <div className="flex items-start gap-3">
+                                        <Avatar className="w-10 h-10 border">
+                                            <Bot className="w-6 h-6 text-primary m-auto" />
+                                            <AvatarFallback>DC</AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold">روبوت التوثيق <span className="text-xs text-muted-foreground font-normal">- الآن</span></p>
+                                            <p className="text-sm mt-1">تم توثيق التحديثات أعلاه في سجل المشروع الرسمي. جاري إرسال ملخص أسبوعي إلى الأطراف المعنية.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-4 flex gap-2">
+                                <Textarea placeholder="اكتب تحديثًا جديدًا أو ردًا..." rows={1} />
+                                <Button>إرسال</Button>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
@@ -290,9 +329,10 @@ export default function ProjectDetailsPage() {
                         <CardContent className="space-y-4">
                             {mockTeam.map((member, index) => (
                             <div key={index} className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                                    <User className="h-6 w-6 text-muted-foreground"/>
-                                </div>
+                                <Avatar className="w-10 h-10 border">
+                                    {member.isBot ? <Bot className="w-6 h-6 text-primary m-auto"/> : <AvatarImage src={member.avatar} />}
+                                    <AvatarFallback>{member.name.substring(0,2)}</AvatarFallback>
+                                </Avatar>
                                 <div>
                                     <p className="font-semibold">{member.name}</p>
                                     <p className="text-sm text-muted-foreground">{member.role}</p>
@@ -303,7 +343,28 @@ export default function ProjectDetailsPage() {
                     </Card>
                     <Card className="shadow-xl rounded-2xl">
                         <CardHeader>
-                            <CardTitle>مستندات المشروع</CardTitle>
+                            <CardTitle>مشاركة وتصدير</CardTitle>
+                        </CardHeader>
+                         <CardContent className="space-y-3">
+                             <Button variant="outline" className="w-full justify-start gap-2"><Mail className="w-4 h-4"/> إرسال تقرير عبر البريد</Button>
+                             <Button variant="outline" className="w-full justify-start gap-2"><svg className="w-4 h-4" role="img" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><title>WhatsApp</title><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52s-.67-.816-.916-1.103c-.247-.288-.494-.248-.67.05-.174.297-.767.967-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52s-.67-.816-.916-1.103c-.247-.288-.494-.248-.67.05C3.18 6.6.64 7.2.46 7.4c-.172.199-.346.42-.346.666 0 .246.174.562.42.923.246.362 1.43 2.13 3.58 4.229 2.15 2.1 3.98 2.78 5.48 3.292.3.1.57.12.76.18.32.09.97.42.97.97.1.55.1.55.1 1.15.2.6.2.6.2 1.25.074.05.62.25.62.25.1.05.2.1.3.15.1.05.2.1.3.15s.3.1.4.15c.1.05.2.1.3.15s.3.1.4.15c.1.05.2.1.3.15s.3.1.4.15c.1.05.2.1.3.15s.3.1.4.15c.1.05.2.1.3.15s.3.1.4.15c.1.05.2.1.3.15s.3.1.4.15c.1.05.2.1.3.15s.3.1.4.15c.1.05.2.1.3.15s.3.1.4.15c.1.05.2.1.3.15s.3.1.4.15l.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.3.15.d.ts"></path></svg> المشاركة عبر واتساب</Button>
+                             <Button variant="outline" className="w-full justify-start gap-2"><FileText className="w-4 h-4"/> تصدير تقرير PDF</Button>
+                         </CardContent>
+                    </Card>
+                    
+                    <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>الاجتماعات والمواعيد</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                             <Button className="w-full justify-start gap-2"><Video className="w-4 h-4"/> بدء اجتماع فوري</Button>
+                             <Button variant="outline" className="w-full justify-start gap-2"><CalendarPlus className="w-4 h-4"/> حجز موعد لمناقشة المشروع</Button>
+                        </CardContent>
+                    </Card>
+                    
+                    <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>المستندات والمخططات</CardTitle>
                         </CardHeader>
                          <CardContent className="space-y-3">
                              {mockFiles.map((file, index) => (

@@ -23,7 +23,7 @@ const prompt = ai.definePrompt({
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateMarketingOutreachInputSchema},
   output: {schema: GenerateMarketingOutreachOutputSchema},
-  prompt: `You are a world-class B2B Marketing and Sales Strategist specializing in the Saudi Arabian construction and events market. You have the ability to simulate browsing professional networks like LinkedIn and company websites.
+  prompt: `You are a world-class B2B Marketing and Sales Strategist specializing in the Saudi Arabian construction and events market. You have the ability to simulate browsing professional networks like LinkedIn, social media networks, and company websites.
 
 **Your Task:**
 Based on the user's input, you will perform two critical functions:

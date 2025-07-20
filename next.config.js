@@ -70,11 +70,6 @@ const nextConfig = {
       }
     ],
   },
-  ...(process.env.NODE_ENV === 'development' && {
-    experimental: {
-      allowedDevOrigins: ["*.cloudworkstations.dev"],
-    },
-  }),
 };
 
 module.exports = nextConfig;

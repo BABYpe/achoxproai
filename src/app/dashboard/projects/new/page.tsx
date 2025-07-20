@@ -14,7 +14,7 @@ import { Loader, ArrowLeft, Wand2, Users, GanttChartSquare, ClipboardList, Info,
 import Link from "next/link"
 import { FileUploader } from "@/components/file-uploader"
 import { uploadFile } from "@/services/storage"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, setValue } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { generateComprehensivePlan, type GenerateComprehensivePlanOutput } from "@/ai/flows/generate-comprehensive-plan"
@@ -22,6 +22,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { APIProvider } from "@vis.gl/react-google-maps"
+import { PlacesAutocomplete } from "@/components/places-autocomplete"
 
 const projectSchema = z.object({
     id: z.string().optional(), // For editing existing projects
@@ -43,7 +45,7 @@ function NewProjectPageContent() {
     const [generatedPlan, setGeneratedPlan] = useState<GenerateComprehensivePlanOutput | null>(null);
     const [isEditing, setIsEditing] = useState(false);
 
-    const { control, handleSubmit, formState: { errors }, reset } = useForm<ProjectFormData>({
+    const { control, handleSubmit, formState: { errors }, reset, setValue: setFormValue } = useForm<ProjectFormData>({
         resolver: zodResolver(projectSchema),
         defaultValues: {
             projectName: "",
@@ -188,6 +190,12 @@ function NewProjectPageContent() {
             setIsLoading(false);
         }
     }
+    
+    const handlePlaceSelect = (place: google.maps.places.PlaceResult | null) => {
+        if (place?.formatted_address) {
+            setFormValue('location', place.formatted_address);
+        }
+    };
 
     return (
         <div className="flex flex-col gap-8">
@@ -225,7 +233,13 @@ function NewProjectPageContent() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="location">موقع المشروع</Label>
-                                <Controller name="location" control={control} render={({ field }) => <Input {...field} placeholder="مثال: الرياض، حي الملقا" />} />
+                                <Controller
+                                    name="location"
+                                    control={control}
+                                    render={({ field: { onChange, value } }) => (
+                                        <PlacesAutocomplete onPlaceSelect={handlePlaceSelect} />
+                                    )}
+                                />
                                 {errors.location && <p className="text-destructive text-sm mt-1">{errors.location.message}</p>}
                             </div>
                             <div className="space-y-2">
@@ -394,9 +408,24 @@ function NewProjectPageContent() {
 
 
 export default function NewProjectPage() {
+    if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+        return (
+            <div className="container mx-auto p-4">
+                <Alert variant="destructive">
+                    <AlertTitle>خطأ في الإعدادات</AlertTitle>
+                    <AlertDescription>
+                        مفتاح واجهة برمجة تطبيقات خرائط Google غير مهيأ. يرجى إضافته إلى متغيرات البيئة.
+                    </AlertDescription>
+                </Alert>
+            </div>
+        );
+    }
+    
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <NewProjectPageContent />
+            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+                <NewProjectPageContent />
+            </APIProvider>
         </Suspense>
     )
 }

@@ -4,10 +4,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Building, DollarSign, Wand2, Loader } from "lucide-react";
+import { Building, DollarSign, Wand2 } from "lucide-react";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TemplatesPage() {
     const { projects, isLoading } = useProjectStore();
@@ -47,13 +48,13 @@ export default function TemplatesPage() {
                     {isLoading ? (
                         Array.from({ length: 3 }).map((_, i) => (
                              <Card key={i} className="overflow-hidden shadow-lg flex flex-col">
-                                 <div className="bg-muted h-48 w-full animate-pulse"></div>
-                                 <CardHeader><div className="h-6 w-3/4 bg-muted animate-pulse rounded-md"></div></CardHeader>
+                                 <Skeleton className="bg-muted h-48 w-full" />
+                                 <CardHeader><Skeleton className="h-6 w-3/4 bg-muted rounded-md" /></CardHeader>
                                  <CardContent className="flex-grow space-y-2">
-                                     <div className="h-5 w-1/2 bg-muted animate-pulse rounded-md"></div>
-                                     <div className="h-5 w-2/3 bg-muted animate-pulse rounded-md"></div>
+                                     <Skeleton className="h-5 w-1/2 bg-muted rounded-md" />
+                                     <Skeleton className="h-5 w-2/3 bg-muted rounded-md" />
                                  </CardContent>
-                                 <CardFooter><div className="h-10 w-full bg-muted animate-pulse rounded-md"></div></CardFooter>
+                                 <CardFooter><Skeleton className="h-10 w-full bg-muted rounded-md" /></CardFooter>
                             </Card>
                         ))
                     ) : (

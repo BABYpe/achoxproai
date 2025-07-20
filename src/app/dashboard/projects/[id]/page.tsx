@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Building, DollarSign, User, Calendar, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus, Milestone, Handshake, Briefcase, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";

@@ -4,7 +4,7 @@
 import React, { useEffect } from 'react';
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Calculator, ListChecks, Settings, Search, Bell, FilePieChart, Briefcase, FileSignature, Send, ShieldAlert, PenRuler, Warehouse, Wrench, ClipboardType } from 'lucide-react';
+import { LayoutDashboard, FileText, Calculator, ListChecks, Settings, Search, Bell, FilePieChart, Briefcase, FileSignature, Send, ShieldAlert, Wand2, Warehouse, Wrench, ClipboardType } from 'lucide-react';
 
 import {
   SidebarProvider,
@@ -80,7 +80,7 @@ function DashboardLayoutContent({
                <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive('/dashboard/ai-designer')} tooltip="المصمم المعماري الذكي">
                   <Link href="/dashboard/ai-designer">
-                    <PenRuler />
+                    <Wand2 />
                     <span>المصمم الذكي</span>
                   </Link>
                 </SidebarMenuButton>

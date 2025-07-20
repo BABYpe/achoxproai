@@ -218,6 +218,14 @@ function DashboardLayoutContent({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/document-control')} tooltip="مركز الوثائق">
+                  <Link href="/dashboard/document-control">
+                    <ClipboardType />
+                    <span>مركز الوثائق</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>

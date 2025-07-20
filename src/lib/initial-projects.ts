@@ -7,7 +7,7 @@ export const initialProjects: Project[] = [
     status: "قيد التنفيذ",
     variant: "default",
     location: "الرياض، حي الياسمين",
-    imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600",
+    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600",
     imageHint: "luxury villa modern",
     progress: 65,
     budget: 3500000,
@@ -45,7 +45,7 @@ export const initialProjects: Project[] = [
     manager: "فاطمة الزهراني",
     endDate: "2026-10-01",
     createdAt: "2024-05-20T11:30:00Z",
-    projectType: 'retail_mall',
+    projectType: 'commercial_building',
     quality: 'premium',
     scopeOfWork: 'مشروع تطوير وتوسعة مول الرياض بارك، يشمل إضافة منطقة تجارية جديدة بمساحة 20,000 متر مربع، وتطوير الواجهات الخارجية، وإعادة تصميم منطقة المطاعم والترفيه.',
     ganttChartData: [
@@ -72,7 +72,7 @@ export const initialProjects: Project[] = [
     manager: "خالد الغامدي",
     endDate: "2027-06-30",
     createdAt: "2023-11-01T09:00:00Z",
-    projectType: 'office_high_rise',
+    projectType: 'commercial_building',
     quality: 'luxury',
     scopeOfWork: 'بناء برج مكتبي بارتفاع 30 طابقًا على طريق الملك عبدالعزيز في جدة، مع واجهات زجاجية حديثة وأنظمة ذكية لإدارة المباني ومواقف سيارات متعددة الطوابق.',
      ganttChartData: [
@@ -126,7 +126,7 @@ export const initialProjects: Project[] = [
     manager: "عبدالله المصري",
     endDate: "2024-08-30",
     createdAt: "2023-09-10T08:00:00Z",
-     projectType: 'industrial_warehouse',
+     projectType: 'commercial_building',
     quality: 'standard',
     scopeOfWork: 'بناء مستودع لوجستي بمساحة 15,000 متر مربع، مع أرضيات خرسانية مصقولة، وأنظمة تخزين عالية، ومنطقة مخصصة للشحن والتفريغ.',
      ganttChartData: [
@@ -152,7 +152,7 @@ export const initialProjects: Project[] = [
     manager: "سارة عبدالله",
     endDate: "2025-02-28",
     createdAt: "2023-07-01T12:00:00Z",
-    projectType: 'hospitality_hotel',
+    projectType: 'interior_finishing',
     quality: 'luxury',
     scopeOfWork: 'أعمال التشطيبات الداخلية الفاخرة لفندق 5 نجوم، تشمل 200 غرفة وجناح، بالإضافة إلى البهو الرئيسي والمطاعم والقاعات والسبا، باستخدام مواد عالية الجودة وتصاميم مخصصة.',
     ganttChartData: [

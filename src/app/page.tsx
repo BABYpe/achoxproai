@@ -145,7 +145,16 @@ export default function HomePage() {
             <div className="mt-16 space-y-20">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://images.unsplash.com/photo-1665686374006-b8f04cf62d57?q=80&w=600" width={600} height={400} alt="تحليل المستندات" className="rounded-2xl shadow-xl border-2 border-primary/10" data-ai-hint="data analysis interface"/>
+                        <Image 
+                            src="https://images.unsplash.com/photo-1665686374006-b8f04cf62d57?q=80&w=600" 
+                            width={600} 
+                            height={400} 
+                            alt="تحليل المستندات" 
+                            className="rounded-2xl shadow-xl border-2 border-primary/10" 
+                            data-ai-hint="data analysis interface"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            priority
+                         />
                     </div>
                     <div>
                         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
@@ -158,7 +167,15 @@ export default function HomePage() {
 
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="md:order-2">
-                        <Image src="https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=600" width={600} height={400} alt="تسعير ذكي" className="rounded-2xl shadow-xl border-2 border-primary/10" data-ai-hint="financial planning dashboard"/>
+                        <Image 
+                            src="https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=600" 
+                            width={600} 
+                            height={400} 
+                            alt="تسعير ذكي" 
+                            className="rounded-2xl shadow-xl border-2 border-primary/10" 
+                            data-ai-hint="financial planning dashboard"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                        />
                     </div>
                     <div className="md:order-1">
                          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
@@ -171,7 +188,15 @@ export default function HomePage() {
 
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=600" width={600} height={400} alt="إدارة المشاريع" className="rounded-2xl shadow-xl border-2 border-primary/10" data-ai-hint="construction site engineers"/>
+                        <Image 
+                            src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=600" 
+                            width={600} 
+                            height={400} 
+                            alt="إدارة المشاريع" 
+                            className="rounded-2xl shadow-xl border-2 border-primary/10" 
+                            data-ai-hint="construction site engineers"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                        />
                     </div>
                     <div>
                         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">

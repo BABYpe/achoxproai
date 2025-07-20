@@ -1,74 +1,74 @@
-# AchoX Pro: المنصة الذكية لإدارة المشاريع
+# AchoX Pro: The Smart Platform for Project Management
 
-AchoX Pro هي منصة متكاملة لإدارة المشاريع الهندسية والفعاليات، مصممة لتسريع وتبسيط عمليات التخطيط، التسعير، والتحليل باستخدام أحدث تقنيات الذكاء الاصطناعي.
-
----
-
-## وصف المنصة
-
-تنقسم المنصة إلى جزأين رئيسيين: الواجهة الخارجية للزوار، والواجهة الداخلية (لوحة التحكم) للمستخدمين المسجلين.
-
-### 1. الواجهة الخارجية (صفحة الهبوط)
-
-هي البوابة الرئيسية للمنصة ونقطة الاتصال الأولى مع العملاء المحتملين.
-
-- **الهدف:** جذب المستخدمين الجدد، عرض القيمة الأساسية للمنصة، وتشجيعهم على التسجيل.
-- **المكونات الرئيسية:**
-    - **قسم Hero:** يعرض رسالة تسويقية قوية وشعار المنصة مع أزرار دعوة للعمل (CTA) واضحة.
-    - **قسم الميزات (Features):** يشرح بالتفصيل الخدمات الأساسية التي تقدمها المنصة مثل تحليل المخططات، تقدير التكاليف، وإدارة المشاريع.
-    - **قسم آراء العملاء (Testimonials):** يعرض شهادات من عملاء وهميين لزيادة المصداقية والثقة.
-    - **قسم الأسعار (Pricing):** يقدم خطط أسعار مختلفة لتناسب احتياجات مختلف المستخدمين.
-    - **قسم الأسئلة الشائعة (FAQ):** يجيب على الاستفسارات المتوقعة من المستخدمين الجدد.
-- **صفحات مساندة:**
-    - **تسجيل الدخول / إنشاء حساب:** نماذج بسيطة وآمنة للمستخدمين للوصول إلى حساباتهم أو إنشاء حسابات جديدة.
-    - **تواصل مع المبيعات:** نموذج مخصص للشركات الكبيرة للاستفسار عن الخطط المخصصة.
-
-### 2. الواجهة الداخلية (لوحة التحكم)
-
-هي مساحة العمل التفاعلية للمستخدمين المسجلين لإدارة مشاريعهم.
-
-- **الهدف:** توفير أدوات قوية وسهلة الاستخدام لإدارة دورة حياة المشروع بالكامل.
-- **المكونات الرئيسية:**
-    - **الشريط الجانبي (Sidebar):** يوفر تنقلاً سريعًا بين جميع أقسام لوحة التحكم.
-    - **لوحة التحكم الرئيسية (Dashboard):** تعرض نظرة عامة شاملة على جميع المشاريع، مع إحصائيات رئيسية (إجمالي المشاريع، الميزانيات، الحالة) ورسوم بيانية تفاعلية وخريطة لمواقع المشاريع.
-    - **إدارة المشاريع:** تسمح للمستخدم بإضافة، عرض، وتفصيل المشاريع. يمكن للمستخدم رؤية تقدم كل مشروع، ميزانيته، وتفاصيله الأخرى.
-    - **تحليل المخططات (AI Blueprint Analysis):** أداة ذكاء اصطناعي تسمح للمستخدم برفع ملفات المخططات والحصول على تحليل فوري للكميات والأبعاد.
-    - **تقدير التكاليف (AI Cost Estimation):** أداة تخطيط ذكية تقوم، بناءً على مدخلات المستخدم، بتوليد جدول كميات (BOQ)، توصيات لفريق العمل، خطة زمنية (Gantt Chart)، وتقدير شامل للتكلفة.
-    - **جداول الكميات (BOQ Management):** قاعدة بيانات مركزية لبنود الأعمال وتكاليفها التقديرية.
-    - **التقارير (Reports):** أداة لتوليد تقارير احترافية عن حالة المشاريع باستخدام الذكاء الاصطناعي.
+AchoX Pro is an integrated platform for managing engineering and event projects, designed to accelerate and simplify planning, pricing, and analysis processes using the latest artificial intelligence technologies.
 
 ---
 
-## التقنيات المستخدمة (Tech Stack)
+## Platform Description
 
-تم بناء المنصة باستخدام مجموعة من التقنيات الحديثة لضمان الأداء العالي، قابلية التوسع، وتجربة مستخدم ممتازة.
+The platform is divided into two main parts: the external interface for visitors, and the internal interface (control panel) for registered users.
 
-- **الواجهة الأمامية (Frontend):**
-    - **Next.js:** إطار عمل React للويب يوفر ميزات متقدمة مثل العرض من جانب الخادم (SSR) والتوجيه الديناميكي.
-    - **React:** مكتبة JavaScript لبناء واجهات مستخدم تفاعلية.
-    - **TypeScript:** لغة برمجة تضيف طبقة من التحقق من الأنواع إلى JavaScript لتحسين جودة الكود.
-- **التصميم وواجهة المستخدم (UI & Styling):**
-    - **Tailwind CSS:** إطار عمل CSS لتصميم سريع ومخصص.
-    - **ShadCN UI:** مجموعة من مكونات واجهة المستخدم الجاهزة والقابلة للتخصيص مبنية على Tailwind CSS و Radix UI.
-    - **Lucide React:** مكتبة أيقونات حديثة وواضحة.
-- **الذكاء الاصطناعي (Generative AI):**
-    - **Genkit:** إطار عمل من Google لتطوير ودمج تطبيقات الذكاء الاصطناعي.
-    - **Google Gemini AI:** يتم استخدامه كمحرك للنماذج اللغوية الكبيرة (LLM) لتشغيل جميع الميزات الذكية في المنصة.
-- **قاعدة البيانات والخدمات السحابية (Database & Cloud):**
-    - **Firebase Firestore:** قاعدة بيانات NoSQL سحابية وقابلة للتطوير لتخزين بيانات المشاريع.
-    - **Firebase Hosting / App Hosting:** لاستضافة ونشر التطبيق.
-- **المكتبات الأخرى:**
-    - **Zustand:** لإدارة الحالة (State Management) في التطبيق بطريقة بسيطة.
-    - **React Hook Form & Zod:** لإدارة النماذج والتحقق من صحة البيانات.
-    - **Recharts:** لبناء الرسوم البيانية التفاعلية.
-    - **Vis.gl (React Google Maps):** لدمج خرائط Google التفاعلية.
+### 1. External Interface (Landing Page)
+
+It is the main gateway to the platform and the first point of contact with potential customers.
+
+- **Goal:** Attracting new users, showcasing the platform's core value, and encouraging them to register.
+- **Key Components:**
+    - **Hero Section:** Displays a strong marketing message and platform logo with clear Call to Action (CTA) buttons.
+    - **Features Section:** Explains in detail the core services offered by the platform such as blueprint analysis, cost estimation, and project management.
+    - **Testimonials Section:** Displays testimonials from hypothetical customers to increase credibility and trust.
+    - **Pricing Section:** Offers different pricing plans to suit the needs of various users.
+    - **FAQ Section:** Answers anticipated inquiries from new users.
+- **Supporting Pages:**
+    - **Login / Sign Up:** Simple and secure forms for users to access their accounts or create new ones.
+    - **Contact Sales:** A dedicated form for large companies to inquire about custom plans.
+
+### 2. Internal Interface (Control Panel)
+
+It is the interactive workspace for registered users to manage their projects.
+
+- **Goal:** Providing powerful and easy-to-use tools to manage the entire project lifecycle.
+- **Key Components:**
+    - **Sidebar:** Provides quick navigation between all sections of the control panel.
+    - **Main Dashboard:** Displays a comprehensive overview of all projects, with key statistics (total projects, budgets, status), interactive charts, and a map of project locations.
+    - **Project Management:** Allows users to add, view, and detail projects. Users can see the progress of each project, its budget, and other details.
+    - **AI Blueprint Analysis:** An artificial intelligence tool that allows users to upload blueprint files and get instant analysis of quantities and dimensions.
+    - **AI Cost Estimation:** A smart planning tool that, based on user input, generates a Bill of Quantities (BOQ), crew recommendations, a timeline (Gantt Chart), and a comprehensive cost estimate.
+    - **BOQ Management:** A centralized database for work items and their estimated costs.
+    - **Reports:** A tool for generating professional reports on project status using artificial intelligence.
 
 ---
 
-## الخدمات التي تقدمها المنصة
+## Technologies Used (Tech Stack)
 
-1.  **تحليل المخططات الذكي:** استخلاص تلقائي للكميات والأبعاد من ملفات المخططات (PDF, DWG, PNG, JPG).
-2.  **تقدير التكاليف والتخطيط الفوري:** إنشاء خطط مشاريع متكاملة (BOQ, Gantt Chart, Crew) في ثوانٍ.
-3.  **إدارة المشاريع المتكاملة:** لوحة تحكم مركزية لتتبع جميع جوانب المشاريع من البداية إلى النهاية.
-4.  **توليد التقارير التلقائي:** إنشاء تقارير حالة احترافية بضغطة زر.
-5.  **قاعدة بيانات مركزية لبنود الأعمال (Master BOQ):** توحيد وتسريع عملية التسعير.
+The platform was built using a set of modern technologies to ensure high performance, scalability, and an excellent user experience.
+
+- **Frontend:**
+    - **Next.js:** A React framework for the web that provides advanced features such as Server-Side Rendering (SSR) and dynamic routing.
+    - **React:** A JavaScript library for building interactive user interfaces.
+    - **TypeScript:** A programming language that adds a layer of type checking to JavaScript to improve code quality.
+- **UI & Styling:**
+    - **Tailwind CSS:** A CSS framework for fast and custom design.
+    - **ShadCN UI:** A collection of ready-to-use and customizable UI components built on Tailwind CSS and Radix UI.
+    - **Lucide React:** A modern and clear icon library.
+- **Generative AI:**
+    - **Genkit:** A Google framework for developing and integrating AI applications.
+    - **Google Gemini AI:** Used as the engine for Large Language Models (LLM) to power all smart features in the platform.
+- **Database & Cloud:**
+    - **Firebase Firestore:** A cloud-based, scalable NoSQL database for storing project data.
+    - **Firebase Hosting / App Hosting:** For hosting and deploying the application.
+- **Other Libraries:**
+    - **Zustand:** For simple state management in the application.
+    - **React Hook Form & Zod:** For form management and data validation.
+    - **Recharts:** For building interactive charts.
+    - **Vis.gl (React Google Maps):** For integrating interactive Google Maps.
+
+---
+
+## Services Offered by the Platform
+
+1.  **Smart Blueprint Analysis:** Automatic extraction of quantities and dimensions from blueprint files (PDF, DWG, PNG, JPG).
+2.  **Instant Cost Estimation and Planning:** Creation of integrated project plans (BOQ, Gantt Chart, Crew) in seconds.
+3.  **Integrated Project Management:** A central dashboard to track all aspects of projects from start to finish.
+4.  **Automatic Report Generation:** Generate professional status reports with a click of a button.
+5.  **Centralized Master BOQ Database:** Standardize and speed up the pricing process.

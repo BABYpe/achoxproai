@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Logo } from "@/components/logo";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
+import { Progress } from "@/components/ui/progress";
 
 export default function RegisterPage() {
   const [agreed, setAgreed] = useState(false);
@@ -43,6 +44,10 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="mb-6 space-y-2">
+              <Label htmlFor="progress" className="text-center block text-muted-foreground">الخطوة 1 من 2: إنشاء الحساب</Label>
+              <Progress value={50} id="progress" />
+          </div>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
@@ -87,8 +92,8 @@ export default function RegisterPage() {
               </div>
               
               <Link href="/dashboard" passHref>
-                <Button type="submit" className="w-full font-bold text-lg py-6" disabled={!agreed}>
-                    {t('register.createAccount')}
+                <Button asChild type="submit" className="w-full font-bold text-lg py-6" disabled={!agreed}>
+                    <a>{t('register.createAccount')}</a>
                 </Button>
               </Link>
             </div>

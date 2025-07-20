@@ -20,10 +20,15 @@ export default function TemplatesPage() {
                 projectName: `${template.title} (نسخة)`,
                 location: template.location,
                 projectDescription: template.scopeOfWork || `مشروع جديد مبني على قالب: ${template.title}`,
-                // Pass all relevant data
-                projectType: template.projectType,
-                quality: template.quality,
-                scopeOfWork: template.scopeOfWork,
+                // Pass the full plan as a template
+                projectAnalysis: {
+                    projectType: template.projectType || 'other',
+                    quality: template.quality || 'standard',
+                    initialBlueprintPrompt: template.scopeOfWork || `مشروع جديد مبني على قالب: ${template.title}`,
+                },
+                costEstimation: template.costEstimation,
+                riskAnalysis: template.riskAnalysis,
+                ganttChartData: template.ganttChartData,
             }),
         }).toString();
 
@@ -34,14 +39,14 @@ export default function TemplatesPage() {
         <div className="flex flex-col gap-8">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold">مكتبة قوالب المشاريع</h1>
-                <p className="text-muted-foreground">ابدأ مشروعك الجديد بنقرة زر.</p>
+                <p className="text-muted-foreground">ابدأ مشروعك الجديد بخطة متكاملة بنقرة زر.</p>
             </div>
 
             <Card className="shadow-xl rounded-2xl">
                 <CardHeader>
                     <CardTitle>اختر مشروعًا سابقًا لاستخدامه كقالب</CardTitle>
                     <CardDescription>
-                        استخدم أحد مشاريعك المكتملة أو الحالية كنقطة انطلاق قوية لمشروعك التالي.
+                        استخدم أحد مشاريعك المكتملة أو الحالية كنقطة انطلاق قوية لمشروعك التالي. سيتم نسخ الخطة الكاملة للمشروع بما في ذلك التكاليف والجدول الزمني والمخاطر.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -39,7 +39,7 @@ export interface Project {
     projectType?: AnalyzeProjectDescriptionOutput['projectType'];
     quality?: AnalyzeProjectDescriptionOutput['quality'];
     scopeOfWork?: string;
-    costEstimation?: GenerateComprehensivePlanOutput['costEstimation'];
+    costEstimation?: EstimateProjectCostOutput;
     riskAnalysis?: AnalyzeRisksOutput;
 }
 

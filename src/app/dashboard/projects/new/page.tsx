@@ -60,6 +60,11 @@ function NewProjectPageContent() {
             try {
                 const templateData = JSON.parse(templateParam);
                 reset(templateData);
+
+                // If template contains a full plan, set it
+                if (templateData.costEstimation) {
+                    setGeneratedPlan(templateData);
+                }
                 
                 if (templateData.id) {
                     setIsEditing(true);
@@ -71,7 +76,9 @@ function NewProjectPageContent() {
                     setIsEditing(false);
                     toast({
                         title: "تم تحميل القالب",
-                        description: "يمكنك الآن تعديل التفاصيل أو إنشاء الخطة مباشرة.",
+                        description: templateData.costEstimation 
+                            ? "تم تحميل الخطة المتكاملة من القالب. يمكنك مراجعتها وحفظ المشروع."
+                            : "يمكنك الآن تعديل التفاصيل أو إنشاء الخطة مباشرة.",
                     });
                 }
             } catch (error) {

@@ -1,8 +1,8 @@
+
 import { Project } from "@/hooks/use-project-store";
 
-export const initialProjects: Project[] = [
+export const initialProjects: Omit<Project, 'id'>[] = [
   {
-    id: "proj_villa_1",
     title: "بناء فيلا فاخرة في حي الياسمين",
     status: "قيد التنفيذ",
     variant: "default",
@@ -27,64 +27,31 @@ export const initialProjects: Project[] = [
         { id: 4, task: 'أعمال المباني والتشطيبات الأولية', responsible: 'المقاول', start: '2024-11-16', end: '2025-05-15', duration: 180, progress: 40 },
         { id: 5, task: 'أعمال التشطيبات النهائية', responsible: 'المقاول', start: '2025-05-16', end: '2025-11-15', duration: 180, progress: 10 },
         { id: 6, task: 'تنسيق الموقع والتسليم', responsible: 'المقاول والمالك', start: '2025-11-16', end: '2025-12-31', duration: 45, progress: 0 },
-    ]
+    ],
+    costEstimation: {
+        totalEstimatedCost: "3,500,000 SAR",
+        boq: [
+            { id: "C-101", category: "أعمال خرسانية", description: "خرسانة مسلحة للقواعد والأساسات", unit: "m³", quantity: 250, unitPrice: 480, total: 120000 },
+            { id: "M-201", category: "أعمال مباني", description: "بناء جدران خارجية معزولة", unit: "m²", quantity: 800, unitPrice: 150, total: 120000 },
+            { id: "F-301", category: "أعمال تشطيبات", description: "تشطيبات رخام فاخرة للأرضيات", unit: "m²", quantity: 600, unitPrice: 850, total: 510000 }
+        ],
+        crewRecommendation: { totalPersonnel: 25, breakdown: { "مدير مشروع": 1, "مهندس موقع": 2, "مشرف": 3, "عامل": 19 } },
+        ganttChartData: [
+             { id: 1, task: 'التصميم والترخيص', responsible: 'الاستشاري', start: '2024-01-15', end: '2024-03-15', duration: 60, progress: 100 },
+             { id: 2, task: 'الهيكل الخرساني', responsible: 'المقاول', start: '2024-05-16', end: '2024-11-15', duration: 180, progress: 80 },
+        ],
+        financialRisks: [
+            { risk: "تقلب أسعار المواد الخام (الحديد والأسمنت).", mitigation: "توقيع عقود توريد بأسعار ثابتة قدر الإمكان وتخصيص 5% من الميزانية للطوارئ." },
+        ],
+    },
+    riskAnalysis: {
+        risks: [
+            { category: "Financial", description: "تجاوز الميزانية بسبب ارتفاع أسعار التشطيبات الفاخرة.", impact: "High", probability: "Medium", mitigation: "اعتماد جميع المواد والعينات قبل البدء في التنفيذ." },
+            { category: "Operational", description: "تأخير في توريد المواد المستوردة.", impact: "Medium", probability: "High", mitigation: "الطلب المبكر للمواد وتحديد موردين بدلاء." }
+        ]
+    }
   },
   {
-    id: "proj_mall_2",
-    title: "تطوير مول الرياض بارك",
-    status: "مخطط له",
-    variant: "outline",
-    location: "الرياض، الطريق الدائري الشمالي",
-    imageUrl: "https://images.unsplash.com/photo-1579493933659-3f2de7da8419?q=80&w=600",
-    imageHint: "shopping mall interior",
-    progress: 10,
-    budget: 150000000,
-    currency: "SAR",
-    lat: 24.7615,
-    lng: 46.6412,
-    manager: "فاطمة الزهراني",
-    endDate: "2026-10-01",
-    createdAt: "2024-05-20T11:30:00Z",
-    projectType: 'commercial_building',
-    quality: 'premium',
-    scopeOfWork: 'مشروع تطوير وتوسعة مول الرياض بارك، يشمل إضافة منطقة تجارية جديدة بمساحة 20,000 متر مربع، وتطوير الواجهات الخارجية، وإعادة تصميم منطقة المطاعم والترفيه.',
-    ganttChartData: [
-        { id: 1, task: 'إعداد التصاميم النهائية والموافقات', responsible: 'الاستشاري', start: '2024-05-20', end: '2024-09-20', duration: 120, progress: 50 },
-        { id: 2, task: 'اختيار المقاول وتوقيع العقد', responsible: 'المالك', start: '2024-09-21', end: '2024-11-20', duration: 60, progress: 0 },
-        { id: 3, task: 'بدء أعمال الإنشاءات والتوسعة', responsible: 'المقاول', start: '2024-11-21', end: '2026-05-20', duration: 540, progress: 0 },
-        { id: 4, task: 'أعمال التشطيبات والديكور', responsible: 'المقاول', start: '2026-05-21', end: '2026-09-20', duration: 120, progress: 0 },
-        { id: 5, task: 'التسليم المبدئي والنهائي', responsible: 'الجميع', start: '2026-09-21', end: '2026-10-01', duration: 10, progress: 0 },
-    ]
-  },
-  {
-    id: "proj_tower_3",
-    title: "إنشاء برج المكاتب الذكي بجدة",
-    status: "قيد التنفيذ",
-    variant: "default",
-    location: "جدة، طريق الملك عبدالعزيز",
-    imageUrl: "https://images.unsplash.com/photo-1594495894542-a46cc73e081a?q=80&w=600",
-    imageHint: "office tower skyscraper",
-    progress: 40,
-    budget: 250000000,
-    currency: "SAR",
-    lat: 21.5433,
-    lng: 39.1728,
-    manager: "خالد الغامدي",
-    endDate: "2027-06-30",
-    createdAt: "2023-11-01T09:00:00Z",
-    projectType: 'commercial_building',
-    quality: 'luxury',
-    scopeOfWork: 'بناء برج مكتبي بارتفاع 30 طابقًا على طريق الملك عبدالعزيز في جدة، مع واجهات زجاجية حديثة وأنظمة ذكية لإدارة المباني ومواقف سيارات متعددة الطوابق.',
-     ganttChartData: [
-        { id: 1, task: 'أعمال الأساسات العميقة والمواقف', responsible: 'المقاول', start: '2023-11-01', end: '2024-08-01', duration: 270, progress: 90 },
-        { id: 2, task: 'أعمال الهيكل الخرساني (Podium)', responsible: 'المقاول', start: '2024-08-02', end: '2025-02-01', duration: 180, progress: 60 },
-        { id: 3, task: 'أعمال الهيكل الخرساني (Tower)', responsible: 'المقاول', start: '2025-02-02', end: '2026-08-01', duration: 540, progress: 20 },
-        { id: 4, task: 'أعمال الواجهات والأنظمة الكهروميكانيكية', responsible: 'المقاول', start: '2026-08-02', end: '2027-03-01', duration: 210, progress: 0 },
-        { id: 5, task: 'أعمال التشطيبات والتسليم', responsible: 'المقاول', start: '2027-03-02', end: '2027-06-30', duration: 120, progress: 0 },
-    ]
-  },
-  {
-    id: "proj_event_4",
     title: "تجهيز فعالية إطلاق سيارة كهربائية",
     status: "مكتمل",
     variant: "secondary",
@@ -108,36 +75,28 @@ export const initialProjects: Project[] = [
         { id: 3, task: 'التركيب والتجهيز في الموقع', responsible: 'فريق العمل', start: '2024-06-01', end: '2024-06-13', duration: 13, progress: 100 },
         { id: 4, task: 'يوم الفعالية', responsible: 'الجميع', start: '2024-06-14', end: '2024-06-14', duration: 1, progress: 100 },
         { id: 5, task: 'التفكيك والتسليم', responsible: 'فريق العمل', start: '2024-06-15', end: '2024-06-15', duration: 1, progress: 100 },
-    ]
+    ],
+    costEstimation: {
+        totalEstimatedCost: "850,000 SAR",
+        boq: [
+            { id: "L-101", category: "إضاءة وصوتيات", description: "تأجير وتركيب نظام إضاءة متكامل للمسرح", unit: "مقطوعية", quantity: 1, unitPrice: 150000, total: 150000 },
+            { id: "S-201", category: "هياكل وديكور", description: "بناء وتركيب المسرح الرئيسي مع شاشة LED", unit: "m²", quantity: 100, unitPrice: 2500, total: 250000 }
+        ],
+        crewRecommendation: { totalPersonnel: 40, breakdown: { "مدير فعالية": 1, "فني إضاءة": 4, "فني صوت": 4, "منظم": 31 } },
+        ganttChartData: [
+             { id: 1, task: 'التصميم والتعاقدات', responsible: 'المنظم', start: '2024-04-01', end: '2024-04-30', duration: 30, progress: 100 },
+             { id: 2, task: 'يوم الفعالية', responsible: 'الجميع', start: '2024-06-14', end: '2024-06-14', duration: 1, progress: 100 },
+        ],
+        financialRisks: [],
+    },
+    riskAnalysis: {
+        risks: [
+            { category: "Technical", description: "عطل فني في أنظمة الصوت أو الإضاءة أثناء الفعالية.", impact: "High", probability: "Low", mitigation: "توفير فريق فني متخصص في الموقع وفحص جميع المعدات مسبقًا." },
+            { category: "External", description: "ظروف جوية سيئة تؤثر على حضور الجمهور (إذا كانت الفعالية خارجية).", impact: "Medium", probability: "Low", mitigation: "وضع خطة بديلة لموقع داخلي." }
+        ]
+    }
   },
-  {
-    id: "proj_warehouse_5",
-    title: "بناء مستودع لوجستي في المنطقة الصناعية",
-    status: "متأخر",
-    variant: "destructive",
-    location: "الرياض، المدينة الصناعية الثانية",
-    imageUrl: "https://images.unsplash.com/photo-1587293852726-70cdb1e8586b?q=80&w=600",
-    imageHint: "warehouse logistics",
-    progress: 80,
-    budget: 12000000,
-    currency: "SAR",
-    lat: 24.5823,
-    lng: 46.8319,
-    manager: "عبدالله المصري",
-    endDate: "2024-08-30",
-    createdAt: "2023-09-10T08:00:00Z",
-     projectType: 'commercial_building',
-    quality: 'standard',
-    scopeOfWork: 'بناء مستودع لوجستي بمساحة 15,000 متر مربع، مع أرضيات خرسانية مصقولة، وأنظمة تخزين عالية، ومنطقة مخصصة للشحن والتفريغ.',
-     ganttChartData: [
-        { id: 1, task: 'أعمال الموقع والأساسات', responsible: 'المقاول', start: '2023-09-10', end: '2023-12-10', duration: 90, progress: 100 },
-        { id: 2, task: 'تركيب الهيكل المعدني', responsible: 'المقاول', start: '2023-12-11', end: '2024-03-10', duration: 90, progress: 100 },
-        { id: 3, task: 'أعمال الأرضيات والتشطيبات', responsible: 'المقاول', start: '2024-03-11', end: '2024-07-10', duration: 120, progress: 50 },
-        { id: 4, task: 'تركيب الأنظمة والتسليم', responsible: 'المقاول', start: '2024-07-11', end: '2024-08-30', duration: 50, progress: 10 },
-    ]
-  },
-  {
-    id: "proj_hotel_6",
+    {
     title: "تشطيبات فندق 5 نجوم في الخبر",
     status: "قيد التنفيذ",
     variant: "default",
@@ -161,8 +120,27 @@ export const initialProjects: Project[] = [
         { id: 3, task: 'تشطيبات الغرف والأجنحة (باقي الطوابق)', responsible: 'المقاول', start: '2024-03-02', end: '2024-12-01', duration: 270, progress: 50 },
         { id: 4, task: 'تشطيبات المناطق العامة (اللوبي، المطاعم)', responsible: 'المقاول', start: '2024-09-01', end: '2025-01-31', duration: 150, progress: 30 },
         { id: 5, task: 'التأثيث والتسليم النهائي', responsible: 'المقاول والمالك', start: '2025-02-01', end: '2025-02-28', duration: 28, progress: 0 },
-    ]
+    ],
+    costEstimation: {
+        totalEstimatedCost: "45,000,000 SAR",
+        boq: [
+            { id: "F-301", category: "تشطيبات", description: "توريد وتركيب رخام كرارة للبهو الرئيسي", unit: "m²", quantity: 2000, unitPrice: 1200, total: 2400000 },
+            { id: "J-401", category: "نجارة", description: "أبواب خشبية مقاومة للحريق للغرف", unit: "عدد", quantity: 200, unitPrice: 3500, total: 700000 }
+        ],
+        crewRecommendation: { totalPersonnel: 150, breakdown: { "مدير مشروع": 1, "مهندس ديكور": 5, "مشرف تشطيبات": 10, "فني": 134 } },
+        ganttChartData: [
+            { id: 1, task: 'تشطيبات الغرف', responsible: 'المقاول', start: '2024-03-02', end: '2024-12-01', duration: 270, progress: 50 },
+            { id: 2, task: 'تشطيبات المناطق العامة', responsible: 'المقاول', start: '2024-09-01', end: '2025-01-31', duration: 150, progress: 30 },
+        ],
+        financialRisks: [
+             { risk: "تلف المواد الفاخرة أثناء النقل أو التركيب.", mitigation: "التأمين على جميع المواد وتدريب العمالة على التعامل معها بحرص." },
+        ],
+    },
+    riskAnalysis: {
+        risks: [
+            { category: "Operational", description: "عدم تطابق التشطيبات النهائية مع العينات المعتمدة.", impact: "High", probability: "Medium", mitigation: "وجود إشراف هندسي دائم ومراقبة جودة صارمة في كل مرحلة." },
+            { category: "Financial", description: "الحاجة إلى عمالة فنية ماهرة ومتخصصة بتكلفة أعلى من المتوقع.", impact: "Medium", probability: "High", mitigation: "التعاقد مع مقاولي باطن معتمدين ولديهم سابقة أعمال في المشاريع الفندقية." }
+        ]
+    }
   },
 ];
-
-    

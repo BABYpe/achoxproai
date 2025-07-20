@@ -104,8 +104,8 @@ function DashboardLayoutContent({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/cost-estimation')} tooltip="تقدير التكاليف">
-                  <Link href="/dashboard/cost-estimation">
+                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/projects/new')} tooltip="تقدير التكاليف">
+                  <Link href="/dashboard/projects/new">
                     <Calculator />
                     <span>تقدير التكاليف</span>
                   </Link>

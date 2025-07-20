@@ -22,6 +22,7 @@ import {
   Send,
   ShieldAlert,
   FileSignature,
+  PenRuler,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -94,6 +95,14 @@ function DashboardLayoutContent({
               <Separator className="my-2" />
               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التخطيط</p>
               
+               <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/ai-designer')} tooltip="المصمم المعماري الذكي">
+                  <Link href="/dashboard/ai-designer">
+                    <PenRuler />
+                    <span>المصمم الذكي</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/cost-estimation')} tooltip="تقدير التكاليف">
                   <Link href="/dashboard/cost-estimation">

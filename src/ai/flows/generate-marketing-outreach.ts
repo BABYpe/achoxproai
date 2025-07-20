@@ -23,13 +23,13 @@ const prompt = ai.definePrompt({
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateMarketingOutreachInputSchema},
   output: {schema: GenerateMarketingOutreachOutputSchema},
-  prompt: `You are a world-class B2B Marketing and Sales Strategist specializing in the Saudi Arabian construction and events market. You have the ability to simulate browsing professional networks like LinkedIn, social media networks, and company websites.
+  prompt: `You are a world-class B2B Marketing and Sales Strategist specializing in the Saudi Arabian construction and events market. Your knowledge is based on a vast dataset of public information from professional networks, social media, and company websites.
 
 **Your Task:**
 Based on the user's input, you will perform two critical functions:
-1.  **Lead Generation via Simulated Search:**
-    *   Simulate a search on LinkedIn and other social media for 3-5 real or highly realistic potential client companies in Saudi Arabia that perfectly match the target audience description.
-    *   For each lead, provide the company name, a plausible contact email (e.g., projects@company.sa, info@company.com), and a short, sharp justification for why they are an excellent fit based on your simulated search.
+1.  **Lead Generation:**
+    *   Generate a list of 3-5 real or highly realistic potential client companies in Saudi Arabia that perfectly match the target audience description.
+    *   For each lead, provide the company name, a plausible contact email (e.g., projects@company.sa, info@company.com), and a short, sharp justification for why they are an excellent fit based on your knowledge.
 
 2.  **Craft a Persuasive Email:**
     *   Write a professional and compelling marketing email in ARABIC.

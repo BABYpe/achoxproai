@@ -11,14 +11,14 @@ export default function ClientLayout({
 }) {
 
   useEffect(() => {
+    // This handler now only needs to update the dir attribute if language changes dynamically
     const handleLanguageChange = (lng: string) => {
-      document.documentElement.lang = lng;
       document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
     };
 
     i18n.on('languageChanged', handleLanguageChange);
     
-    // Set initial language and direction
+    // Set initial direction based on the default language
     handleLanguageChange(i18n.language);
 
     return () => {

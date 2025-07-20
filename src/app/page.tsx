@@ -116,14 +116,14 @@ export default function HomePage() {
                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll">
                         {trustedPartners.map((partner, index) => (
                           <li key={`${partner.name}-${index}`}>
-                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain brightness-0 invert hover:brightness-100 hover:invert-0 transition-all" />
+                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain brightness-0 invert dark:invert-0 hover:brightness-100 dark:hover:invert transition-all" />
                           </li>
                         ))}
                       </ul>
                        <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll" aria-hidden="true">
                          {trustedPartners.map((partner, index) => (
                            <li key={`${partner.name}-clone-${index}`}>
-                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain brightness-0 invert hover:brightness-100 hover:invert-0 transition-all" />
+                            <Image src={partner.logo} alt={partner.name} width={100} height={40} className="max-h-10 w-auto object-contain brightness-0 invert dark:invert-0 hover:brightness-100 dark:hover:invert transition-all" />
                           </li>
                         ))}
                       </ul>

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, Wand2, BarChart, Image as ImageIcon, Building, RefreshCw, ZoomIn, FileText } from "lucide-react";
+import { Loader, Wand2, BarChart, ImageIcon, Building, RefreshCw, ZoomIn, FileText } from "lucide-react";
 import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";

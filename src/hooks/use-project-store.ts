@@ -17,6 +17,7 @@ import { initialProjects } from '@/lib/initial-projects';
 import { type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost.types';
 import { type AnalyzeProjectDescriptionOutput } from '@/ai/flows/analyze-project-description.types';
 import { type GenerateComprehensivePlanOutput } from '@/ai/flows/generate-comprehensive-plan.types';
+import { type AnalyzeRisksOutput } from '@/ai/flows/analyze-risks.types';
 
 export interface Project {
     id?: string; // Firestore ID
@@ -39,6 +40,7 @@ export interface Project {
     quality?: AnalyzeProjectDescriptionOutput['quality'];
     scopeOfWork?: string;
     costEstimation?: GenerateComprehensivePlanOutput['costEstimation'];
+    riskAnalysis?: AnalyzeRisksOutput;
 }
 
 interface ProjectState {

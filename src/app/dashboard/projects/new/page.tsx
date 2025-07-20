@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useProjectStore, type Project } from "@/hooks/use-project-store"
-import { Loader, ArrowLeft, Wand2, FileText, Users, GanttChartSquare, ClipboardList, Info } from "lucide-react"
+import { Loader, ArrowLeft, Wand2, Users, GanttChartSquare, ClipboardList, Info, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import { FileUploader } from "@/components/file-uploader"
 import { uploadFile } from "@/services/storage"
@@ -162,6 +162,7 @@ function NewProjectPageContent() {
                 quality: generatedPlan.projectAnalysis.quality,
                 scopeOfWork: generatedPlan.blueprintAnalysis?.scopeOfWork || generatedPlan.projectAnalysis.initialBlueprintPrompt || '',
                 costEstimation: generatedPlan.costEstimation,
+                riskAnalysis: generatedPlan.riskAnalysis,
             };
 
             if (isEditing && formData.id) {
@@ -283,6 +284,28 @@ function NewProjectPageContent() {
                                 <CardContent>
                                     <p className="text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">{generatedPlan.costEstimation.totalEstimatedCost}</p>
                                     <p className="text-sm mt-1 text-white/80">التكلفة الإجمالية التقديرية</p>
+                                </CardContent>
+                            </Card>
+
+                             <Card className="shadow-xl rounded-2xl">
+                                <CardHeader className="flex flex-row items-center gap-2">
+                                    <ShieldCheck className="w-6 h-6 text-primary" />
+                                    <CardTitle>تحليل المخاطر المالية</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                   <div className="space-y-2">
+                                        {generatedPlan.costEstimation.financialRisks.map((riskItem, index) => (
+                                            <div key={index} className="p-3 bg-secondary/50 rounded-lg">
+                                                <p className="font-semibold">{riskItem.risk}</p>
+                                                <p className="text-sm text-muted-foreground mt-1">
+                                                    <span className="font-medium text-foreground">مقترح التخفيف:</span> {riskItem.mitigation}
+                                                </p>
+                                            </div>
+                                        ))}
+                                        {generatedPlan.costEstimation.financialRisks.length === 0 && (
+                                            <p className="text-muted-foreground">لم يتم تحديد مخاطر مالية كبيرة بناءً على النطاق الحالي.</p>
+                                        )}
+                                    </div>
                                 </CardContent>
                             </Card>
 

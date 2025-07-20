@@ -21,7 +21,7 @@ const blueprintPrompt = ai.definePrompt({
     model: 'googleai/gemini-2.0-flash-preview-image-generation',
     input: { schema: GenerateBlueprintImageInputSchema },
     config: {
-        responseModalities: ['IMAGE'],
+        responseModalities: ['IMAGE', 'TEXT'],
     },
     prompt: `Generate a clean, professional, black and white architectural floor plan. The plan should be detailed, with clear labels for rooms and dimensions in meters. The style should be that of a professional architectural drawing.
     
@@ -34,7 +34,7 @@ const perspectivePrompt = ai.definePrompt({
     model: 'googleai/gemini-2.0-flash-preview-image-generation',
     input: { schema: GenerateBlueprintImageInputSchema },
     config: {
-        responseModalities: ['IMAGE'],
+        responseModalities: ['IMAGE', 'TEXT'],
     },
     prompt: `Generate a photorealistic 3D architectural rendering of the exterior of a building. The style should be modern and high-quality, suitable for a client presentation.
     

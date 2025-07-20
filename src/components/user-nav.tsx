@@ -32,10 +32,11 @@ export function UserNav() {
   const currentUser = useCurrentUser();
   const router = useRouter();
 
-  // Hydration safety
+  // Hydration safety: State to ensure we're on the client
   const [isClient, setIsClient] = useState(false);
-  useEffect(() => setIsClient(true), []);
-
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleLogout = () => {
     router.push('/login');
@@ -59,8 +60,9 @@ export function UserNav() {
     }
   }
   
+  // Render nothing or a skeleton on the server and during initial client render
   if (!isClient) {
-    return null; // Or a skeleton loader
+    return null;
   }
 
   return (

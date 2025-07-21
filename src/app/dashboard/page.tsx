@@ -215,6 +215,7 @@ export default function DashboardPage() {
               </CardContent>
            </Card>
         </div>
+      </div>
      
       {/* Projects Overview */}
        <div className="grid gap-8 md:grid-cols-2">

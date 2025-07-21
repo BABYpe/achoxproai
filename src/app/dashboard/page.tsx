@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { PlusCircle, Activity, Briefcase, DollarSign, Users, CheckCircle, Loader, TrendingDown, CalendarCheck, Percent } from "lucide-react"
 import Image from "next/image"
 import { AreaChart, PieChart, ResponsiveContainer, Tooltip, Area, Legend, Cell, XAxis, YAxis, CartesianGrid, Pie } from "recharts"
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltipContent, ChartLegendContent } from "@/components/ui/chart"
 import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useProjectStore } from "@/hooks/use-project-store"
@@ -283,3 +283,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+    

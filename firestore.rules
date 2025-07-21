@@ -1,18 +1,12 @@
-
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read/write access to authenticated users
+    // Allow read/write access to all documents for any authenticated user.
+    // In a production application, you should restrict access further.
+    // For example, users should only be able to write to their own data.
     match /{document=**} {
       allow read, write: if request.auth != null;
     }
-    
-    // For a more granular control in production, you might use rules like:
-    // match /projects/{projectId} {
-    //   allow read: if request.auth != null;
-    //   allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid;
-    //   allow update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
-    // }
   }
 }

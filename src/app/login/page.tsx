@@ -23,7 +23,7 @@ export default function LoginPage() {
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden">
         <Image
-            src="https://images.unsplash.com/photo-1600585152220-406b9b26a2d7?q=80&w=2070"
+            src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070"
             alt="Modern building architecture"
             fill
             className="absolute inset-0 z-0 object-cover"

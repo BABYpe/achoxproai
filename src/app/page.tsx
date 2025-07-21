@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, GanttChartSquare, FileScan, CheckCircle, ArrowLeft, Globe, BrainCircuit, Users, ShieldCheck } from 'lucide-react';
+import { Bot, GanttChartSquare, FileScan, CheckCircle, ArrowLeft, Globe, BrainCircuit, Users, ShieldCheck, LayoutDashboard, FileText, Calculator, ListChecks, FileSignature, Send, ShieldAlert, Wand2, Warehouse, Wrench, ClipboardType, FilePieChart, Briefcase } from 'lucide-react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Logo } from '@/components/logo';
@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { motion } from "framer-motion";
 import { Badge } from '@/components/ui/badge';
+import { GanttChartIcon } from '@/components/icons/gantt-chart-icon';
+import { UsersGroupIcon } from '@/components/icons/users-group-icon';
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
@@ -35,29 +37,31 @@ export default function HomePage() {
     { name: "SABIC", logo: "https://raw.githubusercontent.com/BABYpe/achoxproai/main/SABIC-LOGO_tcm1010-14323.svg" },
   ];
   
-  const featureCards = [
-    {
-      icon: BrainCircuit,
-      title: "العقل المدبر للمشاريع",
-      description: "من فكرة أولية إلى خطة متكاملة، يقوم الذكاء الاصطناعي بتحليل متطلباتك وتوليد التكاليف، الجدول الزمني، والمخاطر.",
-      image: "https://images.unsplash.com/photo-1665686374006-b8f04cf62d57?q=80&w=800",
-      imageHint: "data analysis interface"
-    },
-    {
-      icon: Users,
-      title: "إدارة متكاملة",
-      description: "لوحة تحكم مركزية لمتابعة كل مشاريعك، إدارة الموارد، وتتبع الأداء المالي والتشغيلي لحظة بلحظة.",
-      image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=800",
-      imageHint: "construction site engineers"
-    },
-    {
-      icon: ShieldCheck,
-      title: "تحليل ذكي وقرارات واثقة",
-      description: "استفد من تقارير وتحليلات ذكية للمخاطر والبيانات المالية، مما يمكنك من اتخاذ قرارات استراتيجية مبنية على بيانات دقيقة.",
-      image: "https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=800",
-      imageHint: "financial planning dashboard"
-    }
-  ];
+    const featureGroups = {
+    planning: [
+        { icon: Wand2, title: "المصمم المعماري الذكي", description: "حوّل الأفكار إلى تصاميم معمارية ومخططات أولية بضغطة زر." },
+        { icon: Calculator, title: "تقدير التكاليف الشامل", description: "احصل على جداول كميات (BOQ)، وتقديرات مالية دقيقة معتمدة على بيانات سوق حقيقية." },
+        { icon: GanttChartIcon, title: "مخطط جانت الزمني", description: "أنشئ جداول زمنية مفصلة للمشاريع بشكل تلقائي، مع تحديد المهام والمدد الزمنية." },
+        { icon: UsersGroupIcon, title: "مخطط فريق العمل", description: "احصل على توصيات بحجم ونوع فريق العمل المثالي لتنفيذ مشروعك بكفاءة." },
+    ],
+    execution: [
+        { icon: Briefcase, title: "إدارة المشاريع", description: "لوحة تحكم مركزية لتتبع جميع مشاريعك، ومراقبة مؤشرات الأداء الرئيسية." },
+        { icon: FileSignature, title: "المشتريات والعقود", description: "أدر الموردين، وأنشئ أوامر شراء، وصدر عروض أسعار احترافية بلمسات بسيطة." },
+        { icon: BrainCircuit, title: "الذكاء المالي", description: "سجل معاملاتك المالية واحصل على تحليل فوري للمصروفات، المخاطر، والتوصيات." },
+    ],
+    analysis: [
+        { icon: FilePieChart, title: "تقارير ذكية", description: "أنشئ تقارير تقدم مخصصة للمشاريع بشكل فوري، جاهزة للمشاركة مع الإدارة والعملاء." },
+        { icon: FileText, title: "تحليل المخططات", description: "ارفع المخططات الهندسية واحصل على تحليل فوري للكميات، المخاطر، والتوصيات." },
+        { icon: ShieldAlert, title: "تحليل المخاطر", description: "حدد المخاطر التشغيلية، المالية، والتقنية بشكل استباقي مع استراتيجيات للتخفيف منها." },
+        { icon: Send, title: "المسوق الذكي", description: "حدد جمهورك المستهدف واحصل على قوائم عملاء محتملين مع رسائل تسويقية مخصصة." },
+    ],
+    resources: [
+        { icon: Warehouse, title: "إدارة المخزون والأصول", description: "تتبع مخزون المواد ومعدات الشركة لضمان الجاهزية وتجنب النقص." },
+        { icon: ListChecks, title: "قاعدة بيانات BOQ", description: "أنشئ مكتبة مركزية لبنود الأعمال وتكاليفها لتسريع عملية التسعير وتوحيدها." },
+        { icon: ClipboardType, title: "مكتبة القوالب", description: "استخدم مشاريعك السابقة كنماذج جاهزة لمشاريع جديدة، موفرًا الوقت والجهد." },
+        { icon: LayoutDashboard, title: "مركز التحكم بالوثائق", description: "نظام مركزي لإدارة ومتابعة جميع مستندات ووثائق مشاريعك بشكل آمن." },
+    ]
+};
 
   const variants = {
     hidden: { opacity: 0, y: 20 },
@@ -201,43 +205,119 @@ export default function HomePage() {
                 <Badge variant="default" className="text-sm px-4 py-1.5">المنصة المتكاملة لإدارة المشاريع</Badge>
                 <h2 className="text-3xl font-bold md:text-5xl mt-4">نظام تشغيل ذكي لمشاريعك</h2>
                 <p className="mt-6 text-lg text-muted-foreground">
-                    كل ما تحتاجه لإدارة مشاريعك من البداية إلى النهاية، مدعومًا بقوة الذكاء الاصطناعي.
+                    كل ما تحتاجه لإدارة مشاريعك من البداية إلى النهاية، مدعومًا بقوة الذكاء الاصطناعي، ومقسم على أربع مراحل رئيسية:
                 </p>
             </div>
-            <div className="mt-20 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {featureCards.map((feature, index) => {
-                  const Icon = feature.icon;
-                  return (
-                      <motion.div
-                          key={index}
-                          initial="hidden"
-                          whileInView="visible"
-                          viewport={{ once: true, amount: 0.3 }}
-                          transition={{ delay: index * 0.2 }}
-                          variants={variants}
-                      >
-                          <Card className="p-2 shadow-lg rounded-2xl h-full flex flex-col bg-card/50 backdrop-blur-sm border-primary/10 hover:border-primary/30 transition-colors">
-                              <CardHeader className="p-0 rounded-xl overflow-hidden">
-                                <Image 
-                                    src={feature.image}
-                                    width={800} 
-                                    height={600} 
-                                    alt={feature.title} 
-                                    className="w-full h-48 object-cover" 
-                                    data-ai-hint={feature.imageHint}
-                                />
-                              </CardHeader>
-                              <CardContent className="p-6 flex-grow">
-                                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
-                                      <Icon className="w-6 h-6" />
+            <div className="mt-20 space-y-24">
+              {/* Planning Group */}
+              <div>
+                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">1. التخطيط الذكي: حوّل الأفكار إلى خطط قابلة للتنفيذ</h3>
+                  <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                      {featureGroups.planning.map((feature, index) => {
+                          const Icon = feature.icon;
+                          return (
+                              <motion.div
+                                  key={index}
+                                  initial="hidden"
+                                  whileInView="visible"
+                                  viewport={{ once: true, amount: 0.5 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  variants={variants}
+                                  className="text-center"
+                              >
+                                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4">
+                                      <Icon className="w-8 h-8" />
                                   </div>
-                                  <h3 className="text-2xl font-bold">{feature.title}</h3>
-                                  <p className="mt-3 text-base text-muted-foreground">{feature.description}</p>
-                              </CardContent>
-                          </Card>
-                      </motion.div>
-                  )
-              })}
+                                  <h4 className="text-xl font-bold">{feature.title}</h4>
+                                  <p className="mt-2 text-muted-foreground">{feature.description}</p>
+                              </motion.div>
+                          );
+                      })}
+                  </div>
+              </div>
+
+               {/* Execution Group */}
+              <div>
+                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">2. التنفيذ والمتابعة: سيطر على كل تفاصيل مشروعك</h3>
+                  <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                      {featureGroups.execution.map((feature, index) => {
+                          const Icon = feature.icon;
+                          return (
+                              <motion.div
+                                  key={index}
+                                  initial="hidden"
+                                  whileInView="visible"
+                                  viewport={{ once: true, amount: 0.5 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  variants={variants}
+                              >
+                                  <Card className="p-6 shadow-lg rounded-2xl h-full flex flex-col text-center items-center bg-card/50 hover:border-primary/30 transition-colors">
+                                      <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-4">
+                                          <Icon className="w-7 h-7" />
+                                      </div>
+                                      <h4 className="text-xl font-bold">{feature.title}</h4>
+                                      <p className="mt-2 text-muted-foreground flex-grow">{feature.description}</p>
+                                  </Card>
+                              </motion.div>
+                          );
+                      })}
+                  </div>
+              </div>
+              
+              {/* Analysis Group */}
+              <div>
+                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">3. التحليل والنمو: اتخذ قرارات استراتيجية مبنية على البيانات</h3>
+                   <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                      {featureGroups.analysis.map((feature, index) => {
+                          const Icon = feature.icon;
+                          return (
+                              <motion.div
+                                  key={index}
+                                  initial="hidden"
+                                  whileInView="visible"
+                                  viewport={{ once: true, amount: 0.5 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  variants={variants}
+                                  className="text-center"
+                              >
+                                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4">
+                                      <Icon className="w-8 h-8" />
+                                  </div>
+                                  <h4 className="text-xl font-bold">{feature.title}</h4>
+                                  <p className="mt-2 text-muted-foreground">{feature.description}</p>
+                              </motion.div>
+                          );
+                      })}
+                  </div>
+              </div>
+              
+              {/* Resources Group */}
+              <div>
+                   <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">4. الموارد الموحدة: مركزك لإدارة كل أصولك المعرفية والمادية</h3>
+                   <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                      {featureGroups.resources.map((feature, index) => {
+                          const Icon = feature.icon;
+                          return (
+                              <motion.div
+                                  key={index}
+                                  initial="hidden"
+                                  whileInView="visible"
+                                  viewport={{ once: true, amount: 0.5 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  variants={variants}
+                              >
+                                  <Card className="p-6 shadow-lg rounded-2xl h-full flex flex-col text-center items-center bg-card/50 hover:border-primary/30 transition-colors">
+                                      <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-4">
+                                          <Icon className="w-7 h-7" />
+                                      </div>
+                                      <h4 className="text-xl font-bold">{feature.title}</h4>
+                                      <p className="mt-2 text-muted-foreground flex-grow">{feature.description}</p>
+                                  </Card>
+                              </motion.div>
+                          );
+                      })}
+                  </div>
+              </div>
             </div>
           </div>
         </section>

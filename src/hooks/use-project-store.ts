@@ -15,46 +15,51 @@ import {
 import { db } from '@/lib/firebase';
 import { initialProjects } from '@/lib/initial-projects';
 import { type EstimateProjectCostOutput } from '@/ai/flows/estimate-project-cost.types';
-import { type AnalyzeProjectDescriptionOutput } from '@/ai/flows/analyze-project-description.types';
-import { type GenerateComprehensivePlanOutput } from '@/ai/flows/generate-comprehensive-plan.types';
 import { type AnalyzeRisksOutput } from '@/ai/flows/analyze-risks.types';
 
+// Matching the provided schema
 export interface Project {
     id?: string; // Firestore ID
-    title: string;
+    name: string;
     status: "قيد التنفيذ" | "مكتمل" | "مخطط له" | "متأخر";
-    variant: "default" | "secondary" | "outline" | "destructive";
-    location: string;
-    imageUrl: string;
-    imageHint: string;
-    progress: number;
-    budget: number;
-    currency: string;
-    lat: number;
-    lng: number;
-    manager: string;
-    endDate: string;
-    createdAt: any;
-    ganttChartData?: EstimateProjectCostOutput['ganttChartData'];
-    projectType?: AnalyzeProjectDescriptionOutput['projectType'];
-    quality?: AnalyzeProjectDescriptionOutput['quality'];
-    scopeOfWork?: string;
-    costEstimation?: EstimateProjectCostOutput;
-    riskAnalysis?: AnalyzeRisksOutput;
+    ownerId: string; // Belongs to User
+    createdAt: any; // Firestore Timestamp
+    updatedAt: any; // Firestore Timestamp
+    description?: string;
+    estimatedBudget?: number;
+    actualBudget?: number;
+    startDate?: string; // ISO Date String
+    endDate?: string; // ISO Date String
+    location?: string;
+    latitude?: number;
+    longitude?: number;
+
+    // Denormalized/additional data for UI convenience, not in the core schema but useful
+    variant?: "default" | "secondary" | "outline" | "destructive";
+    imageUrl?: string;
+    imageHint?: string;
+    progress?: number;
+    currency?: string;
+    manager?: string; // Should be derived from ownerId in a real app
+    
+    // Storing complex objects as JSON strings as per schema
+    costEstimationJson?: string;
+    riskAnalysisJson?: string;
+    ganttChartDataJson?: string;
 }
+
 
 interface ProjectState {
   projects: Project[];
   isLoading: boolean;
   fetchProjects: () => Promise<void>;
   getProjectById: (projectId: string) => Promise<Project | null>;
-  addProject: (project: Omit<Project, 'id' | 'createdAt'>) => Promise<string>;
+  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => Promise<string>;
   deleteProject: (projectId: string) => Promise<void>;
   updateProject: (projectId: string, updatedData: Partial<Project>) => Promise<void>;
-  updateProjectGanttData: (projectId: string, ganttData: EstimateProjectCostOutput['ganttChartData']) => Promise<void>;
 }
 
-// Helper to convert Firestore Timestamps to ISO strings
+// Helper to convert Firestore Timestamps to ISO strings in nested objects
 const convertTimestamps = (data: any) => {
     for (const key in data) {
         if (data[key] instanceof Timestamp) {
@@ -64,6 +69,25 @@ const convertTimestamps = (data: any) => {
         }
     }
     return data;
+};
+
+// Helper to parse JSON fields safely
+const parseJsonFields = (project: any): Project => {
+    const newProject = { ...project };
+    try {
+        if (newProject.costEstimationJson) {
+            newProject.costEstimation = JSON.parse(newProject.costEstimationJson);
+        }
+        if (newProject.riskAnalysisJson) {
+            newProject.riskAnalysis = JSON.parse(newProject.riskAnalysisJson);
+        }
+         if (newProject.ganttChartDataJson) {
+            newProject.ganttChartData = JSON.parse(newProject.ganttChartDataJson);
+        }
+    } catch (e) {
+        console.error("Error parsing JSON fields for project:", project.id, e);
+    }
+    return newProject as Project;
 };
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -82,26 +106,28 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       if (querySnapshot.empty) {
         console.log('Firebase is empty, seeding with initial projects.');
         const seedingPromises = initialProjects.map(project => {
-            const { id, createdAt, ...projectData } = project; // exclude mock ID and string date
+            const { id, createdAt, updatedAt, ...projectData } = project; 
             return addDoc(projectsCollection, {
               ...projectData,
-              createdAt: Timestamp.now()
+              createdAt: Timestamp.now(),
+              updatedAt: Timestamp.now()
             });
         });
         await Promise.all(seedingPromises);
         
-        // Refetch after seeding
         const newQuerySnapshot = await getDocs(q);
         const projects = newQuerySnapshot.docs.map(doc => {
             const data = doc.data();
-            return convertTimestamps({ id: doc.id, ...data }) as Project;
+            const withTimestamps = convertTimestamps({ id: doc.id, ...data });
+            return parseJsonFields(withTimestamps);
         });
         set({ projects, isLoading: false });
 
       } else {
         const projects = querySnapshot.docs.map(doc => {
             const data = doc.data();
-            return convertTimestamps({ id: doc.id, ...data }) as Project;
+            const withTimestamps = convertTimestamps({ id: doc.id, ...data });
+            return parseJsonFields(withTimestamps);
         });
         set({ projects, isLoading: false });
       }
@@ -118,7 +144,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
-            return convertTimestamps({ id: docSnap.id, ...data }) as Project;
+            const withTimestamps = convertTimestamps({ id: docSnap.id, ...data });
+            return parseJsonFields(withTimestamps);
         } else {
             console.warn("No such document in Firestore with ID:", projectId);
             return null;
@@ -133,7 +160,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       const docRef = await addDoc(collection(db, 'projects'), {
           ...project,
-          createdAt: Timestamp.now()
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now()
       });
       await get().fetchProjects();
       return docRef.id;
@@ -143,7 +171,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     }
   },
 
-  deleteProject: async (projectId) => {
+  deleteProject: async (projectId: string) => {
     try {
       await deleteDoc(doc(db, 'projects', projectId));
        set(state => ({
@@ -157,28 +185,17 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
 
   updateProject: async (projectId, updatedData) => {
     try {
-      await updateDoc(doc(db, 'projects', projectId), updatedData);
+      const projectRef = doc(db, 'projects', projectId);
+      await updateDoc(projectRef, {
+        ...updatedData,
+        updatedAt: Timestamp.now()
+      });
       await get().fetchProjects();
     } catch (error) {
       console.error("Error updating project:", error);
       throw error;
     }
   },
-
-  updateProjectGanttData: async (projectId, ganttData) => {
-    try {
-        const projectRef = doc(db, 'projects', projectId);
-        await updateDoc(projectRef, { ganttChartData: ganttData });
-        
-        set(state => ({
-            projects: state.projects.map(p => 
-                p.id === projectId ? { ...p, ganttChartData: ganttData } : p
-            )
-        }));
-
-    } catch (error) {
-        console.error("Error updating Gantt data:", error);
-        throw error;
-    }
-  },
 }));
+
+    

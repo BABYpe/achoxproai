@@ -12,6 +12,7 @@ const resources = {
       "searchPlaceholder": "Search...",
       "notifications": "Notifications",
       "copyright": "© {{year}} AchoX Pro. All rights reserved.",
+      "inProgress": "In Progress",
 
       // Landing Page
       "landing.header.features": "Features",
@@ -60,7 +61,7 @@ const resources = {
       "landing.pricing.pro.tag": "Most Popular",
       "landing.pricing.pro.title": "Professional Plan",
       "landing.pricing.pro.description": "For growing companies and professional teams.",
-      "landing.pricing.pro.price": "199 SAR/month",
+      "landing.pricing.pro.price": "$199/month",
       "landing.pricing.pro.feature1": "10 Projects",
       "landing.pricing.pro.feature2": "Unlimited analyses",
       "landing.pricing.pro.feature3": "Unlimited reports",
@@ -189,6 +190,7 @@ const resources = {
       "searchPlaceholder": "بحث...",
       "notifications": "الإشعارات",
       "copyright": "© {{year}} AchoX Pro. جميع الحقوق محفوظة.",
+      "inProgress": "قيد العمل",
 
       // Landing Page
       "landing.header.features": "الميزات",
@@ -371,3 +373,5 @@ i18n
   });
 
 export default i18n;
+
+    

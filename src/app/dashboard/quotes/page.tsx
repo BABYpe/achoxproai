@@ -1,7 +1,7 @@
 
 "use client"
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +9,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { PlusCircle, MoreVertical } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useProcurementStore } from "@/hooks/use-procurement-store";
+
+// MOCK DATA
+const MOCK_QUOTES = [
+    {id: "QT-2024-1001", projectId: "proj_villa_1", projectName: "بناء فيلا فاخرة في حي الياسمين", clientName: "شركة العميل الأولى", date: "2024-07-20", totalAmount: 3450000, status: "مقبول"},
+    {id: "QT-2024-1002", projectId: "proj_event_2", projectName: "تجهيز فعالية إطلاق سيارة", clientName: "شركة السيارات العالمية", date: "2024-07-18", totalAmount: 850000, status: "تم الإرسال"},
+]
+
 
 export default function QuotesPage() {
-    const { quotes } = useProcurementStore();
+    const [quotes, setQuotes] = useState(MOCK_QUOTES);
     
     const getStatusVariant = (status: string) => {
         switch (status) {
@@ -95,3 +101,5 @@ export default function QuotesPage() {
     </>
   );
 }
+
+    

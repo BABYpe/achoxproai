@@ -14,11 +14,25 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useProcurementStore } from "@/hooks/use-procurement-store";
+
+// MOCK DATA - This should be replaced by Firestore data in a real implementation
+const MOCK_SUPPLIERS = [
+  { id: 1, name: "شركة مواد البناء الحديثة", specialty: "مواد بناء عامة", rating: 4.8, phone: "011-456-7890", email: "sales@modernb.com" },
+  { id: 2, name: "مصنع الخرسانة الجاهزة", specialty: "خرسانة وحديد", rating: 4.5, phone: "012-654-3210", email: "info@readymix.sa" },
+  { id: 3, name: "تكنو للأدوات الكهربائية", specialty: "كهرباء وإضاءة", rating: 4.2, phone: "013-789-0123", email: "contact@techno-electric.com" },
+  { id: 4, name: "مورد مواد السباكة", specialty: "سباكة وصرف صحي", rating: 4.6, phone: "055-123-4567", email: "plumbing.supplies@email.com" },
+];
+
+const MOCK_PURCHASE_ORDERS = [
+  { id: "PO-2024-001", supplier: "شركة مواد البناء الحديثة", date: "2024-07-15", status: "تم التسليم", total: 15450, items: [], projectId: "proj_villa_1" },
+  { id: "PO-2024-002", supplier: "مصنع الخرسانة الجاهزة", date: "2024-07-18", status: "قيد المعالجة", total: 88000, items: [], projectId: "proj_tower_3" },
+];
+
 
 export default function ProcurementPage() {
     const { toast } = useToast();
-    const { suppliers, purchaseOrders, addSupplier } = useProcurementStore();
+    const [suppliers, setSuppliers] = useState(MOCK_SUPPLIERS);
+    const [purchaseOrders, setPurchaseOrders] = useState(MOCK_PURCHASE_ORDERS);
     const [isSupplierDialogOpen, setIsSupplierDialogOpen] = useState(false);
 
     const handleAddSupplier = (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,7 +46,7 @@ export default function ProcurementPage() {
             phone: formData.get("s-phone") as string,
             email: formData.get("s-email") as string,
         };
-        addSupplier(newSupplier);
+        setSuppliers(prev => [...prev, newSupplier]);
         toast({ title: "تمت إضافة المورد بنجاح" });
         setIsSupplierDialogOpen(false);
         e.currentTarget.reset();
@@ -180,3 +194,5 @@ export default function ProcurementPage() {
     </>
   );
 }
+
+    

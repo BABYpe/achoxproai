@@ -14,7 +14,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useProjectStore } from "@/hooks/use-project-store"
 import React from "react"
 import dynamic from 'next/dynamic'
-import { useFinancialStore } from "@/hooks/use-financial-store"
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
   ssr: false,
@@ -23,7 +22,9 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
 
 export default function DashboardPage() {
   const { projects, isLoading, fetchProjects } = useProjectStore();
-  const { transactions } = useFinancialStore();
+  
+  // Mock total spent for now. This should come from a financial store/hook.
+  const MOCK_TOTAL_SPENT = 5234000;
 
   useEffect(() => {
     // Initial fetch
@@ -35,17 +36,17 @@ export default function DashboardPage() {
 
   const stats = useMemo(() => {
     const totalProjects = projects.length;
-    const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
+    const totalBudget = projects.reduce((sum, p) => sum + (p.estimatedBudget || 0), 0);
     const activeProjects = projects.filter(p => p.status === 'قيد التنفيذ').length;
-    const overdueProjects = projects.filter(p => p.status === 'متأخر').length;
-    const nearCompletion = projects.filter(p => p.progress >= 90 && p.status !== 'مكتمل').length;
-    const averageCompletion = totalProjects > 0 ? projects.reduce((sum, p) => sum + p.progress, 0) / totalProjects : 0;
+    const overdueProjects = projects.filter(p => new Date(p.endDate || 0) < new Date() && p.status !== 'مكتمل').length;
+    const nearCompletion = projects.filter(p => (p.progress || 0) >= 90 && p.status !== 'مكتمل').length;
+    const averageCompletion = totalProjects > 0 ? projects.reduce((sum, p) => sum + (p.progress || 0), 0) / totalProjects : 0;
     
-    // Calculate total spending from the financial store
-    const totalSpent = Object.values(transactions).flat().reduce((sum, t) => sum + t.amount, 0);
+    // In a real app, `totalSpent` would be calculated from a separate transactions collection.
+    const totalSpent = MOCK_TOTAL_SPENT;
 
     return { totalProjects, totalBudget, activeProjects, overdueProjects, averageCompletion, totalSpent, nearCompletion };
-  }, [projects, transactions]);
+  }, [projects]);
 
  const budgetChartData = useMemo(() => {
     if (stats.totalBudget === 0 && stats.totalSpent === 0) return [{ name: 'لا توجد بيانات', value: 1, fill: 'hsl(var(--muted))' }];
@@ -62,7 +63,6 @@ export default function DashboardPage() {
   const projectProgressData = useMemo(() => {
     if (projects.length === 0) return [];
     
-    // Ensure createdAt is a valid date for sorting
     const sortedProjects = [...projects].sort((a, b) => {
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -71,7 +71,7 @@ export default function DashboardPage() {
 
     let cumulativeProgress = 0;
     return sortedProjects.map((p, index) => {
-      cumulativeProgress += p.progress;
+      cumulativeProgress += (p.progress || 0);
       return {
         name: `مشروع ${index + 1}`,
         date: p.createdAt ? new Date(p.createdAt).toLocaleDateString('ar-SA') : 'N/A',
@@ -148,7 +148,7 @@ export default function DashboardPage() {
         </Card>
         <Card className="shadow-lg rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">فرق عمل نشطة</CardTitle>
+            <CardTitle className="text-sm font-medium">مشاريع نشطة</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -214,9 +214,10 @@ export default function DashboardPage() {
                         </PieChart>
                     </ResponsiveContainer>
                  </Suspense>
-               </CardContent>
-            </Card>
-         </div>
+               </ChartContainer>
+            </CardContent>
+         </Card>
+       </div>
      
       {/* Projects Overview */}
        <div className="grid gap-8 md:grid-cols-2">
@@ -227,12 +228,12 @@ export default function DashboardPage() {
                  </CardHeader>
                  <CardContent className="grid gap-4">
                     {projects.slice(0, 4).map((project, index) => (
-                      <div key={index} className="flex items-center gap-4 p-2 rounded-lg hover:bg-secondary/50">
-                          <Image src={project.imageUrl} alt={project.title} width={80} height={80} className="w-20 h-20 object-cover rounded-md" data-ai-hint={project.imageHint}/>
+                      <div key={project.id || index} className="flex items-center gap-4 p-2 rounded-lg hover:bg-secondary/50">
+                          <Image src={project.imageUrl || "https://placehold.co/600x400.png"} alt={project.name} width={80} height={80} className="w-20 h-20 object-cover rounded-md" data-ai-hint={project.imageHint}/>
                           <div className="flex-1">
                               <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="font-bold">{project.title}</h3>
+                                    <h3 className="font-bold">{project.name}</h3>
                                     <div className="flex items-center text-xs text-muted-foreground gap-1">
                                         <Users className="h-3 w-3" />
                                         <span>{project.location}</span>
@@ -242,7 +243,7 @@ export default function DashboardPage() {
                               </div>
                                <div className="flex items-center gap-4 mt-2 text-xs">
                                     <div className="flex items-center gap-1">
-                                        <DollarSign className="h-3 w-3 text-green-500"/> <span>{project.budget.toLocaleString()} {project.currency}</span>
+                                        <DollarSign className="h-3 w-3 text-green-500"/> <span>{project.estimatedBudget?.toLocaleString()} {project.currency}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <Activity className="h-3 w-3 text-primary"/> <span>{project.progress}%</span>
@@ -262,3 +263,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+    

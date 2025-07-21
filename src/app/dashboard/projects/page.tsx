@@ -59,9 +59,9 @@ export default function ProjectsPage() {
     const query = new URLSearchParams({
         template: JSON.stringify({
             id: project.id,
-            projectName: project.title,
+            projectName: project.name,
             location: project.location,
-            projectDescription: project.scopeOfWork || `مشروع جديد مبني على قالب: ${project.title}`,
+            projectDescription: project.description || `مشروع جديد مبني على قالب: ${project.name}`,
         }),
     }).toString();
     router.push(`/dashboard/projects/new?${query}`);
@@ -119,7 +119,7 @@ export default function ProjectsPage() {
             <Card key={project.id} className="shadow-lg rounded-2xl flex flex-col overflow-hidden dark:bg-card/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="p-0 relative">
                 <Link href={`/dashboard/projects/${project.id}`}>
-                  <Image src={project.imageUrl} alt={project.title} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
+                  <Image src={project.imageUrl || "https://placehold.co/400x200.png"} alt={project.name} width={400} height={200} className="w-full h-40 object-cover" data-ai-hint={project.imageHint}/>
                 </Link>
                 <Badge variant={project.variant as any} className="absolute top-2 right-2">{project.status}</Badge>
                  <AlertDialog>
@@ -141,7 +141,7 @@ export default function ProjectsPage() {
                         <AlertDialogHeader>
                         <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
                         <AlertDialogDescription>
-                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.title}" نهائيًا من قاعدة البيانات.
+                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.name}" نهائيًا من قاعدة البيانات.
                         </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -153,7 +153,7 @@ export default function ProjectsPage() {
               </CardHeader>
               <CardContent className="p-4 flex-grow">
                 <CardTitle className="text-lg font-bold mb-2">
-                    <Link href={`/dashboard/projects/${project.id}`} className="hover:text-primary transition-colors">{project.title}</Link>
+                    <Link href={`/dashboard/projects/${project.id}`} className="hover:text-primary transition-colors">{project.name}</Link>
                 </CardTitle>
                 <div className="text-sm text-muted-foreground space-y-2">
                     <div className="flex items-center gap-2">
@@ -162,7 +162,7 @@ export default function ProjectsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                         <DollarSign className="h-4 w-4" />
-                        <span>{project.budget.toLocaleString()} {project.currency}</span>
+                        <span>{project.estimatedBudget?.toLocaleString()} {project.currency}</span>
                     </div>
                      <div className="flex items-center gap-2">
                         <User className="h-4 w-4" />
@@ -194,3 +194,5 @@ export default function ProjectsPage() {
     </div>
   )
 }
+
+    

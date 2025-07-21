@@ -6,7 +6,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useProjectStore } from '@/hooks/use-project-store';
-import { useFinancialStore, Transaction } from '@/hooks/use-financial-store';
+// import { useFinancialStore, Transaction } from '@/hooks/use-financial-store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -20,6 +20,16 @@ import { PlusCircle, Loader, TrendingUp, TrendingDown, Scale, PieChart as PieCha
 import { PieChart, Pie, Cell, Tooltip, Legend, Area, XAxis, YAxis, CartesianGrid, AreaChart as RechartsAreaChart, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { analyzeFinancials, type AnalyzeFinancialsOutput } from '@/ai/flows/analyze-financials';
+
+// MOCK DATA - This will be replaced by Firestore data in a real implementation
+const MOCK_TRANSACTIONS: any = {
+    "proj_villa_1": [
+        { id: "txn1", description: "شراء أسمنت وحديد تسليح", amount: 150000, category: "مواد بناء", date: "2024-06-01T10:00:00Z" },
+        { id: "txn2", description: "دفعة أولى لأجور العمال", amount: 75000, category: "أجور عمال", date: "2024-06-15T10:00:00Z" },
+        { id: "txn3", description: "إيجار مضخة الخرسانة", amount: 12000, category: "معدات", date: "2024-06-20T10:00:00Z" },
+        { id: "txn4", description: "رسوم استخراج رخصة البناء", amount: 25000, category: "رسوم وتصاريح", date: "2024-05-25T10:00:00Z" }
+    ]
+};
 
 
 const transactionSchema = z.object({
@@ -39,7 +49,7 @@ const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3
 export default function FinancialIntelligencePage() {
   const { projects, isLoading: projectsLoading } = useProjectStore();
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const { transactions, addTransaction } = useFinancialStore();
+  const [transactions, setTransactions] = useState<any>(MOCK_TRANSACTIONS);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -67,18 +77,18 @@ export default function FinancialIntelligencePage() {
 
   const projectTransactions = useMemo(() => {
     if (!selectedProjectId) return [];
-    return transactions[selectedProjectId]?.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()) || [];
+    return transactions[selectedProjectId]?.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()) || [];
   }, [selectedProjectId, transactions]);
 
   const stats = useMemo(() => {
-    const totalSpent = projectTransactions.reduce((sum, t) => sum + t.amount, 0);
-    const budget = selectedProject?.budget || 0;
+    const totalSpent = projectTransactions.reduce((sum: number, t: any) => sum + t.amount, 0);
+    const budget = selectedProject?.estimatedBudget || 0;
     const remaining = budget - totalSpent;
     return { totalSpent, remaining, budget };
   }, [projectTransactions, selectedProject]);
   
   const categoryData = useMemo(() => {
-    const categoryMap = projectTransactions.reduce((acc, t) => {
+    const categoryMap = projectTransactions.reduce((acc: any, t: any) => {
         acc[t.category] = (acc[t.category] || 0) + t.amount;
         return acc;
     }, {} as Record<string, number>);
@@ -88,8 +98,8 @@ export default function FinancialIntelligencePage() {
 
   const spendingOverTimeData = useMemo(() => {
     let cumulativeAmount = 0;
-    const sortedTransactions = [...projectTransactions].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    return sortedTransactions.map(t => {
+    const sortedTransactions = [...projectTransactions].sort((a: any,b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return sortedTransactions.map((t: any) => {
       cumulativeAmount += t.amount;
       return {
         date: new Date(t.date).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' }),
@@ -100,31 +110,27 @@ export default function FinancialIntelligencePage() {
 
   const onSubmit: SubmitHandler<TransactionForm> = async (data) => {
     if (!selectedProjectId) return;
-    try {
-      const newTransaction: Transaction = {
+    const newTransaction = {
         ...data,
         id: new Date().toISOString(),
         date: data.date.toISOString(),
-      };
-      await addTransaction(selectedProjectId, newTransaction);
-      toast({
+    };
+    const currentTransactions = transactions[selectedProjectId] || [];
+    setTransactions({
+        ...transactions,
+        [selectedProjectId]: [...currentTransactions, newTransaction]
+    });
+    toast({
         title: "تمت الإضافة بنجاح",
         description: "تم تسجيل المعاملة المالية الجديدة.",
-      });
-      setIsDialogOpen(false);
-      reset({
-          date: new Date(),
-          description: "",
-          category: "مواد بناء",
-          amount: 0,
-      });
-    } catch (error) {
-      toast({
-        title: "خطأ",
-        description: "فشل حفظ المعاملة. الرجاء المحاولة مرة أخرى.",
-        variant: "destructive",
-      });
-    }
+    });
+    setIsDialogOpen(false);
+    reset({
+        date: new Date(),
+        description: "",
+        category: "مواد بناء",
+        amount: 0,
+    });
   };
 
   const handleAnalyzeFinancials = async () => {
@@ -139,11 +145,11 @@ export default function FinancialIntelligencePage() {
     try {
         const result = await analyzeFinancials({
             project: {
-                title: selectedProject.title,
+                title: selectedProject.name,
                 status: selectedProject.status,
-                progress: selectedProject.progress,
-                budget: selectedProject.budget,
-                currency: selectedProject.currency
+                progress: selectedProject.progress || 0,
+                budget: selectedProject.estimatedBudget || 0,
+                currency: selectedProject.currency || 'SAR'
             },
             transactions: projectTransactions,
         });
@@ -174,7 +180,7 @@ export default function FinancialIntelligencePage() {
                 </SelectTrigger>
                 <SelectContent>
                   {projects.map(p => (
-                    <SelectItem key={p.id} value={p.id!}>{p.title}</SelectItem>
+                    <SelectItem key={p.id} value={p.id!}>{p.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -307,7 +313,7 @@ export default function FinancialIntelligencePage() {
                                 <Tooltip content={<ChartTooltipContent />} />
                                 <Legend />
                                 <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
-                                    {categoryData.map((entry, index) => (
+                                    {categoryData.map((entry: any, index: number) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
@@ -322,7 +328,7 @@ export default function FinancialIntelligencePage() {
             <Card className="shadow-xl rounded-2xl">
               <CardHeader>
                 <CardTitle>سجل المعاملات المالية</CardTitle>
-                <CardDescription>جميع المصروفات المسجلة لمشروع: {selectedProject.title}</CardDescription>
+                <CardDescription>جميع المصروفات المسجلة لمشروع: {selectedProject.name}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -335,7 +341,7 @@ export default function FinancialIntelligencePage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {projectTransactions.length > 0 ? projectTransactions.map((t) => (
+                    {projectTransactions.length > 0 ? projectTransactions.map((t: any) => (
                       <TableRow key={t.id}>
                         <TableCell>{new Date(t.date).toLocaleDateString('ar-SA')}</TableCell>
                         <TableCell className="font-medium">{t.description}</TableCell>
@@ -445,3 +451,5 @@ export default function FinancialIntelligencePage() {
     </>
   );
 }
+
+    

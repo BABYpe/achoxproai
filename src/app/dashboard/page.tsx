@@ -213,7 +213,7 @@ export default function DashboardPage() {
                     </PieChart>
                  </Suspense>
              </CardContent>
-         </Card>
+          </Card>
        </div>
 
       {/* Projects Overview */}

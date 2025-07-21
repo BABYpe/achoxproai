@@ -185,7 +185,7 @@ export default function DashboardPage() {
                               tickMargin={8}
                               tickFormatter={(value) => new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})}
                             />
-                             <YAxis 
+                             <YAxis
                                 tickFormatter={(value) => `${value}%`}
                             />
                             <Tooltip content={<ChartTooltipContent indicator="dot" />} />
@@ -203,19 +203,20 @@ export default function DashboardPage() {
           <CardContent className="pb-8 flex items-center justify-center">
             <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
                 <Suspense fallback={<Skeleton className="h-full w-full rounded-full" />}>
-                    <PieChart>
-                        <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
-                        <Pie data={budgetChartData} dataKey="value" nameKey="name" innerRadius={80} outerRadius={110} strokeWidth={5} labelLine={false}>
-                            {budgetChartData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.fill} />
-                            ))}
-                        </Pie>
-                    </PieChart>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
+                            <Pie data={budgetChartData} dataKey="value" nameKey="name" innerRadius={80} outerRadius={110} strokeWidth={5} labelLine={false}>
+                                {budgetChartData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ))}
+                            </Pie>
+                        </PieChart>
+                    </ResponsiveContainer>
                  </Suspense>
-              </CardContent>
-           </Card>
-        </div>
-      </div>
+               </CardContent>
+            </Card>
+         </div>
      
       {/* Projects Overview */}
        <div className="grid gap-8 md:grid-cols-2">

@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, Wand2, BarChart, ImageIcon, Building, RefreshCw, ZoomIn, FileText, Download } from "lucide-react";
+import { Loader, Wand2, BarChart, Building, RefreshCw, ZoomIn, FileText, Download, Camera } from "lucide-react";
 import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { generateBlueprintImage, type GenerateBlueprintImageOutput } from "@/ai/flows/generate-blueprint-image";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 
 export default function AiDesignerPage() {
@@ -140,28 +141,42 @@ export default function AiDesignerPage() {
                                     تنزيل
                                   </Button>
                                 </div>
-                                <div className="relative w-full h-96 bg-secondary rounded-lg overflow-hidden border group">
+                                <div className="relative w-full aspect-video bg-secondary rounded-lg overflow-hidden border group">
                                     <Image src={generationResult.blueprintDataUri} alt="المخطط المعماري المولد" layout="fill" objectFit="contain" />
                                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
                                         <Button variant="secondary" size="icon"><ZoomIn className="h-5 w-5"/></Button>
                                     </div>
                                 </div>
                             </div>
-                             <div>
-                                 <div className="flex justify-between items-center mb-2">
-                                  <h3 className="font-semibold text-lg flex items-center gap-2"><Building className="text-primary"/> تصور خارجي (3D)</h3>
-                                   <Button variant="outline" size="sm" onClick={() => handleDownloadImage(generationResult.perspectiveDataUri, `perspective-3d-${Date.now()}.png`)}>
-                                    <Download className="w-4 h-4 ml-2"/>
-                                    تنزيل
-                                  </Button>
+                             
+                            <div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <h3 className="font-semibold text-lg flex items-center gap-2"><Camera className="text-primary"/> تصورات ثلاثية الأبعاد (3D)</h3>
                                 </div>
-                                <div className="relative w-full h-80 bg-secondary rounded-lg overflow-hidden border group">
-                                   <Image src={generationResult.perspectiveDataUri} alt="التصور الخارجي المولد" layout="fill" objectFit="cover" />
-                                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                                        <Button variant="secondary" size="icon"><ZoomIn className="h-5 w-5"/></Button>
-                                    </div>
-                                </div>
+                                <Carousel className="w-full">
+                                    <CarouselContent>
+                                        {generationResult.perspectiveDataUris.map((uri, index) => (
+                                            <CarouselItem key={index}>
+                                                <div className="p-1">
+                                                     <div className="relative w-full h-80 bg-secondary rounded-lg overflow-hidden border group">
+                                                        <Image src={uri} alt={`التصور الخارجي المولد ${index + 1}`} layout="fill" objectFit="cover" />
+                                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                                                            <Button variant="secondary" size="icon"><ZoomIn className="h-5 w-5"/></Button>
+                                                            <Button variant="secondary" size="sm" onClick={() => handleDownloadImage(uri, `perspective-3d-${index + 1}-${Date.now()}.png`)}>
+                                                                <Download className="w-4 h-4 ml-2"/>
+                                                                تنزيل
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </CarouselItem>
+                                        ))}
+                                    </CarouselContent>
+                                    <CarouselPrevious />
+                                    <CarouselNext />
+                                </Carousel>
                             </div>
+
                             <div className="flex gap-4">
                                 <Button onClick={handleAnalyzeGeneratedBlueprint} className="w-full" size="lg">
                                     <BarChart className="ml-2 h-4 w-4" />

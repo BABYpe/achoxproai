@@ -23,12 +23,13 @@ const blueprintPrompt = ai.definePrompt({
     config: {
         responseModalities: ['IMAGE', 'TEXT'],
     },
-    prompt: `Generate a clean, professional, black and white architectural floor plan. The plan should be detailed, with clear labels for rooms and dimensions in meters. The style should be that of a professional architectural drawing.
+    prompt: `Generate a clean, professional, highly-detailed, black and white architectural floor plan. The plan should be detailed, with clear labels for rooms and dimensions in meters. The style should be that of a professional architectural drawing.
+    **Crucially, add a professional-looking frame around the entire blueprint image.** Inside the frame, at the bottom, include a title block. In the title block, add the text: "Designed by: Eng. Bassem Al-Mohandes" and "Company: AchoX Pro Engineering".
     
     Design Details: {{{prompt}}}`,
 });
 
-// This is the flow for generating the 3D perspective
+// This is the flow for generating the 3D perspectives
 const perspectivePrompt = ai.definePrompt({
     name: 'perspectiveImagePrompt',
     model: 'googleai/gemini-2.0-flash-preview-image-generation',
@@ -36,7 +37,10 @@ const perspectivePrompt = ai.definePrompt({
     config: {
         responseModalities: ['IMAGE', 'TEXT'],
     },
-    prompt: `Generate a photorealistic 3D architectural rendering of the exterior of a building. The style should be modern and high-quality, suitable for a client presentation.
+    // The prompt is a function to generate different views
+    prompt: (input) => `Generate a photorealistic 3D architectural rendering of the exterior of a building. The style should be modern and high-quality, suitable for a client presentation.
+    
+    Render View: **${input.view}**
     
     Design Details: {{{prompt}}}`,
 });
@@ -49,22 +53,28 @@ const generateBlueprintImageFlow = ai.defineFlow(
     outputSchema: GenerateBlueprintImageOutputSchema,
   },
   async (input) => {
-    // Generate both images in parallel for better performance
-    const [blueprintResult, perspectiveResult] = await Promise.all([
+    // Generate blueprint and 3 perspectives in parallel
+    const [blueprintResult, perspectiveResult1, perspectiveResult2, perspectiveResult3] = await Promise.all([
       blueprintPrompt(input),
-      perspectivePrompt(input),
+      perspectivePrompt({ ...input, view: 'Front facade, eye-level view' }),
+      perspectivePrompt({ ...input, view: 'Side perspective view, showing depth and side details' }),
+      perspectivePrompt({ ...input, view: 'Aerial or bird\'s-eye view' }),
     ]);
     
     const blueprintDataUri = blueprintResult.media?.url;
-    const perspectiveDataUri = perspectiveResult.media?.url;
+    const perspectiveDataUris = [
+        perspectiveResult1.media?.url,
+        perspectiveResult2.media?.url,
+        perspectiveResult3.media?.url,
+    ].filter((uri): uri is string => !!uri);
 
-    if (!blueprintDataUri || !perspectiveDataUri) {
-      throw new Error("Image generation failed to return one or both images.");
+    if (!blueprintDataUri || perspectiveDataUris.length < 3) {
+      throw new Error("Image generation failed to return one or more images.");
     }
 
     return {
       blueprintDataUri,
-      perspectiveDataUri,
+      perspectiveDataUris,
     };
   }
 );

@@ -27,8 +27,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     // Initial fetch
-    fetchProjects();
-  }, [fetchProjects]);
+    if (projects.length === 0) {
+      fetchProjects();
+    }
+  }, [fetchProjects, projects.length]);
 
 
   const stats = useMemo(() => {
@@ -86,7 +88,7 @@ export default function DashboardPage() {
   }
 
 
-  if (isLoading) {
+  if (isLoading && projects.length === 0) {
     return (
         <div className="flex items-center justify-center h-[80vh]">
             <Loader className="h-12 w-12 animate-spin text-primary" />
@@ -258,3 +260,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+    

@@ -1,13 +1,13 @@
 
 "use client"
 
-import { useMemo, Suspense } from "react"
+import { useMemo, Suspense, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, Activity, Briefcase, DollarSign, Users, CheckCircle, Loader, TrendingUp, TrendingDown, CalendarCheck, Percent } from "lucide-react"
+import { PlusCircle, Activity, Briefcase, DollarSign, Users, CheckCircle, Loader, TrendingDown, CalendarCheck, Percent } from "lucide-react"
 import Image from "next/image"
-import { AreaChart, Pie, PieChart, ResponsiveContainer, Tooltip, Area, Legend, Cell, XAxis, YAxis, CartesianGrid } from "recharts"
+import { AreaChart, PieChart, ResponsiveContainer, Tooltip, Area, Legend, Cell, XAxis, YAxis, CartesianGrid, Pie } from "recharts"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -22,8 +22,14 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
 });
 
 export default function DashboardPage() {
-  const { projects, isLoading } = useProjectStore();
+  const { projects, isLoading, fetchProjects } = useProjectStore();
   const { transactions } = useFinancialStore();
+
+  useEffect(() => {
+    // Initial fetch
+    fetchProjects();
+  }, [fetchProjects]);
+
 
   const stats = useMemo(() => {
     const totalProjects = projects.length;
@@ -40,7 +46,7 @@ export default function DashboardPage() {
   }, [projects, transactions]);
 
  const budgetChartData = useMemo(() => {
-    if (stats.totalBudget === 0) return [];
+    if (stats.totalBudget === 0 && stats.totalSpent === 0) return [{ name: 'لا توجد بيانات', value: 1, fill: 'hsl(var(--muted))' }];
     const spent = stats.totalSpent;
     const remaining = stats.totalBudget - spent > 0 ? stats.totalBudget - spent : 0;
     
@@ -53,13 +59,20 @@ export default function DashboardPage() {
 
   const projectProgressData = useMemo(() => {
     if (projects.length === 0) return [];
-    const sortedProjects = [...projects].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    
+    // Ensure createdAt is a valid date for sorting
+    const sortedProjects = [...projects].sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateA - dateB;
+    });
+
     let cumulativeProgress = 0;
     return sortedProjects.map((p, index) => {
       cumulativeProgress += p.progress;
       return {
         name: `مشروع ${index + 1}`,
-        date: new Date(p.createdAt).toLocaleDateString('ar-SA'),
+        date: p.createdAt ? new Date(p.createdAt).toLocaleDateString('ar-SA') : 'N/A',
         progress: cumulativeProgress / (index + 1),
       }
     });
@@ -191,13 +204,13 @@ export default function DashboardPage() {
                     <PieChart>
                         <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
                         <Pie data={budgetChartData} dataKey="value" nameKey="name" innerRadius={80} outerRadius={110} strokeWidth={5} labelLine={false}>
-                             <Cell key="cell-0" fill="var(--color-spent)" />
-                             <Cell key="cell-1" fill="var(--color-remaining)" />
+                            {budgetChartData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
                         </Pie>
                     </PieChart>
                  </Suspense>
-            </ChartContainer>
-          </CardContent>
+            </CardContent>
         </Card>
       </div>
 

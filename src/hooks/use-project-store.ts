@@ -54,6 +54,18 @@ interface ProjectState {
   updateProjectGanttData: (projectId: string, ganttData: EstimateProjectCostOutput['ganttChartData']) => Promise<void>;
 }
 
+// Helper to convert Firestore Timestamps to ISO strings
+const convertTimestamps = (data: any) => {
+    for (const key in data) {
+        if (data[key] instanceof Timestamp) {
+            data[key] = data[key].toDate().toISOString();
+        } else if (typeof data[key] === 'object' && data[key] !== null) {
+            convertTimestamps(data[key]);
+        }
+    }
+    return data;
+};
+
 export const useProjectStore = create<ProjectState>((set, get) => ({
   projects: [],
   isLoading: true,
@@ -70,7 +82,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       if (querySnapshot.empty) {
         console.log('Firebase is empty, seeding with initial projects.');
         const seedingPromises = initialProjects.map(project => {
-            const { id, ...projectData } = project; // exclude mock ID
+            const { id, createdAt, ...projectData } = project; // exclude mock ID and string date
             return addDoc(projectsCollection, {
               ...projectData,
               createdAt: Timestamp.now()
@@ -78,12 +90,19 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         });
         await Promise.all(seedingPromises);
         
+        // Refetch after seeding
         const newQuerySnapshot = await getDocs(q);
-        const projects = newQuerySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+        const projects = newQuerySnapshot.docs.map(doc => {
+            const data = doc.data();
+            return convertTimestamps({ id: doc.id, ...data }) as Project;
+        });
         set({ projects, isLoading: false });
 
       } else {
-        const projects = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+        const projects = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            return convertTimestamps({ id: doc.id, ...data }) as Project;
+        });
         set({ projects, isLoading: false });
       }
 
@@ -99,10 +118,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
-            if (data.createdAt && data.createdAt instanceof Timestamp) {
-                data.createdAt = data.createdAt.toDate().toISOString();
-            }
-            return { id: docSnap.id, ...data } as Project;
+            return convertTimestamps({ id: docSnap.id, ...data }) as Project;
         } else {
             console.warn("No such document in Firestore with ID:", projectId);
             return null;

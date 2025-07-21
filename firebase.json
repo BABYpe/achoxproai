@@ -8,6 +8,14 @@
     ],
     "frameworksBackend": {
       "region": "us-central1"
-    }
+    },
+    "redirects": [
+      {
+        "source": "/:path*",
+        "destination": "https://:host/:path*",
+        "type": 301,
+        "condition": "req.headers.x-forwarded-proto === 'http'"
+      }
+    ]
   }
 }

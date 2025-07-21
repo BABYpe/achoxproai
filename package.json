@@ -7,7 +7,7 @@
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "next start",
     "lint": "next lint",
     "test": "jest",
     "typecheck": "tsc --noEmit"
@@ -40,7 +40,6 @@
     "@vis.gl/react-google-maps": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "compression": "^1.7.4",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
     "firebase": "^10.12.3",
@@ -67,7 +66,6 @@
     "zustand": "^4.5.4"
   },
   "devDependencies": {
-    "@types/compression": "^1.7.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

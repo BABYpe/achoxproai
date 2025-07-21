@@ -35,7 +35,7 @@ export default function LoginPage() {
             <div className="mx-auto mb-4">
                <Logo className="h-12 w-12 text-primary" />
             </div>
-          <CardTitle className="text-2xl font-bold">تسجيل الدخول إلى AchoX Pro</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('login.title')}</CardTitle>
           <CardDescription>
             {t('login.description')}
           </CardDescription>

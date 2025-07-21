@@ -22,6 +22,7 @@ import { Progress } from "@/components/ui/progress";
 export default function RegisterPage() {
   const [agreed, setAgreed] = useState(false);
   const { t } = useTranslation();
+  const progressValue = 50;
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden">
@@ -38,15 +39,18 @@ export default function RegisterPage() {
           <div className="mx-auto mb-4">
             <Logo className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold">إنشاء حساب جديد في AchoX Pro</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('register.title')}</CardTitle>
           <CardDescription>
             {t('register.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-6 space-y-2">
-              <Label htmlFor="progress" className="text-center block text-muted-foreground">الخطوة 1 من 2: إنشاء الحساب</Label>
-              <Progress value={50} id="progress" />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>{t('register.step1')}</span>
+                <span>{t('register.progressLabel', { percent: 100 - progressValue })}</span>
+              </div>
+              <Progress value={progressValue} id="progress" />
           </div>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="grid gap-4">

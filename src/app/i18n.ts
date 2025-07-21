@@ -116,6 +116,9 @@ const resources = {
       "register.privacy": "Privacy Policy",
       "register.createAccount": "Create Account",
       "register.hasAccount": "Already have an account?",
+      "register.step1": "Step 1 of 2: Create Account",
+      "register.step2": "Step 2 of 2: Choose Plan",
+      "register.progressLabel": "Progress: {{percent}}% remaining",
       "contactSales.title": "Contact Sales",
       "contactSales.description": "Ready to take your business to the next level? Fill out the form below and one of our experts will contact you.",
       "contactSales.firstName": "First Name",
@@ -270,14 +273,14 @@ const resources = {
 
       // Auth Pages
       "login.title": "تسجيل الدخول إلى AchoX Pro",
-      "login.description": "أدخل بريدك الإلكتروني أدناه لتسجيل الدخول إلى حسابك",
+      "login.description": "أدخل بياناتك أدناه للوصول إلى حسابك",
       "login.email": "البريد الإلكتروني",
       "login.password": "كلمة المرور",
       "login.forgotPassword": "هل نسيت كلمة المرور؟",
       "login.button": "تسجيل الدخول",
-      "login.google": "تسجيل الدخول باستخدام جوجل",
+      "login.google": "الدخول باستخدام جوجل",
       "login.noAccount": "ليس لديك حساب؟",
-      "login.signup": "إنشاء حساب",
+      "login.signup": "إنشاء حساب جديد",
       "register.title": "إنشاء حساب جديد في AchoX Pro",
       "register.description": "أدخل معلوماتك أدناه لإنشاء حساب",
       "register.firstName": "الاسم الأول",
@@ -288,8 +291,11 @@ const resources = {
       "register.terms": "شروط الخدمة",
       "register.and": "و",
       "register.privacy": "سياسة الخصوصية",
-      "register.createAccount": "إنشاء حساب",
+      "register.createAccount": "إنشاء الحساب",
       "register.hasAccount": "لديك حساب بالفعل؟",
+      "register.step1": "الخطوة 1 من 2: إنشاء الحساب",
+      "register.step2": "الخطوة 2 من 2: اختيار الخطة",
+      "register.progressLabel": "التقدم: متبقي {{percent}}%",
       "contactSales.title": "تواصل مع فريق المبيعات",
       "contactSales.description": "هل أنت مستعد للارتقاء بأعمالك؟ املأ النموذج أدناه وسيتواصل معك أحد خبرائنا.",
       "contactSales.firstName": "الاسم الأول",
@@ -365,5 +371,3 @@ i18n
   });
 
 export default i18n;
-
-    

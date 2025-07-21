@@ -34,7 +34,7 @@ const transactionSchema = z.object({
 
 type TransactionForm = z.infer<typeof transactionSchema>;
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#ff4d4d', '#4dff4d'];
+const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
 export default function FinancialIntelligencePage() {
   const { projects, isLoading: projectsLoading } = useProjectStore();
@@ -445,5 +445,3 @@ export default function FinancialIntelligencePage() {
     </>
   );
 }
-
-    

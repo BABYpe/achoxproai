@@ -15,35 +15,35 @@ body {
     --card-foreground: 210 40% 98%;
     --popover: 224 71% 2%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 100% 56%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 45 95% 51%; /* Golden Yellow */
+    --primary-foreground: 224 71% 4%; /* Dark background for contrast on yellow */
     --secondary: 224 71% 8%;
     --secondary-foreground: 210 40% 98%;
     --muted: 224 71% 8%;
     --muted-foreground: 215 20% 65%;
-    --accent: 210 100% 66%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 45 95% 61%; /* Lighter Yellow for accents */
+    --accent-foreground: 224 71% 4%;
     --destructive: 0 63% 51%; /* Darker Red for better contrast */
     --destructive-foreground: 210 40% 98%;
     --border: 224 71% 10%;
     --input: 224 71% 10%;
-    --ring: 210 100% 56%;
-    --chart-1: 210 85% 55%;
-    --chart-2: 142 80% 65%;
-    --chart-3: 220 70% 50%;
-    --chart-4: 160 60% 45%;
-    --chart-5: 340 75% 55%;
+    --ring: 45 95% 51%;
+    --chart-1: 45 95% 51%; /* Yellow */
+    --chart-2: 210 100% 56%; /* Blue as secondary chart color */
+    --chart-3: 142 80% 65%; /* Green */
+    --chart-4: 0 63% 51%;   /* Red */
+    --chart-5: 260 85% 65%; /* Purple */
     --radius: 0.8rem;
     
     /* Sidebar Theme */
     --sidebar-background: 224 71% 4%;
     --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 210 100% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 45 95% 51%;
+    --sidebar-primary-foreground: 224 71% 4%;
     --sidebar-accent: 224 71% 8%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 224 71% 10%;
-    --sidebar-ring: 210 100% 60%;
+    --sidebar-ring: 45 95% 51%;
   }
 
   .dark {
@@ -53,34 +53,34 @@ body {
     --card-foreground: 210 40% 98%;
     --popover: 224 71% 2%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 100% 56%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 45 95% 51%; /* Golden Yellow */
+    --primary-foreground: 224 71% 4%; /* Dark background for contrast on yellow */
     --secondary: 224 71% 8%;
     --secondary-foreground: 210 40% 98%;
     --muted: 224 71% 8%;
     --muted-foreground: 215 20% 65%;
-    --accent: 210 100% 66%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 45 95% 61%; /* Lighter Yellow for accents */
+    --accent-foreground: 224 71% 4%;
     --destructive: 0 63% 51%; /* Darker Red for better contrast */
     --destructive-foreground: 210 40% 98%;
     --border: 224 71% 10%;
     --input: 224 71% 10%;
-    --ring: 210 100% 56%;
-    --chart-1: 210 85% 55%;
-    --chart-2: 142 80% 65%;
-    --chart-3: 220 70% 50%;
-    --chart-4: 160 60% 45%;
-    --chart-5: 340 75% 55%;
+    --ring: 45 95% 51%;
+    --chart-1: 45 95% 51%; /* Yellow */
+    --chart-2: 210 100% 56%; /* Blue as secondary chart color */
+    --chart-3: 142 80% 65%; /* Green */
+    --chart-4: 0 63% 51%;   /* Red */
+    --chart-5: 260 85% 65%; /* Purple */
     
     /* Sidebar Theme */
     --sidebar-background: 224 71% 4%;
     --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 210 100% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 45 95% 51%;
+    --sidebar-primary-foreground: 224 71% 4%;
     --sidebar-accent: 224 71% 8%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 224 71% 10%;
-    --sidebar-ring: 210 100% 60%;
+    --sidebar-ring: 45 95% 51%;
   }
 }
 

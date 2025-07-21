@@ -176,7 +176,7 @@ export default function ProjectsPage() {
                           <span>تقدم الإنجاز</span>
                           <span className="font-bold text-primary">{project.progress}%</span>
                       </div>
-                      <Progress value={project.progress} className="h-2"/>
+                      <Progress value={project.progress}/>
                   </div>
               </CardFooter>
             </Card>

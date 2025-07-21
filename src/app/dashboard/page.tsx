@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useMemo, Suspense, useEffect } from "react"
@@ -212,7 +211,7 @@ export default function DashboardPage() {
                         </Pie>
                     </PieChart>
                  </Suspense>
-            </CardContent>
+             </CardContent>
          </Card>
        </div>
 

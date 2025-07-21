@@ -23,11 +23,8 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
 export default function DashboardPage() {
   const { projects, isLoading, fetchProjects } = useProjectStore();
   
-  // Mock total spent for now. This should come from a financial store/hook.
-  const MOCK_TOTAL_SPENT = 5234000;
-
   useEffect(() => {
-    // Initial fetch
+    // Initial fetch if projects are not loaded
     if (projects.length === 0) {
       fetchProjects();
     }
@@ -38,12 +35,19 @@ export default function DashboardPage() {
     const totalProjects = projects.length;
     const totalBudget = projects.reduce((sum, p) => sum + (p.estimatedBudget || 0), 0);
     const activeProjects = projects.filter(p => p.status === 'قيد التنفيذ').length;
-    const overdueProjects = projects.filter(p => new Date(p.endDate || 0) < new Date() && p.status !== 'مكتمل').length;
+    const overdueProjects = projects.filter(p => {
+        try {
+            return new Date(p.endDate!) < new Date() && p.status !== 'مكتمل'
+        } catch {
+            return false;
+        }
+    }).length;
     const nearCompletion = projects.filter(p => (p.progress || 0) >= 90 && p.status !== 'مكتمل').length;
     const averageCompletion = totalProjects > 0 ? projects.reduce((sum, p) => sum + (p.progress || 0), 0) / totalProjects : 0;
     
     // In a real app, `totalSpent` would be calculated from a separate transactions collection.
-    const totalSpent = MOCK_TOTAL_SPENT;
+    const totalSpent = projects.reduce((sum, p) => sum + (p.actualBudget || 0), 0);
+
 
     return { totalProjects, totalBudget, activeProjects, overdueProjects, averageCompletion, totalSpent, nearCompletion };
   }, [projects]);
@@ -64,17 +68,26 @@ export default function DashboardPage() {
     if (projects.length === 0) return [];
     
     const sortedProjects = [...projects].sort((a, b) => {
-        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return dateA - dateB;
+        try {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateA - dateB;
+        } catch {
+            return 0;
+        }
     });
 
     let cumulativeProgress = 0;
     return sortedProjects.map((p, index) => {
       cumulativeProgress += (p.progress || 0);
+      let dateString = 'N/A';
+      try {
+        dateString = new Date(p.createdAt).toLocaleDateString('ar-SA');
+      } catch {}
+      
       return {
         name: `مشروع ${index + 1}`,
-        date: p.createdAt ? new Date(p.createdAt).toLocaleDateString('ar-SA') : 'N/A',
+        date: dateString,
         progress: cumulativeProgress / (index + 1),
       }
     });
@@ -183,7 +196,13 @@ export default function DashboardPage() {
                               tickLine={false}
                               axisLine={false}
                               tickMargin={8}
-                              tickFormatter={(value) => new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})}
+                              tickFormatter={(value) => {
+                                try {
+                                    return new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})
+                                } catch {
+                                    return value
+                                }
+                              }}
                             />
                              <YAxis
                                 tickFormatter={(value) => `${value}%`}
@@ -206,7 +225,8 @@ export default function DashboardPage() {
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
-                            <Pie data={budgetChartData} dataKey="value" nameKey="name" innerRadius={80} outerRadius={110} strokeWidth={5} labelLine={false}>
+                            <Legend content={<ChartLegendContent nameKey="name" />} />
+                            <Pie data={budgetChartData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={90} strokeWidth={5}>
                                 {budgetChartData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.fill} />
                                 ))}
@@ -256,12 +276,10 @@ export default function DashboardPage() {
             </Card>
              <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
                 <Suspense fallback={<Skeleton className="h-full w-full" />}>
-                     <ProjectMap projects={projects} />
+                     <ProjectMap projects={projects.map(p => ({ title: p.name, lat: p.latitude || 24.7136, lng: p.longitude || 46.6753 }))} />
                 </Suspense>
             </Card>
        </div>
     </div>
   )
 }
-
-    

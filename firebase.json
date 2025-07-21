@@ -1,3 +1,4 @@
+
 {
   "hosting": {
     "source": ".",
@@ -17,5 +18,8 @@
         "condition": "req.headers.x-forwarded-proto === 'http'"
       }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }

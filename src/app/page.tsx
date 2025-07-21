@@ -63,6 +63,26 @@ export default function HomePage() {
     ]
 };
 
+const testimonials = [
+  { name: "م. خالد الأحمدي", title: "مدير مشاريع، شركة البناء الحديث", quote: "منصة AchoX Pro غيرت طريقة عملنا تمامًا. أصبح تقدير التكاليف وتوليد جداول الكميات أسرع وأكثر دقة بنسبة 95%." },
+  { name: "نورة القحطاني", title: "منظمة فعاليات، شركة إبداع", quote: "أداة تخطيط المشاريع مذهلة! أصبح بإمكاني تجهيز خطة متكاملة لأي فعالية، من التكاليف إلى الجدول الزمني، في دقائق معدودة." },
+  { name: "عمر بن صالح", title: "الرئيس التنفيذي، مقاولات النخبة", quote: "أفضل استثمار قمنا به هذا العام. التقارير التلقائية والجداول الزمنية تساعدنا على اتخاذ قرارات أفضل وتتبع الإنجاز بدقة." },
+  { name: "فاطمة الزهراني", title: "مهندسة معمارية مستقلة", quote: "تحليل المخططات بالذكاء الاصطناعي يوفر عليّ أيامًا من العمل اليدوي، ويعطيني رؤى لم أكن لأنتبه لها." },
+  { name: "سلطان الحربي", title: "مدير مشتريات، شركة التوريدات المتحدة", quote: "إدارة الموردين وأوامر الشراء أصبحت مركزية ومنظمة. لم نعد نفقد أي طلب شراء." },
+  { name: "علياء منصور", title: "محللة مالية، شركة استثمار عقاري", quote: "أداة الذكاء المالي تقدم تحليلات عميقة للمشاريع، مما يساعدنا في تقييم جدوى الاستثمارات بشكل أفضل." },
+  { name: "م. محمد الغامدي", title: "استشاري هندسي", quote: "أوصي بهذه المنصة لكل مكتب هندسي. إنها ترفع من مستوى الاحترافية والكفاءة بشكل لا يصدق." },
+  { name: "دانا العتيبي", title: "صاحبة شركة تنظيم معارض", quote: "ميزة المسوق الذكي ساعدتنا في الوصول لعملاء جدد لم نكن لنصل إليهم بالطرق التقليدية." },
+  { name: "إبراهيم الشمري", title: "مشرف موقع، مقاولات الصحراء", quote: "استخدام قوالب المشاريع السابقة كنماذج للمشاريع الجديدة وفر علينا وقتًا هائلاً في مرحلة التخطيط." },
+  { name: "م. ريما عبدالله", title: "مهندسة تكاليف", quote: "دقة تقدير التكاليف أصبحت ممتازة بفضل اعتماد المنصة على بيانات سوق محدثة. هذا يقلل من مخاطر المشاريع بشكل كبير." },
+  { name: "عبدالعزيز التركي", title: "مدير تطوير أعمال", quote: "سرعة إنشاء عروض الأسعار الاحترافية أعطتنا ميزة تنافسية كبيرة في السوق." },
+  { name: "جمانة السيد", title: "مديرة فندق قيد الإنشاء", quote: "مخطط جانت التفاعلي يجعل متابعة تقدم التشطيبات أمرًا سهلاً وواضحًا لجميع الأطراف." },
+  { name: "فيصل الدوسري", title: "مالك شركة مقاولات صغيرة", quote: "كنت أعتقد أن هذه الأدوات للشركات الكبرى فقط، ولكنها ساعدتني على تنظيم عملي ومنافسة الشركات الأكبر." },
+  { name: "لمى الصالح", title: "مهندسة تصميم داخلي", quote: "المصمم المعماري الذكي يلهمني بأفكار وتخطيطات أولية أطورها بعد ذلك. أداة إبداعية رائعة." },
+  { name: "يوسف المطيري", title: "مدير أصول، شركة معدات ثقيلة", quote: "إدارة الأصول والمخزون أصبحت أكثر كفاءة، ونعرف بالضبط مكان كل معدة وحالة مخزوننا." },
+  { name: "سارة خان", title: "مستشارة إدارة مشاريع", quote: "هذه هي مستقبل إدارة المشاريع. منصة تجمع بين كل الأدوات التي نحتاجها في مكان واحد وبشكل ذكي." },
+  { name: "بدر الراجحي", title: "مطور عقاري", quote: "تحليل المخاطر الاستباقي الذي تقدمه المنصة لا يقدر بثمن. لقد ساعدنا على تجنب مشاكل كبيرة." }
+];
+
   const variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -178,7 +198,7 @@ export default function HomePage() {
                  
                  <motion.div variants={variants} className="mt-20 text-center">
                     <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{t('landing.hero.trustedBy')}</span>
-                     <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-6">
+                    <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)] mt-6">
                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll">
                         {trustedPartners.map((partner, index) => (
                           <li key={`${partner.name}-${index}`}>
@@ -323,7 +343,7 @@ export default function HomePage() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-24 md:py-32 bg-secondary/20">
+        <section id="testimonials" className="py-24 md:py-32 bg-secondary/20 overflow-hidden">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="text-3xl font-bold md:text-5xl">{t('landing.testimonials.title')}</h2>
@@ -331,44 +351,48 @@ export default function HomePage() {
                 {t('landing.testimonials.description')}
               </p>
             </div>
-            <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="p-8 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
-                    <CardContent className="p-0">
-                        <p className="text-lg text-muted-foreground mb-6">"{t('landing.testimonials.1.quote')}"</p>
-                        <div className="flex items-center gap-4 pt-6 border-t">
-                            <Image src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=48" width={48} height={48} alt="User 1" className="rounded-full" data-ai-hint="person face" />
-                            <div>
-                                <h3 className="font-semibold text-lg">{t('landing.testimonials.1.name')}</h3>
-                                <p className="text-sm text-muted-foreground">{t('landing.testimonials.1.title')}</p>
-                            </div>
+          </div>
+          <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-16">
+            <ul className="flex items-stretch justify-center md:justify-start [&>li]:mx-4 animate-infinite-scroll">
+              {testimonials.map((testimonial, index) => (
+                <li key={`${testimonial.name}-${index}`} className="w-[350px] md:w-[450px]">
+                  <Card className="p-8 shadow-lg rounded-2xl h-full flex flex-col bg-card/50 backdrop-blur-sm">
+                    <CardContent className="p-0 flex-1 flex flex-col">
+                      <p className="text-lg text-muted-foreground mb-6 flex-grow">"{testimonial.quote}"</p>
+                      <div className="flex items-center gap-4 pt-6 border-t">
+                        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary text-xl">
+                          {testimonial.name.substring(0, 1)}
                         </div>
-                    </CardContent>
-                </Card>
-                <Card className="p-8 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
-                    <CardContent className="p-0">
-                        <p className="text-lg text-muted-foreground mb-6">"{t('landing.testimonials.2.quote')}"</p>
-                         <div className="flex items-center gap-4 pt-6 border-t">
-                            <Image src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=48" width={48} height={48} alt="User 2" className="rounded-full" data-ai-hint="woman face" />
-                            <div>
-                                <h3 className="font-semibold text-lg">{t('landing.testimonials.2.name')}</h3>
-                                <p className="text-sm text-muted-foreground">{t('landing.testimonials.2.title')}</p>
-                            </div>
+                        <div>
+                          <h3 className="font-semibold text-lg">{testimonial.name}</h3>
+                          <p className="text-sm text-muted-foreground">{testimonial.title}</p>
                         </div>
+                      </div>
                     </CardContent>
-                </Card>
-                <Card className="p-8 shadow-lg rounded-2xl transform hover:-translate-y-2 transition-transform duration-300 bg-card/50 backdrop-blur-sm">
-                    <CardContent className="p-0">
-                       <p className="text-lg text-muted-foreground mb-6">"{t('landing.testimonials.3.quote')}"</p>
-                         <div className="flex items-center gap-4 pt-6 border-t">
-                            <Image src="https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=48" width={48} height={48} alt="User 3" className="rounded-full" data-ai-hint="man face" />
-                            <div>
-                                <h3 className="font-semibold text-lg">{t('landing.testimonials.3.name')}</h3>
-                                <p className="text-sm text-muted-foreground">{t('landing.testimonials.3.title')}</p>
-                            </div>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+            <ul className="flex items-stretch justify-center md:justify-start [&>li]:mx-4 animate-infinite-scroll" aria-hidden="true">
+              {testimonials.map((testimonial, index) => (
+                <li key={`${testimonial.name}-clone-${index}`} className="w-[350px] md:w-[450px]">
+                  <Card className="p-8 shadow-lg rounded-2xl h-full flex flex-col bg-card/50 backdrop-blur-sm">
+                    <CardContent className="p-0 flex-1 flex flex-col">
+                      <p className="text-lg text-muted-foreground mb-6 flex-grow">"{testimonial.quote}"</p>
+                      <div className="flex items-center gap-4 pt-6 border-t">
+                        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary text-xl">
+                          {testimonial.name.substring(0, 1)}
                         </div>
+                        <div>
+                          <h3 className="font-semibold text-lg">{testimonial.name}</h3>
+                          <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                        </div>
+                      </div>
                     </CardContent>
-                </Card>
-            </div>
+                  </Card>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 

@@ -211,8 +211,8 @@ export default function DashboardPage() {
                     </PieChart>
                  </Suspense>
             </CardContent>
-        </Card>
-      </div>
+         </Card>
+       </div>
 
       {/* Projects Overview */}
        <div className="grid gap-8 md:grid-cols-2">

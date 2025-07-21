@@ -14,6 +14,17 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCurrentUser } from "@/lib/auth";
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { useTranslation } from "react-i18next";
+
+// Extend jsPDF with autoTable
+interface jsPDFWithAutoTable extends jsPDF {
+  autoTable: (options: any) => jsPDF;
+}
+
 
 const masterBoqItems = [
   // --- الأعمال الترابية ---
@@ -257,6 +268,7 @@ export default function BoqPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const currentUser = useCurrentUser();
+  const { t } = useTranslation();
 
 
   const { control, handleSubmit, reset } = useForm<BoqItemForm>({
@@ -291,58 +303,106 @@ export default function BoqPage() {
         unitPrice: 0,
     });
   };
-
-  const categories = [...new Set(boqItems.map(item => item.category))];
   
-  const handleImportExport = () => {
-    if (currentUser.isAdmin) {
+  const handleImport = () => {
        toast({
-        title: "صلاحيات المسؤول مفعلة",
-        description: "ميزة الاستيراد والتصدير متاحة لك.",
+        title: "قيد التطوير",
+        description: "سيتم تفعيل ميزة الاستيراد قريبًا.",
        });
-       // In a real app, you would trigger the actual import/export functionality here.
-    } else {
-        toast({
-        title: "ميزة احترافية",
-        description: "استيراد وتصدير جداول الكميات متاح في الخطط المدفوعة.",
+  };
+
+  const handleExport = (format: 'xlsx' | 'pdf') => {
+    if (format === 'xlsx') {
+        const worksheet = XLSX.utils.json_to_sheet(boqItems.map(item => ({
+            'ID': item.id,
+            'Category': item.category,
+            'Description': item.description,
+            'Unit': item.unit,
+            'Unit Price': item.unitPrice,
+        })));
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Master BOQ");
+        XLSX.writeFile(workbook, "master_boq.xlsx");
+        toast({ title: t('boq.exportExcelSuccess') });
+    } else if (format === 'pdf') {
+        const doc = new jsPDF() as jsPDFWithAutoTable;
+        
+        // You need to add a font that supports Arabic, like 'Amiri'
+        // This is a simplified example. For full support, you would need to host the font file.
+        // doc.addFont('Amiri-Regular.ttf', 'Amiri', 'normal');
+        // doc.setFont('Amiri');
+
+        const tableColumn = ["السعر", "الوحدة", "الوصف", "الفئة", "الرقم"];
+        const tableRows = [...boqItems].reverse().map(item => [
+            item.unitPrice.toFixed(2),
+            item.unit,
+            item.description,
+            item.category,
+            item.id
+        ]);
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            theme: 'grid',
+            styles: {
+              font: 'Amiri', // This will only work if the font is loaded
+              halign: 'right', // Align text to the right for Arabic
+            },
+            headStyles: {
+                fillColor: [22, 163, 74], // Green color for header
+                halign: 'center'
+            }
         });
+        doc.save('master_boq.pdf');
+        toast({ title: t('boq.exportPdfSuccess') });
     }
   };
+
+  const categories = [...new Set(boqItems.map(item => item.category))];
 
   return (
     <>
       <div className="flex flex-col gap-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">قاعدة بيانات بنود الأعمال (Master BOQ)</h1>
+          <h1 className="text-2xl font-bold">{t('boq.title')}</h1>
           <div className="flex gap-2">
-              <Button variant="outline" className="gap-1" onClick={handleImportExport}>
+              <Button variant="outline" className="gap-1" onClick={handleImport}>
                   <Upload className="h-4 w-4" />
-                  استيراد
+                  {t('boq.import')}
               </Button>
-              <Button variant="outline" className="gap-1" onClick={handleImportExport}>
-                  <Download className="h-4 w-4" />
-                  تصدير
-              </Button>
+               <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="gap-1">
+                            <Download className="h-4 w-4" />
+                            {t('boq.export')}
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem onSelect={() => handleExport('xlsx')}>{t('boq.exportExcel')}</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleExport('pdf')}>{t('boq.exportPdf')}</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
               <Button className="gap-1" onClick={() => setIsDialogOpen(true)}>
                   <PlusCircle className="h-4 w-4" />
-                  إضافة بند قياسي
+                  {t('boq.addItem')}
               </Button>
           </div>
         </div>
 
         <Card className="shadow-xl rounded-2xl">
           <CardHeader>
-            <CardTitle>قائمة البنود القياسية</CardTitle>
-            <CardDescription>هذه هي قاعدة البيانات المركزية لبنود الأعمال وتكاليفها التقديرية. تستخدم هذه البيانات في تسعير المشاريع الجديدة.</CardDescription>
+            <CardTitle>{t('boq.listTitle')}</CardTitle>
+            <CardDescription>{t('boq.listDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[120px]">رقم البند</TableHead>
-                  <TableHead>الوصف</TableHead>
-                  <TableHead>الوحدة</TableHead>
-                  <TableHead className="text-right">التكلفة التقديرية للوحدة (ر.س)</TableHead>
+                  <TableHead className="w-[120px]">{t('boq.table.id')}</TableHead>
+                  <TableHead>{t('boq.table.description')}</TableHead>
+                  <TableHead>{t('boq.table.unit')}</TableHead>
+                  <TableHead className="text-right">{t('boq.table.cost')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -370,38 +430,38 @@ export default function BoqPage() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>إضافة بند قياسي جديد</DialogTitle>
+            <DialogTitle>{t('boq.dialog.title')}</DialogTitle>
             <DialogDescription>
-              أدخل تفاصيل البند الجديد ليتم إضافته إلى قاعدة البيانات الرئيسية.
+              {t('boq.dialog.description')}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="item-id" className="text-right">رقم البند</Label>
+                <Label htmlFor="item-id" className="text-right">{t('boq.dialog.id')}</Label>
                 <Controller name="id" control={control} render={({ field }) => <Input id="item-id" className="col-span-3" {...field} />} />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="item-desc" className="text-right">الوصف</Label>
-                <Controller name="description" control={control} render={({ field }) => <Input id="item-desc" placeholder="وصف تفصيلي للبند" className="col-span-3" {...field} />} />
+                <Label htmlFor="item-desc" className="text-right">{t('boq.dialog.descriptionLabel')}</Label>
+                <Controller name="description" control={control} render={({ field }) => <Input id="item-desc" placeholder={t('boq.dialog.descriptionPlaceholder')} className="col-span-3" {...field} />} />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="item-category" className="text-right">الفئة</Label>
-                <Controller name="category" control={control} render={({ field }) => <Input id="item-category" placeholder="فئة البند" className="col-span-3" {...field} />} />
+                <Label htmlFor="item-category" className="text-right">{t('boq.dialog.category')}</Label>
+                <Controller name="category" control={control} render={({ field }) => <Input id="item-category" placeholder={t('boq.dialog.categoryPlaceholder')} className="col-span-3" {...field} />} />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="item-unit" className="text-right">الوحدة</Label>
+                <Label htmlFor="item-unit" className="text-right">{t('boq.dialog.unit')}</Label>
                 <Controller name="unit" control={control} render={({ field }) => <Input id="item-unit" className="col-span-3" {...field} />} />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="item-price" className="text-right">التكلفة التقديرية للوحدة</Label>
+                <Label htmlFor="item-price" className="text-right">{t('boq.dialog.cost')}</Label>
                 <Controller name="unitPrice" control={control} render={({ field }) => <Input id="item-price" type="number" placeholder="0.00" className="col-span-3" {...field} />} />
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">حفظ البند</Button>
+              <Button type="submit">{t('boq.dialog.save')}</Button>
               <DialogClose asChild>
-                  <Button type="button" variant="secondary">إلغاء</Button>
+                  <Button type="button" variant="secondary">{t('boq.dialog.cancel')}</Button>
               </DialogClose>
             </DialogFooter>
           </form>

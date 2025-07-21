@@ -9,41 +9,41 @@ body {
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 224 71.4% 4.1%;
-    --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 195, 91%, 55%;
+    --background: 224 71% 4%; /* Near Black */
+    --foreground: 210 40% 98%;
+    --card: 224 71% 6%; /* Slightly Lighter */
+    --card-foreground: 210 40% 98%;
+    --popover: 224 71% 2%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 100% 56%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 195, 80%, 65%;
+    --secondary: 224 71% 8%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 224 71% 8%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 210 100% 66%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 72% 51%; /* Darker Red for better contrast */
+    --destructive: 0 63% 51%; /* Darker Red for better contrast */
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 195, 91%, 55%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 224 71% 10%;
+    --input: 224 71% 10%;
+    --ring: 210 100% 56%;
+    --chart-1: 210 85% 55%;
+    --chart-2: 142 80% 65%;
+    --chart-3: 220 70% 50%;
+    --chart-4: 160 60% 45%;
+    --chart-5: 340 75% 55%;
     --radius: 0.8rem;
     
     /* Sidebar Theme */
-    --sidebar-background: 224 71% 4%; /* Near Black */
-    --sidebar-foreground: 210 40% 85%;
-    --sidebar-primary: 195, 91%, 60%; /* Brighter Cyan for sidebar */
+    --sidebar-background: 224 71% 4%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 210 100% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 224 71% 8%; /* Slightly lighter for hover */
+    --sidebar-accent: 224 71% 8%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 224 71% 10%;
-    --sidebar-ring: 195, 91%, 60%;
+    --sidebar-ring: 210 100% 60%;
   }
 
   .dark {
@@ -53,20 +53,20 @@ body {
     --card-foreground: 210 40% 98%;
     --popover: 224 71% 2%;
     --popover-foreground: 210 40% 98%;
-    --primary: 195, 91%, 55%;
+    --primary: 210 100% 56%;
     --primary-foreground: 210 40% 98%;
     --secondary: 224 71% 8%;
     --secondary-foreground: 210 40% 98%;
     --muted: 224 71% 8%;
     --muted-foreground: 215 20% 65%;
-    --accent: 195, 80%, 65%;
+    --accent: 210 100% 66%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 51%; /* Darker Red for better contrast */
     --destructive-foreground: 210 40% 98%;
     --border: 224 71% 10%;
     --input: 224 71% 10%;
-    --ring: 195, 91%, 55%;
-    --chart-1: 195 85% 55%;
+    --ring: 210 100% 56%;
+    --chart-1: 210 85% 55%;
     --chart-2: 142 80% 65%;
     --chart-3: 220 70% 50%;
     --chart-4: 160 60% 45%;
@@ -75,12 +75,12 @@ body {
     /* Sidebar Theme */
     --sidebar-background: 224 71% 4%;
     --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 195, 91%, 60%;
+    --sidebar-primary: 210 100% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 224 71% 8%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 224 71% 10%;
-    --sidebar-ring: 195, 91%, 60%;
+    --sidebar-ring: 210 100% 60%;
   }
 }
 

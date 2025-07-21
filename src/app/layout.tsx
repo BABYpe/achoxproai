@@ -36,7 +36,7 @@ export default function RootLayout({
       <body className={`${cairo.variable} font-body antialiased bg-background`}>
         <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
         >

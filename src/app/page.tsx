@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, GanttChartSquare, FileScan, CheckCircle, ArrowLeft, Globe } from 'lucide-react';
+import { Bot, GanttChartSquare, FileScan, CheckCircle, ArrowLeft, Globe, BrainCircuit, Users, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Logo } from '@/components/logo';
@@ -15,6 +15,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { motion } from "framer-motion";
+import { Badge } from '@/components/ui/badge';
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
@@ -33,8 +35,43 @@ export default function HomePage() {
     { name: "SABIC", logo: "https://raw.githubusercontent.com/BABYpe/achoxproai/main/SABIC-LOGO_tcm1010-14323.svg" },
   ];
   
+  const featureCards = [
+    {
+      icon: BrainCircuit,
+      title: "العقل المدبر للمشاريع",
+      description: "من فكرة أولية إلى خطة متكاملة، يقوم الذكاء الاصطناعي بتحليل متطلباتك وتوليد التكاليف، الجدول الزمني، والمخاطر.",
+      image: "https://images.unsplash.com/photo-1665686374006-b8f04cf62d57?q=80&w=800",
+      imageHint: "data analysis interface"
+    },
+    {
+      icon: Users,
+      title: "إدارة متكاملة",
+      description: "لوحة تحكم مركزية لمتابعة كل مشاريعك، إدارة الموارد، وتتبع الأداء المالي والتشغيلي لحظة بلحظة.",
+      image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=800",
+      imageHint: "construction site engineers"
+    },
+    {
+      icon: ShieldCheck,
+      title: "تحليل ذكي وقرارات واثقة",
+      description: "استفد من تقارير وتحليلات ذكية للمخاطر والبيانات المالية، مما يمكنك من اتخاذ قرارات استراتيجية مبنية على بيانات دقيقة.",
+      image: "https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=800",
+      imageHint: "financial planning dashboard"
+    }
+  ];
+
+  const variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
   return (
-    <div className="flex flex-col min-h-dvh bg-background text-foreground font-body">
+    <div className="flex flex-col min-h-dvh bg-background text-foreground font-body overflow-x-hidden">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-20 max-w-screen-2xl items-center justify-between px-4">
@@ -86,20 +123,44 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-24 md:py-32 text-center overflow-hidden">
+        <section className="relative py-24 md:py-32 text-center overflow-hidden bg-background">
              <div className="absolute inset-0 z-0 bg-grid-glow"></div>
-             <div className="absolute inset-0 z-0 hero-glow"></div>
+             <div className="absolute top-0 left-0 right-0 z-10 h-[50rem] w-full bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,hsl(var(--primary)/0.2),transparent)]"></div>
 
-            <div className="container relative z-20 mx-auto px-4">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight">
-                    {t('landing.hero.title1')}
-                    <br />
-                    <span className="text-primary">AchoX Pro</span> {t('landing.hero.title2')} {t('landing.hero.title3')}
-                </h1>
-                <p className="mx-auto mt-6 max-w-3xl text-lg text-foreground/80">
-                    {t('landing.hero.description')}
-                </p>
-                <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+            <motion.div 
+                className="container relative z-20 mx-auto px-4"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    visible: { transition: { staggerChildren: 0.3 } }
+                }}
+            >
+                <motion.div variants={variants}>
+                    <Badge variant="secondary" className="text-sm px-4 py-1.5 border-primary/20">
+                        شريكك الذكي في إدارة المشاريع
+                    </Badge>
+                </motion.div>
+
+                <motion.h1 
+                    variants={variants}
+                    className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight mt-6"
+                >
+                    حوّل الأفكار إلى مشاريع ناجحة.
+                    <br/>
+                    بسرعة <span className="text-primary">ودقة</span> وذكاء.
+                </motion.h1>
+
+                <motion.p 
+                    variants={variants}
+                    className="mx-auto mt-6 max-w-3xl text-lg text-foreground/80"
+                >
+                    AchoX Pro هي منصة ثورية تستخدم الذكاء الاصطناعي لتبسيط أعقد جوانب إدارة المشاريع. من تحليل المخططات إلى تقدير التكاليف وإنشاء خطط عمل متكاملة، كل ذلك في مكان واحد.
+                </motion.p>
+                
+                <motion.div 
+                    variants={variants}
+                    className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4"
+                >
                     <Button size="lg" asChild className="w-full sm:w-auto text-lg py-7 px-8 shadow-lg shadow-primary/30">
                         <Link href="/register">{t('landing.hero.cta.startTrial')}</Link>
                     </Button>
@@ -109,8 +170,9 @@ export default function HomePage() {
                            <ArrowLeft className="mr-2 h-5 w-5" />
                         </Link>
                     </Button>
-                </div>
-                 <div className="mt-20 text-center">
+                </motion.div>
+                 
+                 <motion.div variants={variants} className="mt-20 text-center">
                     <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{t('landing.hero.trustedBy')}</span>
                      <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-6">
                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll">
@@ -128,84 +190,54 @@ export default function HomePage() {
                         ))}
                       </ul>
                     </div>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </section>
 
         {/* Features Section */}
         <section id="features" className="py-24 md:py-32 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto">
-                <span className="text-primary font-semibold uppercase tracking-widest">{t('landing.features.tagline')}</span>
-                <h2 className="text-3xl font-bold md:text-5xl mt-4">{t('landing.features.title')}</h2>
+                <Badge variant="default" className="text-sm px-4 py-1.5">المنصة المتكاملة لإدارة المشاريع</Badge>
+                <h2 className="text-3xl font-bold md:text-5xl mt-4">نظام تشغيل ذكي لمشاريعك</h2>
                 <p className="mt-6 text-lg text-muted-foreground">
-                    {t('landing.features.description')}
+                    كل ما تحتاجه لإدارة مشاريعك من البداية إلى النهاية، مدعومًا بقوة الذكاء الاصطناعي.
                 </p>
             </div>
-            <div className="mt-20 space-y-24">
-                <div className="grid md:grid-cols-2 gap-16 items-center">
-                    <div>
-                        <Image 
-                            src="https://images.unsplash.com/photo-1665686374006-b8f04cf62d57?q=80&w=800"
-                            width={800} 
-                            height={600} 
-                            alt="تحليل المستندات" 
-                            className="rounded-2xl shadow-xl border-2 border-primary/10" 
-                            data-ai-hint="data analysis interface"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            priority
-                         />
-                    </div>
-                    <div>
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary mb-5">
-                            <FileScan className="w-7 h-7" />
-                        </div>
-                        <h3 className="text-3xl font-bold">{t('landing.features.1.title')}</h3>
-                        <p className="mt-4 text-lg text-muted-foreground">{t('landing.features.1.description')}</p>
-                    </div>
-                </div>
-
-                 <div className="grid md:grid-cols-2 gap-16 items-center">
-                    <div className="md:order-2">
-                        <Image 
-                            src="https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=800"
-                            width={800} 
-                            height={600} 
-                            alt="تسعير ذكي" 
-                            className="rounded-2xl shadow-xl border-2 border-primary/10" 
-                            data-ai-hint="financial planning dashboard"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                    </div>
-                    <div className="md:order-1">
-                         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary mb-5">
-                            <Bot className="w-7 h-7" />
-                        </div>
-                        <h3 className="text-3xl font-bold">{t('landing.features.2.title')}</h3>
-                        <p className="mt-4 text-lg text-muted-foreground">{t('landing.features.2.description')}</p>
-                    </div>
-                </div>
-
-                 <div className="grid md:grid-cols-2 gap-16 items-center">
-                    <div>
-                        <Image 
-                            src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=800"
-                            width={800} 
-                            height={600} 
-                            alt="إدارة المشاريع" 
-                            className="rounded-2xl shadow-xl border-2 border-primary/10" 
-                            data-ai-hint="construction site engineers"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                    </div>
-                    <div>
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary mb-5">
-                            <GanttChartSquare className="w-7 h-7" />
-                        </div>
-                        <h3 className="text-3xl font-bold">{t('landing.features.3.title')}</h3>
-                        <p className="mt-4 text-lg text-muted-foreground">{t('landing.features.3.description')}</p>
-                    </div>
-                </div>
+            <div className="mt-20 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {featureCards.map((feature, index) => {
+                  const Icon = feature.icon;
+                  return (
+                      <motion.div
+                          key={index}
+                          initial="hidden"
+                          whileInView="visible"
+                          viewport={{ once: true, amount: 0.3 }}
+                          transition={{ delay: index * 0.2 }}
+                          variants={variants}
+                      >
+                          <Card className="p-2 shadow-lg rounded-2xl h-full flex flex-col bg-card/50 backdrop-blur-sm border-primary/10 hover:border-primary/30 transition-colors">
+                              <CardHeader className="p-0 rounded-xl overflow-hidden">
+                                <Image 
+                                    src={feature.image}
+                                    width={800} 
+                                    height={600} 
+                                    alt={feature.title} 
+                                    className="w-full h-48 object-cover" 
+                                    data-ai-hint={feature.imageHint}
+                                />
+                              </CardHeader>
+                              <CardContent className="p-6 flex-grow">
+                                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
+                                      <Icon className="w-6 h-6" />
+                                  </div>
+                                  <h3 className="text-2xl font-bold">{feature.title}</h3>
+                                  <p className="mt-3 text-base text-muted-foreground">{feature.description}</p>
+                              </CardContent>
+                          </Card>
+                      </motion.div>
+                  )
+              })}
             </div>
           </div>
         </section>
@@ -417,5 +449,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    

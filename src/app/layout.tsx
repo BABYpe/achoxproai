@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="ar" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
          <link rel="sitemap" href="/sitemap.xml" />

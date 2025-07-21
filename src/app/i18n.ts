@@ -61,7 +61,7 @@ const resources = {
       "landing.pricing.pro.tag": "Most Popular",
       "landing.pricing.pro.title": "Professional Plan",
       "landing.pricing.pro.description": "For growing companies and professional teams.",
-      "landing.pricing.pro.price": "$199/month",
+      "landing.pricing.pro.price": "$49/month",
       "landing.pricing.pro.feature1": "10 Projects",
       "landing.pricing.pro.feature2": "Unlimited analyses",
       "landing.pricing.pro.feature3": "Unlimited reports",
@@ -105,7 +105,7 @@ const resources = {
       "login.google": "Login with Google",
       "login.noAccount": "Don't have an account?",
       "login.signup": "Sign up",
-      "register.title": "Create a new account in AchoX Pro",
+      "register.title": "Create an Account",
       "register.description": "Enter your information below to create an account",
       "register.firstName": "First Name",
       "register.firstNamePlaceholder": "Ahmed",
@@ -140,27 +140,6 @@ const resources = {
       "privacy.title": "Privacy Policy",
       "terms.title": "Terms of Service",
 
-      // Dashboard
-      "dashboard.sidebar.dashboard": "Dashboard",
-      "dashboard.sidebar.planning": "Planning",
-      "dashboard.sidebar.costEstimation": "Cost Estimation",
-      "dashboard.sidebar.gantt": "Gantt Chart",
-      "dashboard.sidebar.crewPlanner": "Crew Planner",
-      "dashboard.sidebar.execution": "Execution",
-      "dashboard.sidebar.projects": "Projects",
-      "dashboard.sidebar.procurement": "Procurement",
-      "dashboard.sidebar.analysisGrowth": "Analysis & Growth",
-      "dashboard.sidebar.financials": "Financial Intelligence",
-      "dashboard.sidebar.reports": "Reports",
-      "dashboard.sidebar.blueprints": "Blueprint Analysis",
-      "dashboard.sidebar.smartMarketer": "Smart Marketer",
-      "dashboard.sidebar.resources": "Resources",
-      "dashboard.sidebar.inventory": "Inventory",
-      "dashboard.sidebar.assets": "Assets",
-      "dashboard.sidebar.boq": "BOQ",
-      "dashboard.sidebar.templates": "Templates Library",
-      "dashboard.sidebar.settings": "Settings",
-
       // User Nav Dropdown
       "userNav.profile": "Profile",
       "userNav.billing": "Billing",
@@ -179,7 +158,6 @@ const resources = {
 
       "cookieBanner.message": "We use cookies to ensure you get the best experience on our website. By continuing to use this site, you agree to our use of cookies.",
       "cookieBanner.accept": "Accept"
-
     }
   },
   ar: {
@@ -275,7 +253,7 @@ const resources = {
 
       // Auth Pages
       "login.title": "تسجيل الدخول إلى AchoX Pro",
-      "login.description": "أدخل بياناتك أدناه للوصول إلى حسابك",
+      "login.description": "أدخل بريدك الإلكتروني أدناه لتسجيل الدخول إلى حسابك",
       "login.email": "البريد الإلكتروني",
       "login.password": "كلمة المرور",
       "login.forgotPassword": "هل نسيت كلمة المرور؟",
@@ -283,7 +261,7 @@ const resources = {
       "login.google": "الدخول باستخدام جوجل",
       "login.noAccount": "ليس لديك حساب؟",
       "login.signup": "إنشاء حساب جديد",
-      "register.title": "إنشاء حساب جديد في AchoX Pro",
+      "register.title": "إنشاء حساب جديد",
       "register.description": "أدخل معلوماتك أدناه لإنشاء حساب",
       "register.firstName": "الاسم الأول",
       "register.firstNamePlaceholder": "أحمد",
@@ -318,27 +296,6 @@ const resources = {
       "privacy.title": "سياسة الخصوصية",
       "terms.title": "شروط الخدمة",
       
-      // Dashboard
-      "dashboard.sidebar.dashboard": "لوحة التحكم",
-      "dashboard.sidebar.planning": "التخطيط",
-      "dashboard.sidebar.costEstimation": "تقدير التكاليف",
-      "dashboard.sidebar.gantt": "مخطط جانت",
-      "dashboard.sidebar.crewPlanner": "مخطط الطاقم",
-      "dashboard.sidebar.execution": "التنفيذ",
-      "dashboard.sidebar.projects": "المشاريع",
-      "dashboard.sidebar.procurement": "المشتريات",
-      "dashboard.sidebar.analysisGrowth": "التحليل والنمو",
-      "dashboard.sidebar.financials": "الذكاء المالي",
-      "dashboard.sidebar.reports": "التقارير",
-      "dashboard.sidebar.blueprints": "تحليل المخططات",
-      "dashboard.sidebar.smartMarketer": "المسوق الذكي",
-      "dashboard.sidebar.resources": "الموارد",
-      "dashboard.sidebar.inventory": "المخزون",
-      "dashboard.sidebar.assets": "الأصول",
-      "dashboard.sidebar.boq": "جداول الكميات",
-      "dashboard.sidebar.templates": "مكتبة القوالب",
-      "dashboard.sidebar.settings": "الإعدادات",
-
       // User Nav Dropdown
       "userNav.profile": "الملف الشخصي",
       "userNav.billing": "الفواتير",
@@ -366,12 +323,13 @@ i18n
   .init({
     resources,
     lng: 'ar', // default language
-    fallbackLng: 'ar',
+    fallbackLng: 'en',
     interpolation: {
       escapeValue: false // react already safes from xss
-    }
+    },
+    react: {
+      useSuspense: false, // Set to false to avoid Suspense issues
+    },
   });
 
 export default i18n;
-
-    

@@ -410,7 +410,3 @@ export default function BoqPage() {
     </>
   )
 }
-
-    
-
-    

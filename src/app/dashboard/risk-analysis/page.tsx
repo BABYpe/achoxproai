@@ -67,7 +67,7 @@ export default function RiskAnalysisPage() {
             return;
         }
         
-         if (!selectedProject.scopeOfWork) {
+         if (!selectedProject.description) {
              toast({ 
                 title: "بيانات غير كافية", 
                 description: "هذا المشروع لا يحتوي على وصف كافٍ لنطاق العمل لتحليل المخاطر. يرجى تحديث المشروع من صفحة تفاصيله.", 
@@ -81,15 +81,15 @@ export default function RiskAnalysisPage() {
         setAnalysisResult(null);
 
         try {
-            const durationInDays = differenceInDays(new Date(selectedProject.endDate), new Date(selectedProject.createdAt));
+            const durationInDays = differenceInDays(new Date(selectedProject.endDate!), new Date(selectedProject.createdAt!));
 
             const result = await analyzeRisks({
                 project: {
-                    title: selectedProject.title,
-                    description: selectedProject.scopeOfWork,
-                    budget: selectedProject.budget,
-                    currency: selectedProject.currency,
-                    durationInDays,
+                    title: selectedProject.name,
+                    description: selectedProject.description,
+                    budget: selectedProject.estimatedBudget || 0,
+                    currency: selectedProject.currency || 'SAR',
+                    durationInDays: isNaN(durationInDays) ? 90 : durationInDays,
                 },
             });
             setAnalysisResult(result);
@@ -114,7 +114,7 @@ export default function RiskAnalysisPage() {
                     <Select onValueChange={v => { setSelectedProjectId(v); setAnalysisResult(null); }} value={selectedProjectId || ''}>
                         <SelectTrigger><SelectValue placeholder="اختر مشروعاً لتحليله" /></SelectTrigger>
                         <SelectContent>
-                            {projects.map(p => <SelectItem key={p.id} value={p.id!}>{p.title}</SelectItem>)}
+                            {projects.map(p => <SelectItem key={p.id} value={p.id!}>{p.name}</SelectItem>)}
                         </SelectContent>
                     </Select>
                 </div>
@@ -188,5 +188,3 @@ export default function RiskAnalysisPage() {
         </div>
     );
 }
-
-    

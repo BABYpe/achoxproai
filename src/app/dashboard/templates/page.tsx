@@ -17,18 +17,12 @@ export default function TemplatesPage() {
     const handleUseTemplate = (template: Project) => {
         const query = new URLSearchParams({
             template: JSON.stringify({
-                projectName: `${template.title} (نسخة)`,
+                projectName: `${template.name} (نسخة)`,
                 location: template.location,
-                projectDescription: template.scopeOfWork || `مشروع جديد مبني على قالب: ${template.title}`,
-                // Pass the full plan as a template
-                projectAnalysis: {
-                    projectType: template.projectType || 'other',
-                    quality: template.quality || 'standard',
-                    initialBlueprintPrompt: template.scopeOfWork || `مشروع جديد مبني على قالب: ${template.title}`,
-                },
-                costEstimation: template.costEstimation,
-                riskAnalysis: template.riskAnalysis,
-                ganttChartData: template.ganttChartData,
+                projectDescription: template.description || `مشروع جديد مبني على قالب: ${template.name}`,
+                // Pass the full plan as a template if it exists
+                ...(template.costEstimationJson && { costEstimation: JSON.parse(template.costEstimationJson) }),
+                ...(template.riskAnalysisJson && { riskAnalysis: JSON.parse(template.riskAnalysisJson) }),
             }),
         }).toString();
 
@@ -65,9 +59,9 @@ export default function TemplatesPage() {
                     ) : (
                         projects.map((template) => (
                             <Card key={template.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
-                                <Image src={template.imageUrl} alt={template.title} width={400} height={200} className="w-full h-48 object-cover" data-ai-hint={template.imageHint} />
+                                <Image src={template.imageUrl!} alt={template.name} width={400} height={200} className="w-full h-48 object-cover" data-ai-hint={template.imageHint} />
                                 <CardHeader>
-                                    <CardTitle>{template.title}</CardTitle>
+                                    <CardTitle>{template.name}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="flex-grow space-y-2 text-sm text-muted-foreground">
                                     <div className="flex items-center gap-2">
@@ -76,7 +70,7 @@ export default function TemplatesPage() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <DollarSign className="h-4 w-4 text-primary" />
-                                        <span>تقدير الميزانية: {template.budget.toLocaleString('ar-SA')} {template.currency}</span>
+                                        <span>تقدير الميزانية: {template.estimatedBudget?.toLocaleString('ar-SA')} {template.currency}</span>
                                     </div>
                                 </CardContent>
                                 <CardFooter>

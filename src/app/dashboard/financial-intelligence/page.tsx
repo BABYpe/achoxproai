@@ -151,7 +151,7 @@ export default function FinancialIntelligencePage() {
                 budget: selectedProject.estimatedBudget || 0,
                 currency: selectedProject.currency || 'SAR'
             },
-            transactions: projectTransactions,
+            transactions: projectTransactions.map(t => ({...t, amount: Number(t.amount), date: new Date(t.date).toISOString() })),
         });
         setAnalysisResult(result);
         toast({ title: "نجاح!", description: "اكتمل التحليل المالي." });
@@ -451,5 +451,3 @@ export default function FinancialIntelligencePage() {
     </>
   );
 }
-
-    

@@ -19,6 +19,78 @@ import { motion } from "framer-motion";
 import { Badge } from '@/components/ui/badge';
 import { GanttChartIcon } from '@/components/icons/gantt-chart-icon';
 import { UsersGroupIcon } from '@/components/icons/users-group-icon';
+import React, { useState, useEffect } from 'react';
+
+
+const WorldMapSection = () => {
+    const cities = [
+        { name: 'Riyadh', x: '56%', y: '52%' },
+        { name: 'Dubai', x: '60%', y: '50%' },
+        { name: 'London', x: '45%', y: '30%' },
+        { name: 'New York', x: '25%', y: '35%' },
+        { name: 'Singapore', x: '75%', y: '65%' },
+        { name: 'Tokyo', x: '85%', y: '40%' },
+        { name: 'Cairo', x: '52%', y: '45%' },
+        { name: 'Sydney', x: '88%', y: '80%' },
+    ];
+
+    const [userCounts, setUserCounts] = useState<Record<string, number>>({});
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const newCounts: Record<string, number> = {};
+            cities.forEach(city => {
+                newCounts[city.name] = Math.floor(Math.random() * (150 - 20 + 1)) + 20;
+            });
+            setUserCounts(newCounts);
+        }, 3000); // Update every 3 seconds
+
+        // Initial counts
+        const initialCounts: Record<string, number> = {};
+        cities.forEach(city => {
+            initialCounts[city.name] = Math.floor(Math.random() * (150 - 20 + 1)) + 20;
+        });
+        setUserCounts(initialCounts);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <section className="py-24 md:py-32 bg-secondary/20">
+            <div className="container mx-auto px-4">
+                 <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="text-3xl font-bold md:text-5xl">منصة عالمية، بثقة عالمية</h2>
+                    <p className="mt-6 text-lg text-muted-foreground">
+                        ينضم إلينا محترفون من جميع أنحاء العالم يوميًا للاستفادة من قوة الذكاء الاصطناعي في إدارة مشاريعهم.
+                    </p>
+                </div>
+                <div className="relative mt-16 max-w-6xl mx-auto">
+                    <Image
+                        src="https://images.unsplash.com/photo-1549492423-400259a5e5a4?q=80&w=2070"
+                        alt="World Map"
+                        width={1200}
+                        height={600}
+                        className="w-full h-auto object-contain opacity-20"
+                        data-ai-hint="world map illustration"
+                    />
+                    {cities.map(city => (
+                        <div key={city.name} className="absolute" style={{ left: city.x, top: city.y }}>
+                            <div className="relative group">
+                                <div className="absolute w-4 h-4 bg-primary rounded-full animate-ping"></div>
+                                <div className="w-4 h-4 bg-primary rounded-full border-2 border-primary-foreground"></div>
+                                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max bg-card text-card-foreground p-2 rounded-lg text-sm shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <p className="font-bold">{city.name}</p>
+                                    <p className="text-primary">{userCounts[city.name] || 0} مستخدم نشط</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
@@ -64,23 +136,12 @@ export default function HomePage() {
 };
 
 const testimonials = [
-  { name: t('landing.testimonials.1.name'), title: t('landing.testimonials.1.title'), quote: t('landing.testimonials.1.quote') },
-  { name: t('landing.testimonials.2.name'), title: t('landing.testimonials.2.title'), quote: t('landing.testimonials.2.quote') },
-  { name: t('landing.testimonials.3.name'), title: t('landing.testimonials.3.title'), quote: t('landing.testimonials.3.quote') },
-  { name: "فاطمة الزهراني", title: "مهندسة معمارية مستقلة", quote: "تحليل المخططات بالذكاء الاصطناعي يوفر عليّ أيامًا من العمل اليدوي، ويعطيني رؤى لم أكن لأنتبه لها." },
-  { name: "سلطان الحربي", title: "مدير مشتريات، شركة التوريدات المتحدة", quote: "إدارة الموردين وأوامر الشراء أصبحت مركزية ومنظمة. لم نعد نفقد أي طلب شراء." },
-  { name: "علياء منصور", title: "محللة مالية، شركة استثمار عقاري", quote: "أداة الذكاء المالي تقدم تحليلات عميقة للمشاريع، مما يساعدنا في تقييم جدوى الاستثمارات بشكل أفضل." },
-  { name: "م. محمد الغامدي", title: "استشاري هندسي", quote: "أوصي بهذه المنصة لكل مكتب هندسي. إنها ترفع من مستوى الاحترافية والكفاءة بشكل لا يصدق." },
-  { name: "دانا العتيبي", title: "صاحبة شركة تنظيم معارض", quote: "ميزة المسوق الذكي ساعدتنا في الوصول لعملاء جدد لم نكن لنصل إليهم بالطرق التقليدية." },
-  { name: "إبراهيم الشمري", title: "مشرف موقع، مقاولات الصحراء", quote: "استخدام قوالب المشاريع السابقة كنماذج للمشاريع الجديدة وفر علينا وقتًا هائلاً في مرحلة التخطيط." },
-  { name: "م. ريما عبدالله", title: "مهندسة تكاليف", quote: "دقة تقدير التكاليف أصبحت ممتازة بفضل اعتماد المنصة على بيانات سوق محدثة. هذا يقلل من مخاطر المشاريع بشكل كبير." },
-  { name: "عبدالعزيز التركي", title: "مدير تطوير أعمال", quote: "سرعة إنشاء عروض الأسعار الاحترافية أعطتنا ميزة تنافسية كبيرة في السوق." },
-  { name: "جمانة السيد", title: "مديرة فندق قيد الإنشاء", quote: "مخطط جانت التفاعلي يجعل متابعة تقدم التشطيبات أمرًا سهلاً وواضحًا لجميع الأطراف." },
-  { name: "فيصل الدوسري", title: "مالك شركة مقاولات صغيرة", quote: "كنت أعتقد أن هذه الأدوات للشركات الكبرى فقط، ولكنها ساعدتني على تنظيم عملي ومنافسة الشركات الأكبر." },
-  { name: "لمى الصالح", title: "مهندسة تصميم داخلي", quote: "المصمم المعماري الذكي يلهمني بأفكار وتخطيطات أولية أطورها بعد ذلك. أداة إبداعية رائعة." },
-  { name: "يوسف المطيري", title: "مدير أصول، شركة معدات ثقيلة", quote: "إدارة الأصول والمخزون أصبحت أكثر كفاءة، ونعرف بالضبط مكان كل معدة وحالة مخزوننا." },
-  { name: "سارة خان", title: "مستشارة إدارة مشاريع", quote: "هذه هي مستقبل إدارة المشاريع. منصة تجمع بين كل الأدوات التي نحتاجها في مكان واحد وبشكل ذكي." },
-  { name: "بدر الراجحي", title: "مطور عقاري", quote: "تحليل المخاطر الاستباقي الذي تقدمه المنصة لا يقدر بثمن. لقد ساعدنا على تجنب مشاكل كبيرة." }
+  { name: t('landing.testimonials.1.name'), title: t('landing.testimonials.1.title'), quote: t('landing.testimonials.1.quote'), avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+  { name: t('landing.testimonials.2.name'), title: t('landing.testimonials.2.title'), quote: t('landing.testimonials.2.quote'), avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+  { name: t('landing.testimonials.3.name'), title: t('landing.testimonials.3.title'), quote: t('landing.testimonials.3.quote'), avatar: "https://randomuser.me/api/portraits/men/46.jpg" },
+  { name: "فاطمة الزهراني", title: "مهندسة معمارية مستقلة، جدة", quote: "تحليل المخططات بالذكاء الاصطناعي يوفر عليّ أيامًا من العمل اليدوي، ويعطيني رؤى لم أكن لأنتبه لها.", avatar: "https://randomuser.me/api/portraits/women/33.jpg" },
+  { name: "سلطان الحربي", title: "مدير مشتريات، شركة التوريدات المتحدة، الدمام", quote: "إدارة الموردين وأوامر الشراء أصبحت مركزية ومنظمة. لم نعد نفقد أي طلب شراء.", avatar: "https://randomuser.me/api/portraits/men/55.jpg" },
+  { name: "Dr. Aisha Al-Farsi", title: "Real Estate Analyst, Muscat", quote: "The financial intelligence tool provides deep project analysis, helping us better evaluate investment feasibility.", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
 ];
 
   const variants = {
@@ -196,21 +257,11 @@ const testimonials = [
                  
                  <motion.div variants={variants} className="mt-20 text-center">
                     <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{t('landing.hero.trustedBy')}</span>
-                    <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)] mt-6">
-                      <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll">
+                    <div className="flex justify-center items-center gap-12 mt-6 flex-wrap">
                         {trustedPartners.map((partner, index) => (
-                          <li key={`${partner.name}-${index}`}>
-                            <Image src={partner.logo} alt={partner.name} width={120} height={40} className="max-h-10 w-auto object-contain brightness-0 invert-[0.5] dark:invert-0 hover:brightness-100 dark:hover:invert transition-all" />
-                          </li>
+                          <Image key={`${partner.name}-${index}`} src={partner.logo} alt={partner.name} width={120} height={40} className="max-h-10 w-auto object-contain brightness-0 invert-[0.5] dark:invert-0 hover:brightness-100 dark:hover:invert transition-all" />
                         ))}
-                      </ul>
-                       <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 animate-infinite-scroll" aria-hidden="true">
-                         {trustedPartners.map((partner, index) => (
-                           <li key={`${partner.name}-clone-${index}`}>
-                            <Image src={partner.logo} alt={partner.name} width={120} height={40} className="max-h-10 w-auto object-contain brightness-0 invert-[0.5] dark:invert-0 hover:brightness-100 dark:hover:invert transition-all" />
-                          </li>
-                        ))}
-                      </ul>
+                      
                     </div>
                 </motion.div>
             </motion.div>
@@ -340,8 +391,11 @@ const testimonials = [
           </div>
         </section>
 
+        {/* World Map Section */}
+        <WorldMapSection />
+
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-24 md:py-32 bg-secondary/20 overflow-hidden">
+        <section id="testimonials" className="py-24 md:py-32 bg-background overflow-hidden">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="text-3xl font-bold md:text-5xl">{t('landing.testimonials.title')}</h2>
@@ -349,53 +403,36 @@ const testimonials = [
                 {t('landing.testimonials.description')}
               </p>
             </div>
-          </div>
-          <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)] mt-16">
-            <ul className="flex items-stretch justify-center md:justify-start [&>li]:mx-4 animate-infinite-scroll">
-              {testimonials.map((testimonial, index) => (
-                <li key={`${testimonial.name}-${index}`} className="w-[350px] md:w-[450px]">
-                  <Card className="p-8 shadow-lg rounded-2xl h-full flex flex-col bg-card/50 backdrop-blur-sm">
-                    <CardContent className="p-0 flex-1 flex flex-col">
-                      <p className="text-lg text-muted-foreground mb-6 flex-grow">"{testimonial.quote}"</p>
-                      <div className="flex items-center gap-4 pt-6 border-t">
-                        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary text-xl">
-                          {testimonial.name.substring(0, 1)}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-lg">{testimonial.name}</h3>
-                          <p className="text-sm text-muted-foreground">{testimonial.title}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </li>
-              ))}
-            </ul>
-            <ul className="flex items-stretch justify-center md:justify-start [&>li]:mx-4 animate-infinite-scroll" aria-hidden="true">
-              {testimonials.map((testimonial, index) => (
-                <li key={`${testimonial.name}-clone-${index}`} className="w-[350px] md:w-[450px]">
-                  <Card className="p-8 shadow-lg rounded-2xl h-full flex flex-col bg-card/50 backdrop-blur-sm">
-                    <CardContent className="p-0 flex-1 flex flex-col">
-                      <p className="text-lg text-muted-foreground mb-6 flex-grow">"{testimonial.quote}"</p>
-                      <div className="flex items-center gap-4 pt-6 border-t">
-                        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary text-xl">
-                          {testimonial.name.substring(0, 1)}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-lg">{testimonial.name}</h3>
-                          <p className="text-sm text-muted-foreground">{testimonial.title}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </li>
-              ))}
-            </ul>
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
+                 {testimonials.map((testimonial, index) => (
+                    <motion.div
+                      key={`${testimonial.name}-${index}`}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ delay: (index % 3) * 0.2 }}
+                      variants={variants}
+                    >
+                        <Card className="p-8 shadow-lg rounded-2xl h-full flex flex-col bg-card/50 backdrop-blur-sm">
+                            <CardContent className="p-0 flex-1 flex flex-col">
+                            <p className="text-lg text-muted-foreground mb-6 flex-grow">"{testimonial.quote}"</p>
+                            <div className="flex items-center gap-4 pt-6 border-t">
+                                <Image src={testimonial.avatar} alt={testimonial.name} width={48} height={48} className="w-12 h-12 rounded-full" data-ai-hint="person face" />
+                                <div>
+                                <h3 className="font-semibold text-lg">{testimonial.name}</h3>
+                                <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                                </div>
+                            </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                ))}
+             </div>
           </div>
         </section>
 
         {/* Pricing Section */}
-        <section id="pricing" className="py-24 md:py-32 bg-background">
+        <section id="pricing" className="py-24 md:py-32 bg-secondary/20">
             <div className="container mx-auto px-4">
                 <div className="mx-auto max-w-3xl text-center">
                     <h2 className="text-3xl font-bold md:text-5xl">{t('landing.pricing.title')}</h2>

@@ -1,11 +1,35 @@
-
 import { type Project } from "@/hooks/use-project-store";
 
-export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'ownerId'>[] = [
+const sampleCostEstimation = {
+    totalEstimatedCost: "1,250,000 SAR",
+    boq: [
+        { id: "C-101", category: "أعمال خرسانية", description: "خرسانة مسلحة للقواعد", unit: "m³", quantity: 120, unitPrice: 480, total: 57600 },
+        { id: "M-201", category: "أعمال مباني", description: "بناء جدران خارجية معزولة", unit: "m²", quantity: 500, unitPrice: 150, total: 75000 }
+    ],
+    crewRecommendation: { totalPersonnel: 15, breakdown: { "مدير مشروع": 1, "مهندس موقع": 1, "مشرف": 2, "عامل": 11 } },
+    ganttChartData: [
+        { id: 1, task: 'أعمال الحفر والأساسات', responsible: 'المقاول', start: '2024-08-01', end: '2024-09-30', duration: 60, progress: 0 },
+        { id: 2, task: 'أعمال الهيكل الخرساني', responsible: 'المقاول', start: '2024-10-01', end: '2025-01-31', duration: 120, progress: 0 }
+    ],
+    financialRisks: [
+        { risk: "تقلب أسعار المواد الخام.", mitigation: "توقيع عقود توريد بأسعار ثابتة." },
+    ],
+};
+
+const sampleRiskAnalysis = {
+    risks: [
+        { category: "Financial", description: "تجاوز الميزانية.", impact: "High", probability: "Medium", mitigation: "مراقبة دقيقة للمصروفات ووضع خطة طوارئ." },
+        { category: "Operational", description: "تأخير في توريد المواد.", impact: "Medium", probability: "High", mitigation: "تحديد موردين بدلاء." }
+    ]
+};
+
+export const initialProjects: Omit<Project, 'id' | 'ownerId'>[] = [
   // --- Residential ---
   {
     name: "بناء فيلا فاخرة في حي الياسمين",
     status: "قيد التنفيذ",
+    createdAt: "2024-07-20T10:00:00Z",
+    updatedAt: "2024-07-20T10:00:00Z",
     variant: "default",
     location: "الرياض، حي الياسمين",
     imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600",
@@ -14,23 +38,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 3500000,
     actualBudget: 2850000,
     currency: "SAR",
-    lat: 24.8136,
-    lng: 46.6753,
+    latitude: 24.8136,
+    longitude: 46.6753,
     manager: "علي محمد",
     startDate: "2024-03-16",
     endDate: "2025-12-31",
     projectType: 'residential_villa',
     quality: 'luxury',
     description: 'بناء فيلا سكنية فاخرة بمساحة 600 متر مربع في حي الياسمين بالرياض، تتكون من دورين وملحق علوي. يشمل العمل جميع مراحل الإنشاء من الحفر والأساسات والخرسانات والمباني، بالإضافة إلى أعمال التشطيبات الداخلية والخارجية بمستوى فاخر، وتنسيق الحدائق والمسبح الخارجي.',
-    ganttChartDataJson: JSON.stringify([
+    ganttChartData: [
         { id: 1, task: 'مرحلة التصميم والترخيص', responsible: 'الاستشاري والمالك', start: '2024-01-15', end: '2024-03-15', duration: 60, progress: 100 },
         { id: 2, task: 'أعمال الحفر والأساسات', responsible: 'المقاول', start: '2024-03-16', end: '2024-05-15', duration: 60, progress: 100 },
         { id: 3, task: 'أعمال الهيكل الخرساني', responsible: 'المقاول', start: '2024-05-16', end: '2024-11-15', duration: 180, progress: 80 },
         { id: 4, task: 'أعمال المباني والتشطيبات الأولية', responsible: 'المقاول', start: '2024-11-16', end: '2025-05-15', duration: 180, progress: 40 },
         { id: 5, task: 'أعمال التشطيبات النهائية', responsible: 'المقاول', start: '2025-05-16', end: '2025-11-15', duration: 180, progress: 10 },
         { id: 6, task: 'تنسيق الموقع والتسليم', responsible: 'المقاول والمالك', start: '2025-11-16', end: '2025-12-31', duration: 45, progress: 0 },
-    ]),
-    costEstimationJson: JSON.stringify({
+    ],
+    costEstimation: {
         totalEstimatedCost: "3,500,000 SAR",
         boq: [
             { id: "C-101", category: "أعمال خرسانية", description: "خرسانة مسلحة للقواعد والأساسات", unit: "m³", quantity: 250, unitPrice: 480, total: 120000 },
@@ -41,17 +65,19 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
         financialRisks: [
             { risk: "تقلب أسعار المواد الخام (الحديد والأسمنت).", mitigation: "توقيع عقود توريد بأسعار ثابتة قدر الإمكان وتخصيص 5% من الميزانية للطوارئ." },
         ],
-    }),
-    riskAnalysisJson: JSON.stringify({
+    },
+    riskAnalysis: {
         risks: [
             { category: "Financial", description: "تجاوز الميزانية بسبب ارتفاع أسعار التشطيبات الفاخرة.", impact: "High", probability: "Medium", mitigation: "اعتماد جميع المواد والعينات قبل البدء في التنفيذ." },
             { category: "Operational", description: "تأخير في توريد المواد المستوردة.", impact: "Medium", probability: "High", mitigation: "الطلب المبكر للمواد وتحديد موردين بدلاء." }
         ]
-    })
+    }
   },
   {
     name: "مجمع فلل الأصالة السكني",
     status: "متأخر",
+    createdAt: "2024-07-19T10:00:00Z",
+    updatedAt: "2024-07-19T10:00:00Z",
     variant: "destructive",
     location: "الخبر، حي العزيزية",
     imageUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=600",
@@ -60,21 +86,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 85000000,
     actualBudget: 78000000,
     currency: "SAR",
-    lat: 26.2173,
-    lng: 50.2078,
+    latitude: 26.2173,
+    longitude: 50.2078,
     manager: "علي محمد",
     startDate: "2022-02-01",
     endDate: "2024-05-30",
     projectType: 'residential_villa',
     quality: 'standard',
     description: 'بناء مجمع سكني يضم 50 فيلا متطابقة بنظام تسليم المفتاح، مع تطوير كامل للبنية التحتية للمجمع من طرق وأرصفة وشبكات كهرباء ومياه وصرف صحي.',
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "تشطيب شقة دوبلكس مودرن",
     status: "مكتمل",
+    createdAt: "2024-07-18T10:00:00Z",
+    updatedAt: "2024-07-18T10:00:00Z",
     variant: "secondary",
     location: "جدة، حي الشاطئ",
     imageUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600",
@@ -83,21 +111,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 450000,
     actualBudget: 435000,
     currency: "SAR",
-    lat: 21.56,
-    lng: 39.15,
+    latitude: 21.56,
+    longitude: 39.15,
     manager: "فاطمة الحسن",
     startDate: "2024-02-01",
     endDate: "2024-06-30",
     projectType: 'interior_finishing',
     quality: 'premium',
     description: "أعمال تشطيبات داخلية كاملة لشقة دوبلكس بمساحة 250 متر مربع، تتضمن أعمال الجبس والدهانات والأرضيات (بورسلان وباركيه)، وتوريد وتركيب المطابخ والأدوات الصحية والإضاءة الحديثة.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "بناء عمارة سكنية - 4 أدوار",
     status: "مخطط له",
+    createdAt: "2024-07-17T10:00:00Z",
+    updatedAt: "2024-07-17T10:00:00Z",
     variant: "outline",
     location: "المدينة المنورة، حي العزيزية",
     imageUrl: "https://images.unsplash.com/photo-1594488518063-8a3874a2d54e?q=80&w=600",
@@ -106,23 +136,25 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 4200000,
     actualBudget: 0,
     currency: "SAR",
-    lat: 24.4686,
-    lng: 39.6142,
+    latitude: 24.4686,
+    longitude: 39.6142,
     manager: "عبدالله السالم",
     startDate: "2024-09-01",
     endDate: "2026-03-01",
     projectType: 'commercial_building',
     quality: 'standard',
     description: "إنشاء مبنى سكني مكون من 4 طوابق، يحتوي على 8 شقق سكنية، مع مواقف في القبو. المشروع يشمل جميع الأعمال من الأساسات حتى تسليم المفتاح.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
 
   // --- Commercial ---
   {
     name: "إنشاء برج المكاتب الذكي بجدة",
     status: "قيد التنفيذ",
+    createdAt: "2024-07-16T10:00:00Z",
+    updatedAt: "2024-07-16T10:00:00Z",
     variant: "default",
     location: "جدة، طريق الملك عبدالعزيز",
     imageUrl: "https://images.unsplash.com/photo-1519999499802-9a3b1c557117?q=80&w=600",
@@ -131,21 +163,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 120000000,
     actualBudget: 55000000,
     currency: "SAR",
-    lat: 21.5433,
-    lng: 39.1728,
+    latitude: 21.5433,
+    longitude: 39.1728,
     manager: "أحمد منصور",
     startDate: "2023-03-01",
     endDate: "2026-12-31",
     projectType: 'commercial_building',
     quality: 'luxury',
     description: 'إنشاء برج مكاتب من 30 طابقًا على طريق الملك عبدالعزيز في جدة، بمساحة بناء إجمالية 50,000 متر مربع. يتضمن المشروع أنظمة ذكية لإدارة المباني (BMS)، وواجهات زجاجية حديثة، ومواقف سيارات متعددة الطوابق.',
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "تطوير وتوسعة مول تجاري",
     status: "قيد التنفيذ",
+    createdAt: "2024-07-15T10:00:00Z",
+    updatedAt: "2024-07-15T10:00:00Z",
     variant: "default",
     location: "الرياض، الطريق الدائري الشرقي",
     imageUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=600",
@@ -154,21 +188,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 250000000,
     actualBudget: 200000000,
     currency: "SAR",
-    lat: 24.7136,
-    lng: 46.758,
+    latitude: 24.7136,
+    longitude: 46.758,
     manager: "سارة عبدالله",
     startDate: "2022-06-01",
     endDate: "2025-06-01",
     projectType: 'commercial_building',
     quality: 'premium',
     description: "إضافة جناح جديد لمول قائم بمساحة 30,000 متر مربع، وتحديث الواجهات الخارجية، وإعادة تصميم منطقة المطاعم (Food Court).",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "بناء فندق 4 نجوم",
     status: "مخطط له",
+    createdAt: "2024-07-14T10:00:00Z",
+    updatedAt: "2024-07-14T10:00:00Z",
     variant: "outline",
     location: "مكة المكرمة، المنطقة المركزية",
     imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600",
@@ -177,21 +213,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 95000000,
     actualBudget: 0,
     currency: "SAR",
-    lat: 21.4225,
-    lng: 39.8262,
+    latitude: 21.4225,
+    longitude: 39.8262,
     manager: "محمد الغامدي",
     startDate: "2025-01-01",
     endDate: "2027-01-01",
     projectType: 'commercial_building',
     quality: 'premium',
     description: "إنشاء فندق من 15 طابقًا بسعة 250 غرفة، مع مطاعم وقاعات اجتماعات ونادي صحي، بتشطيبات عالية الجودة.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "إنشاء مستودع لوجستي مبرد",
     status: "مكتمل",
+    createdAt: "2024-07-13T10:00:00Z",
+    updatedAt: "2024-07-13T10:00:00Z",
     variant: "secondary",
     location: "مدينة الملك عبدالله الاقتصادية",
     imageUrl: "https://images.unsplash.com/photo-1587293852726-70cdb15c856a?q=80&w=600",
@@ -200,21 +238,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 35000000,
     actualBudget: 33500000,
     currency: "SAR",
-    lat: 22.38,
-    lng: 39.09,
+    latitude: 22.38,
+    longitude: 39.09,
     manager: "أحمد منصور",
     startDate: "2023-01-10",
     endDate: "2024-03-10",
     projectType: 'other',
     quality: 'standard',
     description: "بناء مستودع بمساحة 15,000 متر مربع مع أنظمة تبريد متكاملة لتخزين المواد الغذائية، يتضمن مكاتب إدارية وساحات تحميل.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "تشييد مصنع للمنتجات البلاستيكية",
     status: "قيد التنفيذ",
+    createdAt: "2024-07-12T10:00:00Z",
+    updatedAt: "2024-07-12T10:00:00Z",
     variant: "default",
     location: "المدينة الصناعية الثانية، الدمام",
     imageUrl: "https://images.unsplash.com/photo-1567954256696-61603f29c0b1?q=80&w=600",
@@ -223,23 +263,25 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 60000000,
     actualBudget: 35000000,
     currency: "SAR",
-    lat: 26.3,
-    lng: 49.98,
+    latitude: 26.3,
+    longitude: 49.98,
     manager: "خالد الغامدي",
     startDate: "2023-08-01",
     endDate: "2025-08-01",
     projectType: 'other',
     quality: 'standard',
     description: "إنشاء مصنع بمساحة 20,000 متر مربع، يشمل الهيكل المعدني، وأرضيات خرسانية صناعية، وتركيب خطوط الإنتاج.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   
   // --- Infrastructure ---
   {
     name: "سفلتة وإعادة تأهيل طريق الأمير محمد بن سلمان",
     status: "قيد التنفيذ",
+    createdAt: "2024-07-11T10:00:00Z",
+    updatedAt: "2024-07-11T10:00:00Z",
     variant: "default",
     location: "الرياض",
     imageUrl: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=600",
@@ -248,21 +290,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 45000000,
     actualBudget: 10000000,
     currency: "SAR",
-    lat: 24.7742,
-    lng: 46.7386,
+    latitude: 24.7742,
+    longitude: 46.7386,
     manager: "عبدالله السالم",
     startDate: "2024-05-01",
     endDate: "2025-05-01",
     projectType: 'other',
     quality: 'standard',
     description: "مشروع إعادة تأهيل وسفلتة طريق الأمير محمد بن سلمان بطول 15 كم، ويشمل أعمال الكشط، وضع طبقات الأساس والأسفلت، أعمال الدهان وتخطيط الطرق، وتركيب اللوحات الإرشادية.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "إنشاء شبكة تصريف مياه أمطار",
     status: "مكتمل",
+    createdAt: "2024-07-10T10:00:00Z",
+    updatedAt: "2024-07-10T10:00:00Z",
     variant: "secondary",
     location: "جدة، حي الحمدانية",
     imageUrl: "https://images.unsplash.com/photo-1573931165426-a83d491a2723?q=80&w=600",
@@ -271,21 +315,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 78000000,
     actualBudget: 75000000,
     currency: "SAR",
-    lat: 21.68,
-    lng: 39.18,
+    latitude: 21.68,
+    longitude: 39.18,
     manager: "عبدالله السالم",
     startDate: "2022-01-01",
     endDate: "2023-12-31",
     projectType: 'other',
     quality: 'standard',
     description: "إنشاء شبكة متكاملة لتصريف مياه الأمطار والسيول بطول 25 كم، تشمل حفر وتركيب أنابيب خرسانية وغرف تفتيش ومصائد أمطار.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "بناء جسر تقاطع طريق الملك فهد مع طريق العروبة",
     status: "مخطط له",
+    createdAt: "2024-07-09T10:00:00Z",
+    updatedAt: "2024-07-09T10:00:00Z",
     variant: "outline",
     location: "الرياض",
     imageUrl: "https://images.unsplash.com/photo-1541848756149-e38434ca832c?q=80&w=600",
@@ -294,23 +340,25 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 180000000,
     actualBudget: 0,
     currency: "SAR",
-    lat: 24.70,
-    lng: 46.68,
+    latitude: 24.70,
+    longitude: 46.68,
     manager: "محمد الغامدي",
     startDate: "2025-02-01",
     endDate: "2027-08-01",
     projectType: 'other',
     quality: 'standard',
     description: "بناء جسر خرساني من 3 مسارات في كل اتجاه لتسهيل الحركة المرورية في تقاطع حيوي. المشروع يشمل أعمال الخوازيق، القواعد، الأعمدة، وتركيب الكمرات مسبقة الصب.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   
   // --- Healthcare ---
   {
     name: "توسعة قسم الطوارئ في مستشفى الملك فيصل",
     status: "قيد التنفيذ",
+    createdAt: "2024-07-08T10:00:00Z",
+    updatedAt: "2024-07-08T10:00:00Z",
     variant: "default",
     location: "الرياض",
     imageUrl: "https://images.unsplash.com/photo-1580281657527-47f249e8f5df?q=80&w=600",
@@ -319,21 +367,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 55000000,
     actualBudget: 15000000,
     currency: "SAR",
-    lat: 24.66,
-    lng: 46.7,
+    latitude: 24.66,
+    longitude: 46.7,
     manager: "سارة عبدالله",
     startDate: "2024-01-15",
     endDate: "2025-07-15",
     projectType: 'commercial_building',
     quality: 'luxury',
     description: "إضافة مبنى جديد لقسم الطوارئ بمساحة 5,000 متر مربع وتحديث المبنى القائم، مع إضافة غرف عمليات مصغرة وتجهيزات طبية حديثة وأنظمة غازات طبية.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "إنشاء مركز صحي أولي نموذجي",
     status: "مكتمل",
+    createdAt: "2024-07-07T10:00:00Z",
+    updatedAt: "2024-07-07T10:00:00Z",
     variant: "secondary",
     location: "أبها، حي الموظفين",
     imageUrl: "https://images.unsplash.com/photo-1629904853716-f0bc64219b1b?q=80&w=600",
@@ -342,23 +392,25 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 12000000,
     actualBudget: 11500000,
     currency: "SAR",
-    lat: 18.2167,
-    lng: 42.5053,
+    latitude: 18.2167,
+    longitude: 42.5053,
     manager: "علي محمد",
     startDate: "2022-09-01",
     endDate: "2024-03-01",
     projectType: 'commercial_building',
     quality: 'premium',
     description: "إنشاء مركز رعاية صحية أولية بمساحة 1,500 متر مربع، يشمل عيادات عامة، مختبر، صيدلية، وأقسام للتطعيمات ورعاية الأمومة.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   
   // --- Events ---
   {
     name: "تجهيز فعالية إطلاق سيارة كهربائية",
     status: "مكتمل",
+    createdAt: "2024-07-06T10:00:00Z",
+    updatedAt: "2024-07-06T10:00:00Z",
     variant: "secondary",
     location: "الدمام، مركز المعارض",
     imageUrl: "https://images.unsplash.com/photo-1531058020387-3be344556be6?q=80&w=600",
@@ -367,21 +419,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 850000,
     actualBudget: 835000,
     currency: "SAR",
-    lat: 26.3927,
-    lng: 49.9774,
+    latitude: 26.3927,
+    longitude: 49.9774,
     manager: "نورة القحطاني",
     startDate: "2024-04-01",
     endDate: "2024-06-15",
     projectType: 'event_setup',
     quality: 'premium',
     description: 'تجهيز كامل لفعالية إطلاق سيارة كهربائية جديدة، يشمل بناء المسرح الرئيسي، وتوفير أنظمة الصوت والإضاءة والشاشات، وتصميم وتصنيع أجنحة العرض، وتنظيم منطقة استقبال كبار الشخصيات.',
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "تجهيز معرض الرياض الدولي للكتاب",
     status: "مخطط له",
+    createdAt: "2024-07-05T10:00:00Z",
+    updatedAt: "2024-07-05T10:00:00Z",
     variant: "outline",
     location: "الرياض، مركز المعارض والمؤتمرات",
     imageUrl: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=600",
@@ -390,23 +444,25 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 4500000,
     actualBudget: 0,
     currency: "SAR",
-    lat: 24.7136,
-    lng: 46.6753,
+    latitude: 24.7136,
+    longitude: 46.6753,
     manager: "فاطمة الحسن",
     startDate: "2024-08-01",
     endDate: "2024-09-20",
     projectType: 'event_setup',
     quality: 'premium',
     description: "التجهيز الكامل لمعرض الرياض الدولي للكتاب، ويشمل بناء وتركيب أجنحة العرض للناشرين، توفير الإضاءة والصوتيات، تجهيز مناطق الفعاليات الثقافية، وطباعة وتوزيع المواد الإعلانية.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   
   // --- Landscaping and Recreation ---
   {
     name: "تطوير حديقة الملك سلمان",
     status: "قيد التنفيذ",
+    createdAt: "2024-07-04T10:00:00Z",
+    updatedAt: "2024-07-04T10:00:00Z",
     variant: "default",
     location: "الرياض",
     imageUrl: "https://images.unsplash.com/photo-1614713502579-a95782729221?q=80&w=600",
@@ -415,21 +471,23 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 500000000,
     actualBudget: 75000000,
     currency: "SAR",
-    lat: 24.68,
-    lng: 46.69,
+    latitude: 24.68,
+    longitude: 46.69,
     manager: "محمد الغامدي",
     startDate: "2024-01-01",
     endDate: "2028-01-01",
     projectType: 'other',
     quality: 'luxury',
     description: "مشروع ضخم لتطوير حديقة عامة، يشمل أعمال تسوية الأراضي، زراعة آلاف الأشجار والنباتات، إنشاء بحيرات صناعية، مسارات للمشي والدراجات، ومناطق ألعاب.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   },
   {
     name: "إنشاء ملعب كرة قدم أولمبي",
     status: "مخطط له",
+    createdAt: "2024-07-03T10:00:00Z",
+    updatedAt: "2024-07-03T10:00:00Z",
     variant: "outline",
     location: "الطائف",
     imageUrl: "https://images.unsplash.com/photo-1528183429752-a97d0bfd08b3?q=80&w=600",
@@ -438,18 +496,16 @@ export const initialProjects: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | '
     estimatedBudget: 350000000,
     actualBudget: 0,
     currency: "SAR",
-    lat: 21.2854,
-    lng: 40.4167,
+    latitude: 21.2854,
+    longitude: 40.4167,
     manager: "عبدالله السالم",
     startDate: "2025-06-01",
     endDate: "2028-06-01",
     projectType: 'commercial_building',
     quality: 'luxury',
     description: "بناء ملعب كرة قدم بسعة 40,000 متفرج، مع مضمار ألعاب قوى، ومرافق متكاملة للفرق الإعلامية والجماهير، وفقًا لمعايير الفيفا.",
-    ganttChartDataJson: null,
-    costEstimationJson: null,
-    riskAnalysisJson: null
+    ganttChartData: [],
+    costEstimation: sampleCostEstimation,
+    riskAnalysis: sampleRiskAnalysis
   }
 ];
-
-    

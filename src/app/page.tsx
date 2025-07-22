@@ -136,12 +136,15 @@ export default function HomePage() {
 };
 
 const testimonials = [
-  { name: t('landing.testimonials.1.name'), title: t('landing.testimonials.1.title'), quote: t('landing.testimonials.1.quote'), avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
-  { name: t('landing.testimonials.2.name'), title: t('landing.testimonials.2.title'), quote: t('landing.testimonials.2.quote'), avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
-  { name: t('landing.testimonials.3.name'), title: t('landing.testimonials.3.title'), quote: t('landing.testimonials.3.quote'), avatar: "https://randomuser.me/api/portraits/men/46.jpg" },
-  { name: "فاطمة الزهراني", title: "مهندسة معمارية مستقلة، جدة", quote: "تحليل المخططات بالذكاء الاصطناعي يوفر عليّ أيامًا من العمل اليدوي، ويعطيني رؤى لم أكن لأنتبه لها.", avatar: "https://randomuser.me/api/portraits/women/33.jpg" },
-  { name: "سلطان الحربي", title: "مدير مشتريات، شركة التوريدات المتحدة، الدمام", quote: "إدارة الموردين وأوامر الشراء أصبحت مركزية ومنظمة. لم نعد نفقد أي طلب شراء.", avatar: "https://randomuser.me/api/portraits/men/55.jpg" },
-  { name: "Dr. Aisha Al-Farsi", title: "Real Estate Analyst, Muscat", quote: "The financial intelligence tool provides deep project analysis, helping us better evaluate investment feasibility.", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
+    { name: "Eng. Khalid Al-Ahmadi", title: "Project Manager, Modern Construction Co., KSA", quote: "AchoX Pro completely changed the way we work. Cost estimation and BOQ generation are now 95% faster and more accurate.", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+    { name: "John Smith", title: "Construction Director, BuildWell Corp, UK", quote: "The proactive risk analysis is a game-changer. It helped us avoid costly delays on a major infrastructure project. An indispensable tool for any serious construction firm.", avatar: "https://randomuser.me/api/portraits/men/33.jpg" },
+    { name: "Noura Al-Qahtani", title: "Event Organizer, Ibdaa Inc., UAE", quote: "The project planning tool is amazing! I can now prepare a complete plan for any event, from costs to schedule, in just a few minutes.", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+    { name: "Dr. Emily Carter", title: "Lead Engineer, Spectra Engineering, USA", quote: "The blueprint analysis AI is incredibly accurate. It saves my team days of manual work and provides insights we hadn't even considered. Highly recommended.", avatar: "https://randomuser.me/api/portraits/women/45.jpg" },
+    { name: "Omar Bin Saleh", title: "CEO, Elite Contracting, KSA", quote: "The best investment we've made this year. Automatic reports and timelines help us make better decisions and track progress accurately.", avatar: "https://randomuser.me/api/portraits/men/46.jpg" },
+    { name: "Hans Müller", title: "Architect, Bauhaus Architekten, Germany", quote: "A fantastic platform for conceptual design and quick feasibility studies. The AI architect provides a brilliant starting point for client discussions.", avatar: "https://randomuser.me/api/portraits/men/47.jpg" },
+    { name: "Priya Sharma", title: "Procurement Manager, Synergy Infra, India", quote: "Managing suppliers and purchase orders is now centralized and organized. We no longer lose track of any request, which has improved our efficiency immensely.", avatar: "https://randomuser.me/api/portraits/women/48.jpg" },
+    { name: "Kenji Tanaka", title: "Project Lead, Sakura Events, Japan", quote: "We use AchoX Pro for all our international events. The ability to quickly plan, budget, and schedule is crucial for our fast-paced industry.", avatar: "https://randomuser.me/api/portraits/men/49.jpg" },
+    { name: "Sophie Dubois", title: "Interior Designer, Chic Interiors, France", quote: "The AI-driven BOQ helps me provide my clients with instant, accurate cost estimates for finishing materials. It has significantly improved client trust.", avatar: "https://randomuser.me/api/portraits/women/50.jpg" }
 ];
 
   const variants = {

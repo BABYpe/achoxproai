@@ -1,8 +1,9 @@
 
 "use client"
 
+import React, { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
@@ -17,6 +18,12 @@ import { Textarea } from "@/components/ui/textarea"
 export default function SettingsPage() {
   const { toast } = useToast()
   const currentUser = useCurrentUser()
+  
+  const [avatarUrl, setAvatarUrl] = useState(currentUser.avatar);
+  const [coverUrl, setCoverUrl] = useState("https://images.unsplash.com/photo-1518655048521-f130df041f66?q=80&w=1200");
+  
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>, message: string) => {
     e.preventDefault();
@@ -25,6 +32,22 @@ export default function SettingsPage() {
         description: message,
     })
   }
+  
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>, 
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setter(reader.result as string);
+        toast({ title: "تم تحديث الصورة بنجاح!" });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   return (
     <div className="flex flex-col gap-8">
@@ -32,23 +55,38 @@ export default function SettingsPage() {
       
       {/* Professional Profile Card */}
       <Card className="shadow-xl rounded-2xl overflow-hidden">
-        <div className="relative h-40 bg-muted">
-            <img src="https://images.unsplash.com/photo-1518655048521-f130df041f66?q=80&w=1200" alt="Cover" className="w-full h-full object-cover" data-ai-hint="office desk background" />
-            <Button size="sm" variant="secondary" className="absolute bottom-4 right-4 gap-1">
+        <div className="relative h-40 bg-muted group">
+            <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" data-ai-hint="office desk background" />
+            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <Button size="sm" variant="secondary" className="absolute bottom-4 right-4 gap-1 z-10" onClick={() => coverInputRef.current?.click()}>
                 <Camera className="w-4 h-4"/>
                 تغيير الغلاف
             </Button>
+            <input 
+              type="file" 
+              ref={coverInputRef} 
+              className="hidden" 
+              accept="image/*" 
+              onChange={(e) => handleImageChange(e, setCoverUrl)} 
+            />
         </div>
         <CardContent className="relative p-6 pt-0">
             <div className="flex items-end gap-6 -mt-16">
-                <div className="relative">
+                <div className="relative group">
                     <Avatar className="h-32 w-32 border-4 border-background shadow-lg">
-                      <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                      <AvatarImage src={avatarUrl} alt={currentUser.name} />
                       <AvatarFallback>{currentUser.fallback}</AvatarFallback>
                     </Avatar>
-                     <Button size="icon" variant="secondary" className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full">
+                     <Button size="icon" variant="secondary" className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full z-10" onClick={() => avatarInputRef.current?.click()}>
                         <Camera className="w-4 h-4"/>
                     </Button>
+                    <input 
+                      type="file" 
+                      ref={avatarInputRef} 
+                      className="hidden" 
+                      accept="image/*" 
+                      onChange={(e) => handleImageChange(e, setAvatarUrl)} 
+                    />
                 </div>
                 <div className="pb-4 flex-1">
                     <div className="flex items-center gap-2">

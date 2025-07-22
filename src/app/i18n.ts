@@ -1,6 +1,7 @@
 
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import HttpApi from 'i18next-http-backend';
 
 // The translations
 const resources = {
@@ -374,7 +375,8 @@ const resources = {
 };
 
 i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
+  .use(HttpApi)
+  .use(initReactI18next)
   .init({
     resources,
     lng: 'ar', // default language
@@ -383,8 +385,9 @@ i18n
       escapeValue: false // react already safes from xss
     },
     react: {
-      useSuspense: false, // Set to false to avoid Suspense issues
+      useSuspense: false, 
     },
+    debug: process.env.NODE_ENV === 'development',
   });
 
 export default i18n;

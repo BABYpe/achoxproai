@@ -14,6 +14,24 @@ const resources = {
       "notifications": "Notifications",
       "copyright": "© {{year}} AchoX Pro. All rights reserved.",
       "inProgress": "In Progress",
+      "currency.sar": "SAR",
+
+      // Project Types
+      "projectTypes.residential_villa": "Residential Villa",
+      "projectTypes.interior_finishing": "Interior Finishing",
+      "projectTypes.commercial_building": "Commercial Building",
+      "projectTypes.event_setup": "Event Setup",
+      "projectTypes.other": "Other",
+
+      // Quality Levels
+      "qualityLevels.standard": "Standard",
+      "qualityLevels.premium": "Premium",
+      "qualityLevels.luxury": "Luxury",
+
+      // Severities
+      "severities.High": "High",
+      "severities.Medium": "Medium",
+      "severities.Low": "Low",
 
       // BOQ Page
       "boq.title": "Master Bill of Quantities (BOQ)",
@@ -242,7 +260,43 @@ const resources = {
       "sidebar.boq": "Master BOQ",
       "sidebar.templates": "Templates Library",
       "sidebar.documentCenter": "Document Center",
-      "sidebar.settings": "Settings"
+      "sidebar.settings": "Settings",
+
+      // New Project Page
+      "newProject.plan.title": "Comprehensive Plan for: {{projectName}}",
+      "newProject.plan.totalCost": "Total Estimated Cost",
+      "newProject.plan.saveProject": "Approve Plan & Save Project",
+      "newProject.plan.updateProject": "Approve & Update Project",
+      "newProject.plan.saving": "Saving...",
+      "newProject.plan.exportPdf": "Export Plan (PDF)",
+      "newProject.tabs.overview": "Overview",
+      "newProject.tabs.financial": "Financial Plan",
+      "newProject.tabs.execution": "Execution Plan",
+      "newProject.tabs.blueprint": "Blueprint Analysis",
+      "newProject.overview.summary": "Executive Summary",
+      "newProject.overview.projectType": "Project Type",
+      "newProject.overview.qualityLevel": "Quality Level",
+      "newProject.overview.scope": "AI-Generated Scope of Work",
+      "newProject.boq.title": "Detailed Bill of Quantities (BOQ)",
+      "newProject.boq.item": "Item",
+      "newProject.boq.unit": "Unit",
+      "newProject.boq.quantity": "Qty",
+      "newProject.boq.unitPrice": "Unit Price",
+      "newProject.boq.total": "Total",
+      "newProject.risks.title": "Financial Risk Analysis",
+      "newProject.risks.mitigation": "Mitigation Strategy",
+      "newProject.risks.none": "No significant financial risks were identified based on the current scope.",
+      "newProject.gantt.title": "Project Timeline (Gantt Chart)",
+      "newProject.gantt.duration": "{{count}} days",
+      "newProject.crew.title": "Crew Recommendation",
+      "newProject.crew.person": "Personnel",
+      "newProject.blueprint.title": "AI Blueprint Analysis Report",
+      "newProject.blueprint.warnings.title": "Warnings & Risks",
+      "newProject.blueprint.warnings.none": "Excellent! No significant risks found in the blueprint.",
+      "newProject.blueprint.quantities.title": "Extracted Quantities",
+      "newProject.blueprint.quantities.area": "Total Area",
+      "newProject.blueprint.quantities.length": "Total Length of Lines",
+      "newProject.blueprint.quantities.objects": "Object Counts"
     }
   },
   ar: {
@@ -254,6 +308,24 @@ const resources = {
       "notifications": "الإشعارات",
       "copyright": "© {{year}} AchoX Pro. جميع الحقوق محفوظة.",
       "inProgress": "قيد العمل",
+      "currency.sar": "ر.س",
+
+      // Project Types
+      "projectTypes.residential_villa": "فيلا سكنية",
+      "projectTypes.interior_finishing": "تشطيبات داخلية",
+      "projectTypes.commercial_building": "مبنى تجاري",
+      "projectTypes.event_setup": "تجهيز فعالية",
+      "projectTypes.other": "أخرى",
+
+      // Quality Levels
+      "qualityLevels.standard": "قياسي",
+      "qualityLevels.premium": "ممتاز",
+      "qualityLevels.luxury": "فاخر",
+      
+      // Severities
+      "severities.High": "خطورة عالية",
+      "severities.Medium": "متوسطة",
+      "severities.Low": "منخفضة",
 
       // BOQ Page
       "boq.title": "قاعدة بيانات بنود الأعمال (Master BOQ)",
@@ -482,7 +554,43 @@ const resources = {
       "sidebar.boq": "جداول الكميات",
       "sidebar.templates": "مكتبة القوالب",
       "sidebar.documentCenter": "مركز الوثائق",
-      "sidebar.settings": "الإعدادات"
+      "sidebar.settings": "الإعدادات",
+
+      // New Project Page
+      "newProject.plan.title": "الخطة المتكاملة لمشروع: {{projectName}}",
+      "newProject.plan.totalCost": "التكلفة الإجمالية التقديرية",
+      "newProject.plan.saveProject": "اعتماد الخطة وحفظ المشروع",
+      "newProject.plan.updateProject": "اعتماد وتحديث المشروع",
+      "newProject.plan.saving": "جاري الحفظ...",
+      "newProject.plan.exportPdf": "تصدير الخطة (PDF)",
+      "newProject.tabs.overview": "نظرة عامة",
+      "newProject.tabs.financial": "الخطة المالية",
+      "newProject.tabs.execution": "خطة التنفيذ",
+      "newProject.tabs.blueprint": "تحليل المخطط",
+      "newProject.overview.summary": "ملخص تنفيذي",
+      "newProject.overview.projectType": "نوع المشروع",
+      "newProject.overview.qualityLevel": "مستوى الجودة",
+      "newProject.overview.scope": "نطاق العمل المولد بالذكاء الاصطناعي",
+      "newProject.boq.title": "جدول الكميات المفصل (BOQ)",
+      "newProject.boq.item": "البند",
+      "newProject.boq.unit": "الوحدة",
+      "newProject.boq.quantity": "الكمية",
+      "newProject.boq.unitPrice": "سعر الوحدة",
+      "newProject.boq.total": "الإجمالي",
+      "newProject.risks.title": "تحليل المخاطر المالية",
+      "newProject.risks.mitigation": "مقترح التخفيف",
+      "newProject.risks.none": "لم يتم تحديد مخاطر مالية كبيرة بناءً على النطاق الحالي.",
+      "newProject.gantt.title": "الجدول الزمني للمشروع (Gantt Chart)",
+      "newProject.gantt.duration": "المدة: {{count}} أيام",
+      "newProject.crew.title": "توصيات فريق العمل",
+      "newProject.crew.person": "شخص",
+      "newProject.blueprint.title": "تقرير تحليل المخطط الهندسي",
+      "newProject.blueprint.warnings.title": "التحذيرات والمخاطر",
+      "newProject.blueprint.warnings.none": "ممتاز! لم يتم العثور على مخاطر واضحة في المخطط.",
+      "newProject.blueprint.quantities.title": "الكميات المستخرجة",
+      "newProject.blueprint.quantities.area": "المساحة الإجمالية",
+      "newProject.blueprint.quantities.length": "الطول الإجمالي للخطوط",
+      "newProject.blueprint.quantities.objects": "تعداد العناصر"
     }
   }
 };

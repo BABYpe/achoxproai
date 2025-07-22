@@ -53,28 +53,60 @@ const generateBlueprintImageFlow = ai.defineFlow(
     outputSchema: GenerateBlueprintImageOutputSchema,
   },
   async (input) => {
-    // Generate blueprint and 3 perspectives in parallel
-    const [blueprintResult, perspectiveResult1, perspectiveResult2, perspectiveResult3] = await Promise.all([
-      blueprintPrompt(input),
-      perspectivePrompt({ ...input, view: 'Front facade, eye-level view' }),
-      perspectivePrompt({ ...input, view: 'Side perspective view, showing depth and side details' }),
-      perspectivePrompt({ ...input, view: 'Aerial or bird\'s-eye view' }),
-    ]);
-    
-    const blueprintDataUri = blueprintResult.media?.url;
-    const perspectiveDataUris = [
-        perspectiveResult1.media?.url,
-        perspectiveResult2.media?.url,
-        perspectiveResult3.media?.url,
-    ].filter((uri): uri is string => !!uri);
+    let blueprintDataUri: string | undefined;
+    const perspectiveDataUris: (string | undefined)[] = [];
 
-    if (!blueprintDataUri || perspectiveDataUris.length < 3) {
-      throw new Error("Image generation failed to return one or more images.");
+    // Generate blueprint
+    try {
+        const blueprintResult = await blueprintPrompt(input);
+        blueprintDataUri = blueprintResult.media?.url;
+    } catch (e) {
+        console.error("Failed to generate 2D blueprint:", e);
+        blueprintDataUri = undefined; // Ensure it's undefined on failure
     }
 
+    // Generate perspectives in parallel
+    const perspectiveViews = [
+        'Front facade, eye-level view',
+        'Side perspective view, showing depth and side details',
+        'Aerial or bird\'s-eye view'
+    ];
+    
+    const perspectivePromises = perspectiveViews.map(view => 
+        perspectivePrompt({ ...input, view }).catch(e => {
+            console.error(`Failed to generate perspective for view '${view}':`, e);
+            return null; // Return null on failure for a specific view
+        })
+    );
+
+    const perspectiveResults = await Promise.all(perspectivePromises);
+    
+    perspectiveResults.forEach(result => {
+        perspectiveDataUris.push(result?.media?.url);
+    });
+
+    const placeholderImage = "https://placehold.co/800x600.png";
+
+    // Ensure we always return a valid structure, using placeholders for failed images
+    const finalBlueprintUri = blueprintDataUri || placeholderImage;
+    const finalPerspectiveUris = perspectiveDataUris.map(uri => uri || placeholderImage);
+
+    // Ensure there are always at least 3 perspective images
+    while (finalPerspectiveUris.length < 3) {
+        finalPerspectiveUris.push(placeholderImage);
+    }
+    
+    if (!blueprintDataUri) {
+        console.warn("Blueprint generation failed, using placeholder.");
+    }
+    if (perspectiveDataUris.some(uri => !uri)) {
+        console.warn("One or more perspective generations failed, using placeholders.");
+    }
+
+
     return {
-      blueprintDataUri,
-      perspectiveDataUris,
+      blueprintDataUri: finalBlueprintUri,
+      perspectiveDataUris: finalPerspectiveUris,
     };
   }
 );

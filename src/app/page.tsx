@@ -39,34 +39,34 @@ export default function HomePage() {
   
     const featureGroups = {
     planning: [
-        { icon: Wand2, title: "المصمم المعماري الذكي", description: "حوّل الأفكار إلى تصاميم معمارية ومخططات أولية بضغطة زر." },
-        { icon: Calculator, title: "تقدير التكاليف الشامل", description: "احصل على جداول كميات (BOQ)، وتقديرات مالية دقيقة معتمدة على بيانات سوق حقيقية." },
-        { icon: GanttChartIcon, title: "مخطط جانت الزمني", description: "أنشئ جداول زمنية مفصلة للمشاريع بشكل تلقائي، مع تحديد المهام والمدد الزمنية." },
-        { icon: UsersGroupIcon, title: "مخطط فريق العمل", description: "احصل على توصيات بحجم ونوع فريق العمل المثالي لتنفيذ مشروعك بكفاءة." },
+        { icon: Wand2, title: t('landing.features.group1.item1.title'), description: t('landing.features.group1.item1.description') },
+        { icon: Calculator, title: t('landing.features.group1.item2.title'), description: t('landing.features.group1.item2.description') },
+        { icon: GanttChartIcon, title: t('landing.features.group1.item3.title'), description: t('landing.features.group1.item3.description') },
+        { icon: UsersGroupIcon, title: t('landing.features.group1.item4.title'), description: t('landing.features.group1.item4.description') },
     ],
     execution: [
-        { icon: Briefcase, title: "إدارة المشاريع", description: "لوحة تحكم مركزية لتتبع جميع مشاريعك، ومراقبة مؤشرات الأداء الرئيسية." },
-        { icon: FileSignature, title: "المشتريات والعقود", description: "أدر الموردين، وأنشئ أوامر شراء، وصدر عروض أسعار احترافية بلمسات بسيطة." },
-        { icon: BrainCircuit, title: "الذكاء المالي", description: "سجل معاملاتك المالية واحصل على تحليل فوري للمصروفات، المخاطر، والتوصيات." },
+        { icon: Briefcase, title: t('landing.features.group2.item1.title'), description: t('landing.features.group2.item1.description') },
+        { icon: FileSignature, title: t('landing.features.group2.item2.title'), description: t('landing.features.group2.item2.description') },
+        { icon: BrainCircuit, title: t('landing.features.group2.item3.title'), description: t('landing.features.group2.item3.description') },
     ],
     analysis: [
-        { icon: FilePieChart, title: "تقارير ذكية", description: "أنشئ تقارير تقدم مخصصة للمشاريع بشكل فوري، جاهزة للمشاركة مع الإدارة والعملاء." },
-        { icon: FileText, title: "تحليل المخططات", description: "ارفع المخططات الهندسية واحصل على تحليل فوري للكميات، المخاطر، والتوصيات." },
-        { icon: ShieldAlert, title: "تحليل المخاطر", description: "حدد المخاطر التشغيلية، المالية، والتقنية بشكل استباقي مع استراتيجيات للتخفيف منها." },
-        { icon: Send, title: "المسوق الذكي", description: "حدد جمهورك المستهدف واحصل على قوائم عملاء محتملين مع رسائل تسويقية مخصصة." },
+        { icon: FilePieChart, title: t('landing.features.group3.item1.title'), description: t('landing.features.group3.item1.description') },
+        { icon: FileText, title: t('landing.features.group3.item2.title'), description: t('landing.features.group3.item2.description') },
+        { icon: ShieldAlert, title: t('landing.features.group3.item3.title'), description: t('landing.features.group3.item3.description') },
+        { icon: Send, title: t('landing.features.group3.item4.title'), description: t('landing.features.group3.item4.description') },
     ],
     resources: [
-        { icon: Warehouse, title: "إدارة المخزون والأصول", description: "تتبع مخزون المواد ومعدات الشركة لضمان الجاهزية وتجنب النقص." },
-        { icon: ListChecks, title: "قاعدة بيانات BOQ", description: "أنشئ مكتبة مركزية لبنود الأعمال وتكاليفها لتسريع عملية التسعير وتوحيدها." },
-        { icon: ClipboardType, title: "مكتبة القوالب", description: "استخدم مشاريعك السابقة كنماذج جاهزة لمشاريع جديدة، موفرًا الوقت والجهد." },
-        { icon: LayoutDashboard, title: "مركز التحكم بالوثائق", description: "نظام مركزي لإدارة ومتابعة جميع مستندات ووثائق مشاريعك بشكل آمن." },
+        { icon: Warehouse, title: t('landing.features.group4.item1.title'), description: t('landing.features.group4.item1.description') },
+        { icon: ListChecks, title: t('landing.features.group4.item2.title'), description: t('landing.features.group4.item2.description') },
+        { icon: ClipboardType, title: t('landing.features.group4.item3.title'), description: t('landing.features.group4.item3.description') },
+        { icon: LayoutDashboard, title: t('landing.features.group4.item4.title'), description: t('landing.features.group4.item4.description') },
     ]
 };
 
 const testimonials = [
-  { name: "م. خالد الأحمدي", title: "مدير مشاريع، شركة البناء الحديث", quote: "منصة AchoX Pro غيرت طريقة عملنا تمامًا. أصبح تقدير التكاليف وتوليد جداول الكميات أسرع وأكثر دقة بنسبة 95%." },
-  { name: "نورة القحطاني", title: "منظمة فعاليات، شركة إبداع", quote: "أداة تخطيط المشاريع مذهلة! أصبح بإمكاني تجهيز خطة متكاملة لأي فعالية، من التكاليف إلى الجدول الزمني، في دقائق معدودة." },
-  { name: "عمر بن صالح", title: "الرئيس التنفيذي، مقاولات النخبة", quote: "أفضل استثمار قمنا به هذا العام. التقارير التلقائية والجداول الزمنية تساعدنا على اتخاذ قرارات أفضل وتتبع الإنجاز بدقة." },
+  { name: t('landing.testimonials.1.name'), title: t('landing.testimonials.1.title'), quote: t('landing.testimonials.1.quote') },
+  { name: t('landing.testimonials.2.name'), title: t('landing.testimonials.2.title'), quote: t('landing.testimonials.2.quote') },
+  { name: t('landing.testimonials.3.name'), title: t('landing.testimonials.3.title'), quote: t('landing.testimonials.3.quote') },
   { name: "فاطمة الزهراني", title: "مهندسة معمارية مستقلة", quote: "تحليل المخططات بالذكاء الاصطناعي يوفر عليّ أيامًا من العمل اليدوي، ويعطيني رؤى لم أكن لأنتبه لها." },
   { name: "سلطان الحربي", title: "مدير مشتريات، شركة التوريدات المتحدة", quote: "إدارة الموردين وأوامر الشراء أصبحت مركزية ومنظمة. لم نعد نفقد أي طلب شراء." },
   { name: "علياء منصور", title: "محللة مالية، شركة استثمار عقاري", quote: "أداة الذكاء المالي تقدم تحليلات عميقة للمشاريع، مما يساعدنا في تقييم جدوى الاستثمارات بشكل أفضل." },
@@ -161,7 +161,7 @@ const testimonials = [
             >
                 <motion.div variants={variants}>
                     <Badge variant="secondary" className="text-sm px-4 py-1.5 border-primary/20">
-                        شريكك الذكي في إدارة المشاريع
+                        {t('landing.hero.tagline')}
                     </Badge>
                 </motion.div>
 
@@ -169,16 +169,14 @@ const testimonials = [
                     variants={variants}
                     className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight mt-6"
                 >
-                    حوّل الأفكار إلى مشاريع ناجحة.
-                    <br/>
-                    بسرعة <span className="text-primary">ودقة</span> وذكاء.
+                    {t('landing.hero.superTitle')}
                 </motion.h1>
 
                 <motion.p 
                     variants={variants}
                     className="mx-auto mt-6 max-w-3xl text-lg text-foreground/80"
                 >
-                    AchoX Pro هي منصة ثورية تستخدم الذكاء الاصطناعي لتبسيط أعقد جوانب إدارة المشاريع. من تحليل المخططات إلى تقدير التكاليف وإنشاء خطط عمل متكاملة، كل ذلك في مكان واحد.
+                    {t('landing.hero.description')}
                 </motion.p>
                 
                 <motion.div 
@@ -222,16 +220,16 @@ const testimonials = [
         <section id="features" className="py-24 md:py-32 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto">
-                <Badge variant="default" className="text-sm px-4 py-1.5">المنصة المتكاملة لإدارة المشاريع</Badge>
-                <h2 className="text-3xl font-bold md:text-5xl mt-4">نظام تشغيل ذكي لمشاريعك</h2>
+                <Badge variant="default" className="text-sm px-4 py-1.5">{t('landing.features.mainTitle')}</Badge>
+                <h2 className="text-3xl font-bold md:text-5xl mt-4">{t('landing.features.superTitle')}</h2>
                 <p className="mt-6 text-lg text-muted-foreground">
-                    كل ما تحتاجه لإدارة مشاريعك من البداية إلى النهاية، مدعومًا بقوة الذكاء الاصطناعي، ومقسم على أربع مراحل رئيسية:
+                    {t('landing.features.description')}
                 </p>
             </div>
             <div className="mt-20 space-y-24">
               {/* Planning Group */}
               <div>
-                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">1. التخطيط الذكي: حوّل الأفكار إلى خطط قابلة للتنفيذ</h3>
+                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">{t('landing.features.group1.title')}</h3>
                   <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                       {featureGroups.planning.map((feature, index) => {
                           const Icon = feature.icon;
@@ -258,7 +256,7 @@ const testimonials = [
 
                {/* Execution Group */}
               <div>
-                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">2. التنفيذ والمتابعة: سيطر على كل تفاصيل مشروعك</h3>
+                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">{t('landing.features.group2.title')}</h3>
                   <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                       {featureGroups.execution.map((feature, index) => {
                           const Icon = feature.icon;
@@ -286,7 +284,7 @@ const testimonials = [
               
               {/* Analysis Group */}
               <div>
-                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">3. التحليل والنمو: اتخذ قرارات استراتيجية مبنية على البيانات</h3>
+                  <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">{t('landing.features.group3.title')}</h3>
                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                       {featureGroups.analysis.map((feature, index) => {
                           const Icon = feature.icon;
@@ -313,7 +311,7 @@ const testimonials = [
               
               {/* Resources Group */}
               <div>
-                   <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">4. الموارد الموحدة: مركزك لإدارة كل أصولك المعرفية والمادية</h3>
+                   <h3 className="text-2xl font-bold text-center md:text-3xl mb-12">{t('landing.features.group4.title')}</h3>
                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                       {featureGroups.resources.map((feature, index) => {
                           const Icon = feature.icon;

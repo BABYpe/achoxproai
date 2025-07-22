@@ -45,10 +45,16 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 space-y-2">
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{t('register.step1')}</span>
-                <span>{t('register.progressLabel', { percent: 100 - progressValue })}</span>
+           <div className="mb-6 space-y-3">
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="space-y-1">
+                  <div className="mx-auto h-1 w-full rounded-full bg-primary" />
+                  <p className="text-xs font-semibold text-primary">{t('register.step1')}</p>
+                </div>
+                <div className="space-y-1">
+                   <div className="mx-auto h-1 w-full rounded-full bg-muted" />
+                   <p className="text-xs text-muted-foreground">{t('register.step2')}</p>
+                </div>
               </div>
               <Progress value={progressValue} id="progress" />
           </div>

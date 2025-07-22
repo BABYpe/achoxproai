@@ -6,7 +6,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useProjectStore } from '@/hooks/use-project-store';
-// import { useFinancialStore, Transaction } from '@/hooks/use-financial-store';
+import { useFinancialStore } from '@/hooks/use-financial-store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -20,17 +20,6 @@ import { PlusCircle, Loader, TrendingUp, TrendingDown, Scale, PieChart as PieCha
 import { PieChart, Pie, Cell, Tooltip, Legend, Area, XAxis, YAxis, CartesianGrid, AreaChart as RechartsAreaChart, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { analyzeFinancials, type AnalyzeFinancialsOutput } from '@/ai/flows/analyze-financials';
-
-// MOCK DATA - This will be replaced by Firestore data in a real implementation
-const MOCK_TRANSACTIONS: any = {
-    "proj_villa_1": [
-        { id: "txn1", description: "شراء أسمنت وحديد تسليح", amount: 150000, category: "مواد بناء", date: "2024-06-01T10:00:00Z" },
-        { id: "txn2", description: "دفعة أولى لأجور العمال", amount: 75000, category: "أجور عمال", date: "2024-06-15T10:00:00Z" },
-        { id: "txn3", description: "إيجار مضخة الخرسانة", amount: 12000, category: "معدات", date: "2024-06-20T10:00:00Z" },
-        { id: "txn4", description: "رسوم استخراج رخصة البناء", amount: 25000, category: "رسوم وتصاريح", date: "2024-05-25T10:00:00Z" }
-    ]
-};
-
 
 const transactionSchema = z.object({
   description: z.string().min(1, "الوصف مطلوب"),
@@ -48,8 +37,9 @@ const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3
 
 export default function FinancialIntelligencePage() {
   const { projects, isLoading: projectsLoading } = useProjectStore();
+  const { transactions, fetchTransactions, addTransaction, isLoading: financialsLoading } = useFinancialStore();
+
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [transactions, setTransactions] = useState<any>(MOCK_TRANSACTIONS);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -70,6 +60,12 @@ export default function FinancialIntelligencePage() {
       setSelectedProjectId(projects[0].id!);
     }
   }, [projectsLoading, projects, selectedProjectId]);
+  
+  useEffect(() => {
+    if (selectedProjectId) {
+        fetchTransactions(selectedProjectId);
+    }
+  }, [selectedProjectId, fetchTransactions]);
 
   const selectedProject = useMemo(() => {
     return projects.find(p => p.id === selectedProjectId);
@@ -77,18 +73,18 @@ export default function FinancialIntelligencePage() {
 
   const projectTransactions = useMemo(() => {
     if (!selectedProjectId) return [];
-    return transactions[selectedProjectId]?.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()) || [];
+    return transactions[selectedProjectId]?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) || [];
   }, [selectedProjectId, transactions]);
 
   const stats = useMemo(() => {
-    const totalSpent = projectTransactions.reduce((sum: number, t: any) => sum + t.amount, 0);
+    const totalSpent = projectTransactions.reduce((sum, t) => sum + t.amount, 0);
     const budget = selectedProject?.estimatedBudget || 0;
     const remaining = budget - totalSpent;
     return { totalSpent, remaining, budget };
   }, [projectTransactions, selectedProject]);
   
   const categoryData = useMemo(() => {
-    const categoryMap = projectTransactions.reduce((acc: any, t: any) => {
+    const categoryMap = projectTransactions.reduce((acc, t) => {
         acc[t.category] = (acc[t.category] || 0) + t.amount;
         return acc;
     }, {} as Record<string, number>);
@@ -98,8 +94,8 @@ export default function FinancialIntelligencePage() {
 
   const spendingOverTimeData = useMemo(() => {
     let cumulativeAmount = 0;
-    const sortedTransactions = [...projectTransactions].sort((a: any,b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    return sortedTransactions.map((t: any) => {
+    const sortedTransactions = [...projectTransactions].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return sortedTransactions.map((t) => {
       cumulativeAmount += t.amount;
       return {
         date: new Date(t.date).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' }),
@@ -110,15 +106,9 @@ export default function FinancialIntelligencePage() {
 
   const onSubmit: SubmitHandler<TransactionForm> = async (data) => {
     if (!selectedProjectId) return;
-    const newTransaction = {
+    await addTransaction(selectedProjectId, {
         ...data,
-        id: new Date().toISOString(),
         date: data.date.toISOString(),
-    };
-    const currentTransactions = transactions[selectedProjectId] || [];
-    setTransactions({
-        ...transactions,
-        [selectedProjectId]: [...currentTransactions, newTransaction]
     });
     toast({
         title: "تمت الإضافة بنجاح",
@@ -341,7 +331,13 @@ export default function FinancialIntelligencePage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {projectTransactions.length > 0 ? projectTransactions.map((t: any) => (
+                    {financialsLoading ? (
+                        <TableRow>
+                            <TableCell colSpan={4} className="text-center py-10">
+                                <Loader className="mx-auto h-8 w-8 animate-spin" />
+                            </TableCell>
+                        </TableRow>
+                    ) : projectTransactions.length > 0 ? projectTransactions.map((t: any) => (
                       <TableRow key={t.id}>
                         <TableCell>{new Date(t.date).toLocaleDateString('ar-SA')}</TableCell>
                         <TableCell className="font-medium">{t.description}</TableCell>

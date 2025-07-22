@@ -1,24 +1,22 @@
 
 "use client"
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, MoreVertical } from "lucide-react";
+import { PlusCircle, MoreVertical, Loader } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
-// MOCK DATA
-const MOCK_QUOTES = [
-    {id: "QT-2024-1001", projectId: "proj_villa_1", projectName: "بناء فيلا فاخرة في حي الياسمين", clientName: "شركة العميل الأولى", date: "2024-07-20", totalAmount: 3450000, status: "مقبول"},
-    {id: "QT-2024-1002", projectId: "proj_event_2", projectName: "تجهيز فعالية إطلاق سيارة", clientName: "شركة السيارات العالمية", date: "2024-07-18", totalAmount: 850000, status: "تم الإرسال"},
-]
-
+import { useProcurementStore } from "@/hooks/use-procurement-store";
 
 export default function QuotesPage() {
-    const [quotes, setQuotes] = useState(MOCK_QUOTES);
+    const { quotes, isLoading, fetchQuotes } = useProcurementStore();
+
+    useEffect(() => {
+        fetchQuotes();
+    }, [fetchQuotes]);
     
     const getStatusVariant = (status: string) => {
         switch (status) {
@@ -62,7 +60,13 @@ export default function QuotesPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {quotes.length > 0 ? quotes.map((quote) => (
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={7} className="text-center py-10">
+                                    <Loader className="mx-auto h-8 w-8 animate-spin" />
+                                </TableCell>
+                            </TableRow>
+                        ) : quotes.length > 0 ? quotes.map((quote) => (
                         <TableRow key={quote.id}>
                             <TableCell className="font-mono">{quote.id}</TableCell>
                             <TableCell className="font-medium">{quote.projectName}</TableCell>
@@ -101,5 +105,3 @@ export default function QuotesPage() {
     </>
   );
 }
-
-    

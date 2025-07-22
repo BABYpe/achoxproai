@@ -1,11 +1,45 @@
-
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read/write access to authenticated users
+    
+    // Projects can be read by any authenticated user, but only created, updated, or deleted by the owner.
+    match /projects/{projectId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.uid == resource.data.ownerId;
+    }
+
+    // Suppliers can be read by any authenticated user.
+    // Only authenticated users can add new suppliers.
+    match /suppliers/{supplierId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      // Define update/delete rules later if needed, e.g., for admins
+      allow update, delete: if false; 
+    }
+
+    // Transactions are linked to a project. For now, allow any authenticated user to add/read.
+    // In a real app, you'd restrict this to project members.
+    match /transactions/{transactionId} {
+      allow read, create: if request.auth != null;
+      allow update, delete: if false; // More specific rules needed for updates/deletes
+    }
+
+    // Purchase orders can be read and created by any authenticated user.
+    match /purchaseOrders/{poId} {
+      allow read, create: if request.auth != null;
+      allow update, delete: if false;
+    }
+
+    // Quotes can be read and created by any authenticated user.
+    match /quotes/{quoteId} {
+      allow read, create: if request.auth != null;
+      allow update, delete: if false;
+    }
+
+    // Fallback rule for any other collection - deny all access by default for security.
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if false;
     }
   }
 }

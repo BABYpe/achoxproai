@@ -1,3 +1,4 @@
+
 'use client';
 
 import { I18nextProvider } from 'react-i18next';
@@ -11,14 +12,15 @@ export default function ClientLayout({
 }) {
 
   useEffect(() => {
-    // This handler now only needs to update the dir attribute if language changes dynamically
+    // This handler now updates both dir and lang attributes for full compliance
     const handleLanguageChange = (lng: string) => {
+      document.documentElement.lang = lng;
       document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
     };
 
     i18n.on('languageChanged', handleLanguageChange);
     
-    // Set initial direction based on the default language
+    // Set initial direction and lang based on the default language
     handleLanguageChange(i18n.language);
 
     return () => {

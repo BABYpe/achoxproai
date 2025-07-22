@@ -5,3 +5,32 @@ runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
+
+# Environment variables are secrets that should be stored in a secret manager.
+# You can create a secret in Google Cloud Secret Manager, and grant App Hosting's
+# service account access to it.
+#
+# For this project, a GEMINI_API_KEY is required to use Google's Generative
+# AI services.
+#
+# You can create a secret by running the following command in your terminal:
+#
+#   echo -n "YOUR_API_KEY" | gcloud secrets create gemini-api-key --data-file=-
+#
+# and grant the App Hosting service account access to it:
+#
+#   gcloud secrets add-iam-policy-binding gemini-api-key \
+#     --member="serviceAccount:service-PROJECT_NUMBER@gcp-sa-apphosting.iam.gserviceaccount.com" \
+#     --role="roles/secretmanager.secretAccessor"
+#
+# Then, uncomment the following lines:
+#
+# env:
+#   - variable: GEMINI_API_KEY
+#     secret: gemini-api-key
+
+# For prototyping, you can set the key directly here.
+# IMPORTANT: Do not check API keys into source control in a real project.
+env:
+  - variable: GEMINI_API_KEY
+    value: "AIzaSyA4ZTlKwUmqXPpXFXcACBtzBHhyVaR9-gw"

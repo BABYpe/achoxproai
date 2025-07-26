@@ -85,9 +85,9 @@ export default function RiskAnalysisPage() {
 
             const result = await analyzeRisks({
                 project: {
-                    title: selectedProject.name,
+                    title: selectedProject.title,
                     description: selectedProject.description,
-                    budget: selectedProject.estimatedBudget || 0,
+                    budget: selectedProject.budget || 0,
                     currency: selectedProject.currency || 'SAR',
                     durationInDays: isNaN(durationInDays) ? 90 : durationInDays,
                 },
@@ -114,7 +114,7 @@ export default function RiskAnalysisPage() {
                     <Select onValueChange={v => { setSelectedProjectId(v); setAnalysisResult(null); }} value={selectedProjectId || ''}>
                         <SelectTrigger><SelectValue placeholder="اختر مشروعاً لتحليله" /></SelectTrigger>
                         <SelectContent>
-                            {projects.map(p => <SelectItem key={p.id} value={p.id!}>{p.name}</SelectItem>)}
+                            {projects.map(p => <SelectItem key={p.id} value={p.id!}>{p.title}</SelectItem>)}
                         </SelectContent>
                     </Select>
                 </div>

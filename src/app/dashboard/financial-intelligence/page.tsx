@@ -78,12 +78,13 @@ export default function FinancialIntelligencePage() {
 
   const stats = useMemo(() => {
     const totalSpent = projectTransactions.reduce((sum, t) => sum + t.amount, 0);
-    const budget = selectedProject?.estimatedBudget || 0;
+    const budget = selectedProject?.budget || 0;
     const remaining = budget - totalSpent;
     return { totalSpent, remaining, budget };
   }, [projectTransactions, selectedProject]);
   
   const categoryData = useMemo(() => {
+    if (projectTransactions.length === 0) return [];
     const categoryMap = projectTransactions.reduce((acc, t) => {
         acc[t.category] = (acc[t.category] || 0) + t.amount;
         return acc;
@@ -93,16 +94,26 @@ export default function FinancialIntelligencePage() {
   }, [projectTransactions]);
 
   const spendingOverTimeData = useMemo(() => {
+    if (projectTransactions.length === 0) return [];
     let cumulativeAmount = 0;
     const sortedTransactions = [...projectTransactions].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    return sortedTransactions.map((t) => {
+    const dataWithCumulative = sortedTransactions.map((t) => {
       cumulativeAmount += t.amount;
       return {
         date: new Date(t.date).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' }),
         spent: cumulativeAmount
       };
     });
-  }, [projectTransactions]);
+    // Add a point for the total budget to show the ceiling
+    if (selectedProject?.budget) {
+        const lastDate = new Date(sortedTransactions[sortedTransactions.length - 1].date);
+        dataWithCumulative.push({
+            date: new Date(selectedProject.endDate || lastDate).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' }),
+            spent: selectedProject.budget
+        })
+    }
+    return dataWithCumulative;
+  }, [projectTransactions, selectedProject]);
 
   const onSubmit: SubmitHandler<TransactionForm> = async (data) => {
     if (!selectedProjectId) return;
@@ -135,10 +146,10 @@ export default function FinancialIntelligencePage() {
     try {
         const result = await analyzeFinancials({
             project: {
-                title: selectedProject.name,
+                title: selectedProject.title,
                 status: selectedProject.status,
                 progress: selectedProject.progress || 0,
-                budget: selectedProject.estimatedBudget || 0,
+                budget: selectedProject.budget || 0,
                 currency: selectedProject.currency || 'SAR'
             },
             transactions: projectTransactions.map(t => ({...t, amount: Number(t.amount), date: new Date(t.date).toISOString() })),
@@ -170,7 +181,7 @@ export default function FinancialIntelligencePage() {
                 </SelectTrigger>
                 <SelectContent>
                   {projects.map(p => (
-                    <SelectItem key={p.id} value={p.id!}>{p.name}</SelectItem>
+                    <SelectItem key={p.id} value={p.id!}>{p.title}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -278,6 +289,7 @@ export default function FinancialIntelligencePage() {
                         <CardDescription>تتبع معدل الصرف مقابل الميزانية</CardDescription>
                     </CardHeader>
                     <CardContent>
+                        {projectTransactions.length > 0 ? (
                          <ChartContainer config={{}} className="h-[300px] w-full">
                            <ResponsiveContainer>
                              <RechartsAreaChart data={spendingOverTimeData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
@@ -289,6 +301,11 @@ export default function FinancialIntelligencePage() {
                               </RechartsAreaChart>
                            </ResponsiveContainer>
                         </ChartContainer>
+                        ) : (
+                             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                                <p>لا توجد بيانات لعرض المخطط.</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
                  <Card className="shadow-xl rounded-2xl lg:col-span-2">
@@ -297,19 +314,25 @@ export default function FinancialIntelligencePage() {
                         <CardDescription>نظرة على بنود الصرف الرئيسية</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={{}} className="h-[300px] w-full">
-                           <ResponsiveContainer>
-                             <PieChart>
-                                <Tooltip content={<ChartTooltipContent />} />
-                                <Legend />
-                                <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
-                                    {categoryData.map((entry: any, index: number) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                            </PieChart>
-                           </ResponsiveContainer>
-                        </ChartContainer>
+                        {projectTransactions.length > 0 ? (
+                            <ChartContainer config={{}} className="h-[300px] w-full">
+                            <ResponsiveContainer>
+                                <PieChart>
+                                    <Tooltip content={<ChartTooltipContent />} />
+                                    <Legend />
+                                    <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
+                                        {categoryData!.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </ResponsiveContainer>
+                            </ChartContainer>
+                        ) : (
+                            <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                                <p>لا توجد بيانات لعرض المخطط.</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
@@ -318,7 +341,7 @@ export default function FinancialIntelligencePage() {
             <Card className="shadow-xl rounded-2xl">
               <CardHeader>
                 <CardTitle>سجل المعاملات المالية</CardTitle>
-                <CardDescription>جميع المصروفات المسجلة لمشروع: {selectedProject.name}</CardDescription>
+                <CardDescription>جميع المصروفات المسجلة لمشروع: {selectedProject.title}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>

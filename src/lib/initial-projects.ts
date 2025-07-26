@@ -714,7 +714,7 @@ export const initialProjects: Omit<Project, 'id' | 'ownerId'>[] = [
     name: "بناء مدرسة دولية",
     status: "متأخر",
     createdAt: "2022-03-01T10:00:00Z",
-    updatedAt: "2022-03-01T10:00:00Z",
+    updatedAt: "2024-08-31T10:00:00Z",
     variant: "destructive",
     location: "القاهرة، مصر",
     imageUrl: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=600",
@@ -1089,8 +1089,8 @@ export const initialProjects: Omit<Project, 'id' | 'ownerId'>[] = [
   {
     name: "تأهيل مبنى وزارة الخارجية",
     status: "مكتمل",
-    createdAt: "2024-01-05T10:00:00Z",
-    updatedAt: "2024-01-05T10:00:00Z",
+    createdAt: "2022-01-05T10:00:00Z",
+    updatedAt: "2023-12-25T10:00:00Z",
     variant: "secondary",
     location: "الرياض، المملكة العربية السعودية",
     imageUrl: "https://images.unsplash.com/photo-1629898517226-857500115753?q=80&w=600",
@@ -1112,6 +1112,3 @@ export const initialProjects: Omit<Project, 'id' | 'ownerId'>[] = [
     riskAnalysis: sampleRiskAnalysis
   }
 ]
-
-
-

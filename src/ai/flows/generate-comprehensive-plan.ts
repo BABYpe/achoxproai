@@ -64,7 +64,7 @@ const comprehensivePlanFlow = ai.defineFlow(
             projectSize = areaMatch[0];
         }
     }
-
+    const currentDate = format(new Date(), 'yyyy-MM-dd');
     // Step 3: Use the gathered information to estimate project cost and create a plan.
     const costEstimation = await estimateProjectCost({
         location: input.location,
@@ -72,13 +72,13 @@ const comprehensivePlanFlow = ai.defineFlow(
         type: projectAnalysis.projectType,
         quality: projectAnalysis.quality,
         scopeOfWork: finalScopeOfWork,
-        currentDate: format(new Date(), 'yyyy-MM-dd'),
+        currentDate: currentDate,
     });
     
     // Step 4: Proactively analyze risks based on the generated plan.
     const totalBudget = parseFloat(costEstimation.totalEstimatedCost.replace(/[^0-9.]/g, ''));
     const lastTask = costEstimation.ganttChartData.slice(-1)[0];
-    const durationInDays = lastTask ? differenceInDays(new Date(lastTask.end), new Date()) : 90;
+    const durationInDays = lastTask ? differenceInDays(new Date(lastTask.end), new Date(currentDate)) : 90;
     
     const riskAnalysis = await analyzeRisks({
         project: {

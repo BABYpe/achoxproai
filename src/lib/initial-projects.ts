@@ -610,7 +610,7 @@ export const initialProjects: Omit<Project, 'id' | 'ownerId'>[] = [
     riskAnalysis: sampleRiskAnalysis
   },
   // Add 30 more projects to reach the goal of over 50 projects
-  {
+    {
     name: "بناء مركز بيانات (Data Center)",
     status: "قيد التنفيذ",
     createdAt: "2023-05-10T10:00:00Z",
@@ -1112,4 +1112,6 @@ export const initialProjects: Omit<Project, 'id' | 'ownerId'>[] = [
     riskAnalysis: sampleRiskAnalysis
   }
 ]
+
+
 

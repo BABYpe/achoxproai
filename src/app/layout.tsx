@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="ar" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
          <link rel="sitemap" href="/sitemap.xml" />
@@ -36,7 +36,7 @@ export default function RootLayout({
       <body className={`${cairo.variable} font-body antialiased bg-background`}>
         <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
         >

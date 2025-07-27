@@ -67,14 +67,15 @@ const nextConfig = {
         hostname: 'raw.githubusercontent.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
-  ...(process.env.NODE_ENV === 'development' && {
-    experimental: {
-      allowedDevOrigins: ["*.cloudworkstations.dev"],
-    },
-  }),
 };
 
 module.exports = nextConfig;

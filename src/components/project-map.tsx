@@ -45,3 +45,5 @@ export default function ProjectMap({ projects }: ProjectMapProps) {
         </APIProvider>
     );
 }
+
+    

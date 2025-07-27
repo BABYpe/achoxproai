@@ -4,10 +4,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Building, DollarSign, Wand2, Loader } from "lucide-react";
+import { Building, DollarSign, Wand2 } from "lucide-react";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TemplatesPage() {
     const { projects, isLoading } = useProjectStore();
@@ -18,11 +19,10 @@ export default function TemplatesPage() {
             template: JSON.stringify({
                 projectName: `${template.title} (نسخة)`,
                 location: template.location,
-                projectDescription: template.scopeOfWork || `مشروع جديد مبني على قالب: ${template.title}`,
-                // Pass all relevant data
-                projectType: template.projectType,
-                quality: template.quality,
-                scopeOfWork: template.scopeOfWork,
+                projectDescription: template.description || `مشروع جديد مبني على قالب: ${template.title}`,
+                // Pass the full plan as a template if it exists
+                ...(template.costEstimation && { costEstimation: template.costEstimation }),
+                ...(template.riskAnalysis && { riskAnalysis: template.riskAnalysis }),
             }),
         }).toString();
 
@@ -33,33 +33,33 @@ export default function TemplatesPage() {
         <div className="flex flex-col gap-8">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold">مكتبة قوالب المشاريع</h1>
-                <p className="text-muted-foreground">ابدأ مشروعك الجديد بنقرة زر.</p>
+                <p className="text-muted-foreground">ابدأ مشروعك الجديد بخطة متكاملة بنقرة زر.</p>
             </div>
 
             <Card className="shadow-xl rounded-2xl">
                 <CardHeader>
                     <CardTitle>اختر مشروعًا سابقًا لاستخدامه كقالب</CardTitle>
                     <CardDescription>
-                        استخدم أحد مشاريعك المكتملة أو الحالية كنقطة انطلاق قوية لمشروعك التالي.
+                        استخدم أحد مشاريعك المكتملة أو الحالية كنقطة انطلاق قوية لمشروعك التالي. سيتم نسخ الخطة الكاملة للمشروع بما في ذلك التكاليف والجدول الزمني والمخاطر.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {isLoading ? (
                         Array.from({ length: 3 }).map((_, i) => (
                              <Card key={i} className="overflow-hidden shadow-lg flex flex-col">
-                                 <div className="bg-muted h-48 w-full animate-pulse"></div>
-                                 <CardHeader><div className="h-6 w-3/4 bg-muted animate-pulse rounded-md"></div></CardHeader>
+                                 <Skeleton className="bg-muted h-48 w-full" />
+                                 <CardHeader><Skeleton className="h-6 w-3/4 bg-muted rounded-md" /></CardHeader>
                                  <CardContent className="flex-grow space-y-2">
-                                     <div className="h-5 w-1/2 bg-muted animate-pulse rounded-md"></div>
-                                     <div className="h-5 w-2/3 bg-muted animate-pulse rounded-md"></div>
+                                     <Skeleton className="h-5 w-1/2 bg-muted rounded-md" />
+                                     <Skeleton className="h-5 w-2/3 bg-muted rounded-md" />
                                  </CardContent>
-                                 <CardFooter><div className="h-10 w-full bg-muted animate-pulse rounded-md"></div></CardFooter>
+                                 <CardFooter><Skeleton className="h-10 w-full bg-muted rounded-md" /></CardFooter>
                             </Card>
                         ))
                     ) : (
                         projects.map((template) => (
                             <Card key={template.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
-                                <Image src={template.imageUrl} alt={template.title} width={400} height={200} className="w-full h-48 object-cover" data-ai-hint={template.imageHint} />
+                                <Image src={template.imageUrl!} alt={template.title} width={400} height={200} className="w-full h-48 object-cover" data-ai-hint={template.imageHint} />
                                 <CardHeader>
                                     <CardTitle>{template.title}</CardTitle>
                                 </CardHeader>
@@ -70,7 +70,7 @@ export default function TemplatesPage() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <DollarSign className="h-4 w-4 text-primary" />
-                                        <span>تقدير الميزانية: {template.budget.toLocaleString('ar-SA')} {template.currency}</span>
+                                        <span>تقدير الميزانية: {template.budget?.toLocaleString('ar-SA')} {template.currency}</span>
                                     </div>
                                 </CardContent>
                                 <CardFooter>

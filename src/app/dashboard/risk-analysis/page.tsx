@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader, Wand2, ShieldAlert, ShieldCheck, ShieldQuestion, AlertTriangle } from 'lucide-react';
+import { Loader, Wand2, ShieldAlert, ShieldCheck, ShieldQuestion, AlertTriangle, Briefcase, FileText, PiggyBank, Sprout } from 'lucide-react';
 import { analyzeRisks, type AnalyzeRisksOutput } from '@/ai/flows/analyze-risks';
 import { Badge } from '@/components/ui/badge';
 import { differenceInDays } from 'date-fns';
@@ -35,11 +35,11 @@ const getProbabilityVariant = (probability: Risk['probability']) => {
 const getCategoryIcon = (category: Risk['category']) => {
     const iconClass = "w-5 h-5 mr-2";
     switch (category) {
-        case 'Operational': return <ShieldAlert className={iconClass} />;
-        case 'Financial': return <AlertTriangle className={iconClass} />;
-        case 'Technical': return <ShieldAlert className={iconClass} />;
-        case 'Legal': return <ShieldAlert className={iconClass} />;
-        case 'External': return <ShieldAlert className={iconClass} />;
+        case 'Operational': return <Briefcase className={iconClass} />;
+        case 'Financial': return <PiggyBank className={iconClass} />;
+        case 'Technical': return <Sprout className={iconClass} />;
+        case 'Legal': return <FileText className={iconClass} />;
+        case 'External': return <AlertTriangle className={iconClass} />;
         default: return <ShieldQuestion className={iconClass} />;
     }
 }
@@ -67,7 +67,7 @@ export default function RiskAnalysisPage() {
             return;
         }
         
-         if (!selectedProject.scopeOfWork) {
+         if (!selectedProject.description) {
              toast({ 
                 title: "بيانات غير كافية", 
                 description: "هذا المشروع لا يحتوي على وصف كافٍ لنطاق العمل لتحليل المخاطر. يرجى تحديث المشروع من صفحة تفاصيله.", 
@@ -81,15 +81,15 @@ export default function RiskAnalysisPage() {
         setAnalysisResult(null);
 
         try {
-            const durationInDays = differenceInDays(new Date(selectedProject.endDate), new Date(selectedProject.createdAt));
+            const durationInDays = differenceInDays(new Date(selectedProject.endDate!), new Date(selectedProject.createdAt!));
 
             const result = await analyzeRisks({
                 project: {
                     title: selectedProject.title,
-                    description: selectedProject.scopeOfWork,
-                    budget: selectedProject.budget,
-                    currency: selectedProject.currency,
-                    durationInDays,
+                    description: selectedProject.description,
+                    budget: selectedProject.budget || 0,
+                    currency: selectedProject.currency || 'SAR',
+                    durationInDays: isNaN(durationInDays) ? 90 : durationInDays,
                 },
             });
             setAnalysisResult(result);
@@ -188,4 +188,3 @@ export default function RiskAnalysisPage() {
         </div>
     );
 }
-

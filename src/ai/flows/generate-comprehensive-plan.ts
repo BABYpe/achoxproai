@@ -11,12 +11,13 @@
  */
 
 import {ai} from '@/ai/genkit';
-import { format } from 'date-fns';
+import { format, differenceInDays } from 'date-fns';
 
 // Import the flows this orchestrator will use
 import { analyzeProjectDescription } from './analyze-project-description';
 import { analyzeBlueprint } from './analyze-blueprint';
 import { estimateProjectCost } from './estimate-project-cost';
+import { analyzeRisks } from './analyze-risks';
 import {
     GenerateComprehensivePlanInputSchema,
     GenerateComprehensivePlanOutputSchema,
@@ -49,7 +50,6 @@ const comprehensivePlanFlow = ai.defineFlow(
     if (input.blueprintDataUri) {
         blueprintAnalysis = await analyzeBlueprint({ blueprintDataUri: input.blueprintDataUri });
         
-        // The scope of work from the blueprint is more accurate, so we use it.
         finalScopeOfWork = `
         **User Description:** ${input.projectDescription}
         
@@ -59,13 +59,12 @@ const comprehensivePlanFlow = ai.defineFlow(
         ${blueprintAnalysis.requiredItems.map(item => `- ${item.item}: ${item.reason}`).join('\n')}
         `;
         
-        // Extract area from blueprint analysis to use as project size
         const areaMatch = blueprintAnalysis.quantities.area.match(/[\d.]+/);
         if (areaMatch) {
             projectSize = areaMatch[0];
         }
     }
-
+    const currentDate = format(new Date(), 'yyyy-MM-dd');
     // Step 3: Use the gathered information to estimate project cost and create a plan.
     const costEstimation = await estimateProjectCost({
         location: input.location,
@@ -73,18 +72,33 @@ const comprehensivePlanFlow = ai.defineFlow(
         type: projectAnalysis.projectType,
         quality: projectAnalysis.quality,
         scopeOfWork: finalScopeOfWork,
-        currentDate: format(new Date(), 'yyyy-MM-dd'),
+        currentDate: currentDate,
+    });
+    
+    // Step 4: Proactively analyze risks based on the generated plan.
+    const totalBudget = parseFloat(costEstimation.totalEstimatedCost.replace(/[^0-9.]/g, ''));
+    const lastTask = costEstimation.ganttChartData.slice(-1)[0];
+    const durationInDays = lastTask ? differenceInDays(new Date(lastTask.end), new Date(currentDate)) : 90;
+    
+    const riskAnalysis = await analyzeRisks({
+        project: {
+            title: input.projectName,
+            description: finalScopeOfWork,
+            budget: totalBudget,
+            currency: costEstimation.totalEstimatedCost.replace(/[0-9,.\s]/g, ''),
+            durationInDays,
+        }
     });
 
-    // Step 4: Assemble and return the final comprehensive plan.
+
+    // Step 5: Assemble and return the final comprehensive plan.
     return {
         projectName: input.projectName,
         location: input.location,
         projectAnalysis,
         blueprintAnalysis,
         costEstimation,
+        riskAnalysis,
     };
   }
 );
-
-    

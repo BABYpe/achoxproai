@@ -1,9 +1,11 @@
+
 // src/ai/flows/generate-comprehensive-plan.types.ts
 import {z} from 'zod';
 
 import { AnalyzeProjectDescriptionOutputSchema } from './analyze-project-description.types';
 import { AnalyzeBlueprintOutputSchema } from './analyze-blueprint.types';
 import { EstimateProjectCostOutputSchema } from './estimate-project-cost.types';
+import { AnalyzeRisksOutputSchema } from './analyze-risks.types';
 
 
 export const GenerateComprehensivePlanInputSchema = z.object({
@@ -22,7 +24,6 @@ export const GenerateComprehensivePlanOutputSchema = z.object({
     projectAnalysis: AnalyzeProjectDescriptionOutputSchema,
     blueprintAnalysis: AnalyzeBlueprintOutputSchema.optional(),
     costEstimation: EstimateProjectCostOutputSchema,
+    riskAnalysis: AnalyzeRisksOutputSchema,
 });
 export type GenerateComprehensivePlanOutput = z.infer<typeof GenerateComprehensivePlanOutputSchema>;
-
-    

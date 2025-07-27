@@ -1,12 +1,12 @@
 
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useProjectStore, type Project } from "@/hooks/use-project-store";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Building, DollarSign, User, Calendar, Loader, Edit, Trash2, FileText, Paperclip, MessageSquarePlus, Milestone, Handshake, Briefcase, CheckCircle } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Building, DollarSign, User, Calendar, Loader, Edit, Trash2, FileText, Paperclip, MessageSquare, Milestone, Handshake, Briefcase, CheckCircle, Share2, Mail, Bot, Video, CalendarPlus } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const mockUpdates = [
     { date: "2024-07-20", author: "علي محمد", text: "تم الانتهاء من صب خرسانة الدور الأول. واجهنا تأخيرًا بسيطًا بسبب الطقس ولكن تم تعويضه. سنبدأ في أعمال المباني الأسبوع القادم." },
@@ -81,13 +84,22 @@ export default function ProjectDetailsPage() {
         const query = new URLSearchParams({
             template: JSON.stringify({
                 id: project.id,
-                projectName: project.title,
+                projectName: project.name,
                 location: project.location,
-                projectDescription: project.scopeOfWork || `مشروع جديد مبني على قالب: ${project.title}`,
+                projectDescription: project.description || `مشروع جديد مبني على قالب: ${project.name}`,
             }),
         }).toString();
         router.push(`/dashboard/projects/new?${query}`);
     }
+
+    const ganttChartData = useMemo(() => {
+        if (!project || !project.ganttChartDataJson) return [];
+        try {
+            return JSON.parse(project.ganttChartDataJson);
+        } catch (e) {
+            return [];
+        }
+    }, [project]);
 
     if (isLoading) {
         return (
@@ -111,13 +123,14 @@ export default function ProjectDetailsPage() {
     }
     
     const mockTeam = [
-        { name: project.manager, role: "مدير المشروع" },
-        { name: "سارة عبدالله", role: "مهندس موقع" },
-        { name: "أحمد خان", role: "مشرف عمال" },
+        { name: project.manager || "علي محمد", role: "مدير المشروع", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+        { name: "سارة عبدالله", role: "مهندس موقع", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+        { name: "أحمد خان", role: "مشرف عمال", avatar: "https://randomuser.me/api/portraits/men/46.jpg" },
+        { name: "روبوت التوثيق", role: "مراقب مستندات آلي", avatar: null, isBot: true },
     ]
 
     const today = new Date();
-    const roadmap = project.ganttChartData ? project.ganttChartData.map(task => {
+    const roadmap = ganttChartData ? ganttChartData.map((task: any) => {
         const endDate = new Date(task.end);
         const startDate = new Date(task.start);
         let status: 'completed' | 'in-progress' | 'planned' = 'planned';
@@ -173,7 +186,7 @@ export default function ProjectDetailsPage() {
                         <AlertDialogHeader>
                         <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
                         <AlertDialogDescription>
-                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.title}" نهائيًا من قاعدة البيانات.
+                            هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف مشروع "{project.name}" نهائيًا من قاعدة البيانات.
                         </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -186,9 +199,9 @@ export default function ProjectDetailsPage() {
 
             <Card className="shadow-xl rounded-2xl w-full">
                 <CardHeader className="relative h-48 md:h-64 rounded-t-2xl overflow-hidden p-0">
-                   <Image src={project.imageUrl} alt={project.title} fill style={{objectFit: 'cover'}} data-ai-hint={project.imageHint}/>
+                   <Image src={project.imageUrl || "https://placehold.co/1200x400.png"} alt={project.name} fill style={{objectFit: 'cover'}} data-ai-hint={project.imageHint}/>
                    <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
-                       <CardTitle className="text-3xl font-bold text-white drop-shadow-lg">{project.title}</CardTitle>
+                       <CardTitle className="text-3xl font-bold text-white drop-shadow-lg">{project.name}</CardTitle>
                        <div className="flex items-center gap-2 mt-2">
                          <Badge variant={project.variant as any}>{project.status}</Badge>
                          <span className="text-sm text-gray-200 flex items-center gap-1"><Building className="h-4 w-4"/> {project.location}</span>
@@ -198,24 +211,24 @@ export default function ProjectDetailsPage() {
                 <CardContent className="p-6">
                     <div className="mb-6">
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm text-muted-foreground">تقدم الإنجاز</span>
-                            <span className="text-lg font-bold text-primary">{project.progress}%</span>
+                            <span className="text-sm text-muted-foreground">تقدم الإنجاز (متبقي {100 - (project.progress || 0)}%)</span>
+                            <span className="text-lg font-bold text-primary">{project.progress || 0}%</span>
                         </div>
-                        <Progress value={project.progress} className="h-3" />
+                        <Progress value={project.progress || 0} className="h-3" />
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
                         <div className="p-4 bg-secondary/50 rounded-lg">
                             <h4 className="text-sm font-semibold text-muted-foreground">الميزانية</h4>
-                            <p className="text-xl font-bold flex items-center justify-center gap-1"><DollarSign className="h-5 w-5 text-green-500" /> {project.budget.toLocaleString()} {project.currency}</p>
+                            <p className="text-xl font-bold flex items-center justify-center gap-1"><DollarSign className="h-5 w-5 text-green-500" /> {project.estimatedBudget?.toLocaleString()} {project.currency}</p>
                         </div>
                         <div className="p-4 bg-secondary/50 rounded-lg">
                             <h4 className="text-sm font-semibold text-muted-foreground">تاريخ الانتهاء</h4>
-                            <p className="text-xl font-bold flex items-center justify-center gap-1"><Calendar className="h-5 w-5 text-blue-500" /> {project.endDate}</p>
+                            <p className="text-xl font-bold flex items-center justify-center gap-1"><Calendar className="h-5 w-5 text-primary" /> {project.endDate ? new Date(project.endDate).toLocaleDateString('ar-SA') : 'غير محدد'}</p>
                         </div>
                          <div className="p-4 bg-secondary/50 rounded-lg">
                             <h4 className="text-sm font-semibold text-muted-foreground">مدير المشروع</h4>
-                            <p className="text-xl font-bold flex items-center justify-center gap-1"><User className="h-5 w-5 text-gray-500" /> {project.manager}</p>
+                            <p className="text-xl font-bold flex items-center justify-center gap-1"><User className="h-5 w-5 text-gray-500" /> {project.manager || 'غير محدد'}</p>
                         </div>
                         <div className="p-4 bg-secondary/50 rounded-lg">
                             <h4 className="text-sm font-semibold text-muted-foreground">الحالة</h4>
@@ -236,7 +249,7 @@ export default function ProjectDetailsPage() {
                                 <div className="relative pl-6">
                                     <div className="absolute right-6 top-0 bottom-0 w-0.5 bg-border"></div>
                                     <div className="space-y-8">
-                                        {roadmap.map((item, index) => {
+                                        {roadmap.map((item: any, index: number) => {
                                             const Icon = item.icon;
                                             return (
                                             <div key={index} className="relative flex items-start gap-4">
@@ -266,18 +279,53 @@ export default function ProjectDetailsPage() {
                         </CardContent>
                     </Card>
 
-                     <Card className="shadow-xl rounded-2xl">
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>آخر التحديثات والملاحظات</CardTitle>
-                            <Button variant="outline" size="sm"><MessageSquarePlus className="ml-2 h-4 w-4"/> إضافة تحديث</Button>
+                    <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>مراسلات المشروع (محاكاة)</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            {mockUpdates.map((update, index) => (
-                                <div key={index} className="p-3 bg-secondary/50 rounded-lg">
-                                    <p className="text-sm">{update.text}</p>
-                                    <p className="text-xs text-muted-foreground mt-2 text-left">{update.author} - {update.date}</p>
+                        <CardContent>
+                            <div className="space-y-4">
+                                <div className="p-3 bg-secondary/50 rounded-lg">
+                                    <div className="flex items-start gap-3">
+                                        <Avatar className="w-10 h-10 border">
+                                            <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
+                                            <AvatarFallback>عم</AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold">علي محمد <span className="text-xs text-muted-foreground font-normal">- 2024-07-20</span></p>
+                                            <p className="text-sm mt-1">تم الانتهاء من صب خرسانة الدور الأول. واجهنا تأخيرًا بسيطًا بسبب الطقس ولكن تم تعويضه. سنبدأ في أعمال المباني الأسبوع القادم.</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            ))}
+                                <div className="p-3 bg-secondary/50 rounded-lg">
+                                    <div className="flex items-start gap-3">
+                                        <Avatar className="w-10 h-10 border">
+                                            <AvatarImage src="https://randomuser.me/api/portraits/women/44.jpg" />
+                                            <AvatarFallback>سع</AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold">سارة عبدالله <span className="text-xs text-muted-foreground font-normal">- 2024-07-18</span></p>
+                                            <p className="text-sm mt-1">تم تحديد خطر محتمل يتعلق بتوريد مواد العزل. تم التواصل مع مورد بديل كخطة احتياطية.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+                                    <div className="flex items-start gap-3">
+                                        <Avatar className="w-10 h-10 border">
+                                            <Bot className="w-6 h-6 text-primary m-auto" />
+                                            <AvatarFallback>DC</AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold">روبوت التوثيق <span className="text-xs text-muted-foreground font-normal">- الآن</span></p>
+                                            <p className="text-sm mt-1">تم توثيق التحديثات أعلاه في سجل المشروع الرسمي. جاري إرسال ملخص أسبوعي إلى الأطراف المعنية.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-4 flex gap-2">
+                                <Textarea placeholder="اكتب تحديثًا جديدًا أو ردًا..." rows={1} />
+                                <Button>إرسال</Button>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
@@ -290,9 +338,10 @@ export default function ProjectDetailsPage() {
                         <CardContent className="space-y-4">
                             {mockTeam.map((member, index) => (
                             <div key={index} className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                                    <User className="h-6 w-6 text-muted-foreground"/>
-                                </div>
+                                <Avatar className="w-10 h-10 border">
+                                    {member.isBot ? <Bot className="w-6 h-6 text-primary m-auto"/> : <AvatarImage src={member.avatar} />}
+                                    <AvatarFallback>{member.name.substring(0,2)}</AvatarFallback>
+                                </Avatar>
                                 <div>
                                     <p className="font-semibold">{member.name}</p>
                                     <p className="text-sm text-muted-foreground">{member.role}</p>
@@ -303,7 +352,19 @@ export default function ProjectDetailsPage() {
                     </Card>
                     <Card className="shadow-xl rounded-2xl">
                         <CardHeader>
-                            <CardTitle>مستندات المشروع</CardTitle>
+                            <CardTitle>التواصل والمشاركة</CardTitle>
+                        </CardHeader>
+                         <CardContent className="space-y-3">
+                            <Button variant="outline" className="w-full justify-start gap-2"><Video className="w-4 h-4"/> بدء اجتماع مرئي</Button>
+                             <Button variant="outline" className="w-full justify-start gap-2"><Mail className="w-4 h-4"/> إرسال تحديث عبر البريد</Button>
+                             <Button variant="outline" className="w-full justify-start gap-2"><svg className="w-4 h-4" role="img" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><title>WhatsApp</title><path d="M12.04 2.004c-5.52 0-9.99 4.47-9.99 9.99 0 1.77.46 3.48 1.28 4.99L2 22.004l5.12-1.34c1.44.75 3.09 1.16 4.81 1.16h.01c5.52 0 9.99-4.47 9.99-9.99s-4.47-9.99-9.99-9.99zM12.04 20.124c-1.58 0-3.12-.42-4.44-1.21l-.32-.19-3.3 1.1.88-3.23-.21-.34c-.87-1.4-1.34-3.04-1.34-4.79 0-4.54 3.69-8.23 8.24-8.23 2.22 0 4.28.87 5.82 2.42s2.41 3.6 2.41 5.82c0 4.54-3.69 8.23-8.23 8.23zm4.52-6.55c-.25-.12-1.48-.73-1.71-.82s-.39-.12-.56.12c-.17.25-.65.82-.79.98s-.28.19-.53.06c-.25-.12-1.06-.39-2.02-1.25-.75-.67-1.25-1.5-1.4-1.75-.15-.25-.02-.38.1-.51.11-.11.25-.28.37-.42s.17-.25.25-.42c.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.42-.14 0-.31-.02-.48-.02s-.43.06-.65.31c-.22.25-.85 1.03-.85 2.5s.87 2.9 1 3.1c.12.2 1.72 2.62 4.15 3.63.59.25 1.05.4 1.41.51.59.19 1.13.16 1.56.1.48-.07 1.48-.6 1.69-1.18s.21-1.09.15-1.18c-.07-.09-.25-.15-.5-.28z"/></svg> المشاركة عبر واتساب</Button>
+                             <Button variant="outline" className="w-full justify-start gap-2"><FileText className="w-4 h-4"/> تصدير تقرير PDF</Button>
+                        </CardContent>
+                    </Card>
+                    
+                    <Card className="shadow-xl rounded-2xl">
+                        <CardHeader>
+                            <CardTitle>المستندات والمخططات</CardTitle>
                         </CardHeader>
                          <CardContent className="space-y-3">
                              {mockFiles.map((file, index) => (
@@ -323,3 +384,4 @@ export default function ProjectDetailsPage() {
         </div>
     );
 }
+

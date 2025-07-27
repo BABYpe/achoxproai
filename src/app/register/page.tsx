@@ -17,10 +17,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Logo } from "@/components/logo";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
+import { Progress } from "@/components/ui/progress";
 
 export default function RegisterPage() {
   const [agreed, setAgreed] = useState(false);
   const { t } = useTranslation();
+  const progressValue = 50;
 
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden">
@@ -37,12 +39,25 @@ export default function RegisterPage() {
           <div className="mx-auto mb-4">
             <Logo className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold">إنشاء حساب جديد في AchoX Pro</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('register.title')}</CardTitle>
           <CardDescription>
             {t('register.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
+           <div className="mb-6 space-y-3">
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="space-y-1">
+                  <div className="mx-auto h-1 w-full rounded-full bg-primary" />
+                  <p className="text-xs font-semibold text-primary">{t('register.step1')}</p>
+                </div>
+                <div className="space-y-1">
+                   <div className="mx-auto h-1 w-full rounded-full bg-muted" />
+                   <p className="text-xs text-muted-foreground">{t('register.step2')}</p>
+                </div>
+              </div>
+              <Progress value={progressValue} id="progress" />
+          </div>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
@@ -85,11 +100,11 @@ export default function RegisterPage() {
                   </Link>
                 </label>
               </div>
-
+              
               <Link href="/dashboard" passHref>
-                  <Button asChild type="submit" className="w-full font-bold text-lg py-6" disabled={!agreed}>
+                <Button asChild type="submit" className="w-full font-bold text-lg py-6" disabled={!agreed}>
                     <a>{t('register.createAccount')}</a>
-                  </Button>
+                </Button>
               </Link>
             </div>
           </form>

@@ -1,18 +1,22 @@
 
 "use client"
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, MoreVertical } from "lucide-react";
+import { PlusCircle, MoreVertical, Loader } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useProcurementStore } from "@/hooks/use-procurement-store";
 
 export default function QuotesPage() {
-    const { quotes } = useProcurementStore();
+    const { quotes, isLoading, fetchQuotes } = useProcurementStore();
+
+    useEffect(() => {
+        fetchQuotes();
+    }, [fetchQuotes]);
     
     const getStatusVariant = (status: string) => {
         switch (status) {
@@ -56,7 +60,13 @@ export default function QuotesPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {quotes.length > 0 ? quotes.map((quote) => (
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={7} className="text-center py-10">
+                                    <Loader className="mx-auto h-8 w-8 animate-spin" />
+                                </TableCell>
+                            </TableRow>
+                        ) : quotes.length > 0 ? quotes.map((quote) => (
                         <TableRow key={quote.id}>
                             <TableCell className="font-mono">{quote.id}</TableCell>
                             <TableCell className="font-medium">{quote.projectName}</TableCell>

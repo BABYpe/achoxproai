@@ -6,7 +6,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useProjectStore } from '@/hooks/use-project-store';
-import { useFinancialStore, Transaction } from '@/hooks/use-financial-store';
+import { useFinancialStore } from '@/hooks/use-financial-store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,7 +21,6 @@ import { PieChart, Pie, Cell, Tooltip, Legend, Area, XAxis, YAxis, CartesianGrid
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { analyzeFinancials, type AnalyzeFinancialsOutput } from '@/ai/flows/analyze-financials';
 
-
 const transactionSchema = z.object({
   description: z.string().min(1, "الوصف مطلوب"),
   amount: z.preprocess(
@@ -34,12 +33,13 @@ const transactionSchema = z.object({
 
 type TransactionForm = z.infer<typeof transactionSchema>;
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#ff4d4d', '#4dff4d'];
+const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
 export default function FinancialIntelligencePage() {
   const { projects, isLoading: projectsLoading } = useProjectStore();
+  const { transactions, fetchTransactions, addTransaction, isLoading: financialsLoading } = useFinancialStore();
+
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const { transactions, addTransaction } = useFinancialStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -60,6 +60,12 @@ export default function FinancialIntelligencePage() {
       setSelectedProjectId(projects[0].id!);
     }
   }, [projectsLoading, projects, selectedProjectId]);
+  
+  useEffect(() => {
+    if (selectedProjectId) {
+        fetchTransactions(selectedProjectId);
+    }
+  }, [selectedProjectId, fetchTransactions]);
 
   const selectedProject = useMemo(() => {
     return projects.find(p => p.id === selectedProjectId);
@@ -67,7 +73,7 @@ export default function FinancialIntelligencePage() {
 
   const projectTransactions = useMemo(() => {
     if (!selectedProjectId) return [];
-    return transactions[selectedProjectId]?.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()) || [];
+    return transactions[selectedProjectId]?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) || [];
   }, [selectedProjectId, transactions]);
 
   const stats = useMemo(() => {
@@ -78,6 +84,7 @@ export default function FinancialIntelligencePage() {
   }, [projectTransactions, selectedProject]);
   
   const categoryData = useMemo(() => {
+    if (projectTransactions.length === 0) return [];
     const categoryMap = projectTransactions.reduce((acc, t) => {
         acc[t.category] = (acc[t.category] || 0) + t.amount;
         return acc;
@@ -87,44 +94,44 @@ export default function FinancialIntelligencePage() {
   }, [projectTransactions]);
 
   const spendingOverTimeData = useMemo(() => {
+    if (projectTransactions.length === 0) return [];
     let cumulativeAmount = 0;
     const sortedTransactions = [...projectTransactions].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    return sortedTransactions.map(t => {
+    const dataWithCumulative = sortedTransactions.map((t) => {
       cumulativeAmount += t.amount;
       return {
         date: new Date(t.date).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' }),
         spent: cumulativeAmount
       };
     });
-  }, [projectTransactions]);
+    // Add a point for the total budget to show the ceiling
+    if (selectedProject?.budget) {
+        const lastDate = new Date(sortedTransactions[sortedTransactions.length - 1].date);
+        dataWithCumulative.push({
+            date: new Date(selectedProject.endDate || lastDate).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' }),
+            spent: selectedProject.budget
+        })
+    }
+    return dataWithCumulative;
+  }, [projectTransactions, selectedProject]);
 
   const onSubmit: SubmitHandler<TransactionForm> = async (data) => {
     if (!selectedProjectId) return;
-    try {
-      const newTransaction: Transaction = {
+    await addTransaction(selectedProjectId, {
         ...data,
-        id: new Date().toISOString(),
         date: data.date.toISOString(),
-      };
-      await addTransaction(selectedProjectId, newTransaction);
-      toast({
+    });
+    toast({
         title: "تمت الإضافة بنجاح",
         description: "تم تسجيل المعاملة المالية الجديدة.",
-      });
-      setIsDialogOpen(false);
-      reset({
-          date: new Date(),
-          description: "",
-          category: "مواد بناء",
-          amount: 0,
-      });
-    } catch (error) {
-      toast({
-        title: "خطأ",
-        description: "فشل حفظ المعاملة. الرجاء المحاولة مرة أخرى.",
-        variant: "destructive",
-      });
-    }
+    });
+    setIsDialogOpen(false);
+    reset({
+        date: new Date(),
+        description: "",
+        category: "مواد بناء",
+        amount: 0,
+    });
   };
 
   const handleAnalyzeFinancials = async () => {
@@ -141,11 +148,11 @@ export default function FinancialIntelligencePage() {
             project: {
                 title: selectedProject.title,
                 status: selectedProject.status,
-                progress: selectedProject.progress,
-                budget: selectedProject.budget,
-                currency: selectedProject.currency
+                progress: selectedProject.progress || 0,
+                budget: selectedProject.budget || 0,
+                currency: selectedProject.currency || 'SAR'
             },
-            transactions: projectTransactions,
+            transactions: projectTransactions.map(t => ({...t, amount: Number(t.amount), date: new Date(t.date).toISOString() })),
         });
         setAnalysisResult(result);
         toast({ title: "نجاح!", description: "اكتمل التحليل المالي." });
@@ -282,6 +289,7 @@ export default function FinancialIntelligencePage() {
                         <CardDescription>تتبع معدل الصرف مقابل الميزانية</CardDescription>
                     </CardHeader>
                     <CardContent>
+                        {projectTransactions.length > 0 ? (
                          <ChartContainer config={{}} className="h-[300px] w-full">
                            <ResponsiveContainer>
                              <RechartsAreaChart data={spendingOverTimeData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
@@ -293,6 +301,11 @@ export default function FinancialIntelligencePage() {
                               </RechartsAreaChart>
                            </ResponsiveContainer>
                         </ChartContainer>
+                        ) : (
+                             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                                <p>لا توجد بيانات لعرض المخطط.</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
                  <Card className="shadow-xl rounded-2xl lg:col-span-2">
@@ -301,19 +314,25 @@ export default function FinancialIntelligencePage() {
                         <CardDescription>نظرة على بنود الصرف الرئيسية</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={{}} className="h-[300px] w-full">
-                           <ResponsiveContainer>
-                             <PieChart>
-                                <Tooltip content={<ChartTooltipContent />} />
-                                <Legend />
-                                <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
-                                    {categoryData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                            </PieChart>
-                           </ResponsiveContainer>
-                        </ChartContainer>
+                        {projectTransactions.length > 0 ? (
+                            <ChartContainer config={{}} className="h-[300px] w-full">
+                            <ResponsiveContainer>
+                                <PieChart>
+                                    <Tooltip content={<ChartTooltipContent />} />
+                                    <Legend />
+                                    <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
+                                        {categoryData!.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </ResponsiveContainer>
+                            </ChartContainer>
+                        ) : (
+                            <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                                <p>لا توجد بيانات لعرض المخطط.</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
@@ -335,7 +354,13 @@ export default function FinancialIntelligencePage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {projectTransactions.length > 0 ? projectTransactions.map((t) => (
+                    {financialsLoading ? (
+                        <TableRow>
+                            <TableCell colSpan={4} className="text-center py-10">
+                                <Loader className="mx-auto h-8 w-8 animate-spin" />
+                            </TableCell>
+                        </TableRow>
+                    ) : projectTransactions.length > 0 ? projectTransactions.map((t: any) => (
                       <TableRow key={t.id}>
                         <TableCell>{new Date(t.date).toLocaleDateString('ar-SA')}</TableCell>
                         <TableCell className="font-medium">{t.description}</TableCell>

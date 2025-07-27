@@ -1,20 +1,19 @@
 
 "use client"
 
-import { useMemo, Suspense } from "react"
+import { useMemo, Suspense, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, Activity, Briefcase, DollarSign, Users, CheckCircle, Loader, TrendingUp, TrendingDown, CalendarCheck, Percent } from "lucide-react"
+import { PlusCircle, Activity, Briefcase, DollarSign, Users, CheckCircle, Loader, TrendingDown, CalendarCheck, Percent } from "lucide-react"
 import Image from "next/image"
-import { AreaChart, Pie, PieChart, ResponsiveContainer, Tooltip, Area, Legend, Cell, XAxis, YAxis, CartesianGrid } from "recharts"
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
+import { AreaChart, PieChart, ResponsiveContainer, Tooltip, Area, Legend, Cell, XAxis, YAxis, CartesianGrid, Pie } from "recharts"
+import { ChartContainer, ChartTooltipContent, ChartLegendContent } from "@/components/ui/chart"
 import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useProjectStore } from "@/hooks/use-project-store"
 import React from "react"
 import dynamic from 'next/dynamic'
-import { useFinancialStore } from "@/hooks/use-financial-store"
 
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
   ssr: false,
@@ -22,25 +21,39 @@ const ProjectMap = dynamic(() => import('@/components/project-map'), {
 });
 
 export default function DashboardPage() {
-  const { projects, isLoading } = useProjectStore();
-  const { transactions } = useFinancialStore();
+  const { projects, isLoading, fetchProjects } = useProjectStore();
+  
+  useEffect(() => {
+    // Initial fetch if projects are not loaded
+    if (projects.length === 0) {
+      fetchProjects();
+    }
+  }, [fetchProjects, projects.length]);
+
 
   const stats = useMemo(() => {
     const totalProjects = projects.length;
-    const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
+    const totalBudget = projects.reduce((sum, p) => sum + (p.estimatedBudget || 0), 0);
     const activeProjects = projects.filter(p => p.status === 'قيد التنفيذ').length;
-    const overdueProjects = projects.filter(p => p.status === 'متأخر').length;
-    const nearCompletion = projects.filter(p => p.progress >= 90 && p.status !== 'مكتمل').length;
-    const averageCompletion = totalProjects > 0 ? projects.reduce((sum, p) => sum + p.progress, 0) / totalProjects : 0;
+    const overdueProjects = projects.filter(p => {
+        try {
+            return new Date(p.endDate!) < new Date() && p.status !== 'مكتمل'
+        } catch {
+            return false;
+        }
+    }).length;
+    const nearCompletion = projects.filter(p => (p.progress || 0) >= 90 && p.status !== 'مكتمل').length;
+    const averageCompletion = totalProjects > 0 ? projects.reduce((sum, p) => sum + (p.progress || 0), 0) / totalProjects : 0;
     
-    // Calculate total spending from the financial store
-    const totalSpent = Object.values(transactions).flat().reduce((sum, t) => sum + t.amount, 0);
+    // In a real app, `totalSpent` would be calculated from a separate transactions collection.
+    const totalSpent = projects.reduce((sum, p) => sum + (p.actualBudget || 0), 0);
+
 
     return { totalProjects, totalBudget, activeProjects, overdueProjects, averageCompletion, totalSpent, nearCompletion };
-  }, [projects, transactions]);
+  }, [projects]);
 
  const budgetChartData = useMemo(() => {
-    if (stats.totalBudget === 0) return [];
+    if (stats.totalBudget === 0 && stats.totalSpent === 0) return [{ name: 'لا توجد بيانات', value: 1, fill: 'hsl(var(--muted))' }];
     const spent = stats.totalSpent;
     const remaining = stats.totalBudget - spent > 0 ? stats.totalBudget - spent : 0;
     
@@ -53,13 +66,28 @@ export default function DashboardPage() {
 
   const projectProgressData = useMemo(() => {
     if (projects.length === 0) return [];
-    const sortedProjects = [...projects].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    
+    const sortedProjects = [...projects].sort((a, b) => {
+        try {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateA - dateB;
+        } catch {
+            return 0;
+        }
+    });
+
     let cumulativeProgress = 0;
     return sortedProjects.map((p, index) => {
-      cumulativeProgress += p.progress;
+      cumulativeProgress += (p.progress || 0);
+      let dateString = 'N/A';
+      try {
+        dateString = new Date(p.createdAt).toLocaleDateString('ar-SA');
+      } catch {}
+      
       return {
         name: `مشروع ${index + 1}`,
-        date: new Date(p.createdAt).toLocaleDateString('ar-SA'),
+        date: dateString,
         progress: cumulativeProgress / (index + 1),
       }
     });
@@ -73,7 +101,7 @@ export default function DashboardPage() {
   }
 
 
-  if (isLoading) {
+  if (isLoading && projects.length === 0) {
     return (
         <div className="flex items-center justify-center h-[80vh]">
             <Loader className="h-12 w-12 animate-spin text-primary" />
@@ -133,7 +161,7 @@ export default function DashboardPage() {
         </Card>
         <Card className="shadow-lg rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">فرق عمل نشطة</CardTitle>
+            <CardTitle className="text-sm font-medium">مشاريع نشطة</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -168,9 +196,15 @@ export default function DashboardPage() {
                               tickLine={false}
                               axisLine={false}
                               tickMargin={8}
-                              tickFormatter={(value) => new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})}
+                              tickFormatter={(value) => {
+                                try {
+                                    return new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})
+                                } catch {
+                                    return value
+                                }
+                              }}
                             />
-                             <YAxis 
+                             <YAxis
                                 tickFormatter={(value) => `${value}%`}
                             />
                             <Tooltip content={<ChartTooltipContent indicator="dot" />} />
@@ -188,19 +222,23 @@ export default function DashboardPage() {
           <CardContent className="pb-8 flex items-center justify-center">
             <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
                 <Suspense fallback={<Skeleton className="h-full w-full rounded-full" />}>
-                    <PieChart>
-                        <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
-                        <Pie data={budgetChartData} dataKey="value" nameKey="name" innerRadius={80} outerRadius={110} strokeWidth={5} labelLine={false}>
-                             <Cell key="cell-0" fill="var(--color-spent)" />
-                             <Cell key="cell-1" fill="var(--color-remaining)" />
-                        </Pie>
-                    </PieChart>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
+                            <Legend content={<ChartLegendContent nameKey="name" />} />
+                            <Pie data={budgetChartData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={90} strokeWidth={5}>
+                                {budgetChartData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ))}
+                            </Pie>
+                        </PieChart>
+                    </ResponsiveContainer>
                  </Suspense>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
-
+               </ChartContainer>
+            </CardContent>
+         </Card>
+       </div>
+     
       {/* Projects Overview */}
        <div className="grid gap-8 md:grid-cols-2">
             <Card className="shadow-xl rounded-2xl">
@@ -210,12 +248,12 @@ export default function DashboardPage() {
                  </CardHeader>
                  <CardContent className="grid gap-4">
                     {projects.slice(0, 4).map((project, index) => (
-                      <div key={index} className="flex items-center gap-4 p-2 rounded-lg hover:bg-secondary/50">
-                          <Image src={project.imageUrl} alt={project.title} width={80} height={80} className="w-20 h-20 object-cover rounded-md" data-ai-hint={project.imageHint}/>
+                      <div key={project.id || index} className="flex items-center gap-4 p-2 rounded-lg hover:bg-secondary/50">
+                          <Image src={project.imageUrl || "https://placehold.co/600x400.png"} alt={project.name} width={80} height={80} className="w-20 h-20 object-cover rounded-md" data-ai-hint={project.imageHint}/>
                           <div className="flex-1">
                               <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="font-bold">{project.title}</h3>
+                                    <h3 className="font-bold">{project.name}</h3>
                                     <div className="flex items-center text-xs text-muted-foreground gap-1">
                                         <Users className="h-3 w-3" />
                                         <span>{project.location}</span>
@@ -225,7 +263,7 @@ export default function DashboardPage() {
                               </div>
                                <div className="flex items-center gap-4 mt-2 text-xs">
                                     <div className="flex items-center gap-1">
-                                        <DollarSign className="h-3 w-3 text-green-500"/> <span>{project.budget.toLocaleString()} {project.currency}</span>
+                                        <DollarSign className="h-3 w-3 text-green-500"/> <span>{project.estimatedBudget?.toLocaleString()} {project.currency}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <Activity className="h-3 w-3 text-primary"/> <span>{project.progress}%</span>
@@ -238,10 +276,12 @@ export default function DashboardPage() {
             </Card>
              <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
                 <Suspense fallback={<Skeleton className="h-full w-full" />}>
-                     <ProjectMap projects={projects} />
+                     <ProjectMap projects={projects.map(p => ({ title: p.name, lat: p.latitude || 24.7136, lng: p.longitude || 46.6753 }))} />
                 </Suspense>
             </Card>
        </div>
     </div>
   )
 }
+
+    

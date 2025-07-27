@@ -13,8 +13,8 @@ const firebaseConfig = {
   projectId: "achox-pro",
   storageBucket: "achox-pro.firebasestorage.app",
   messagingSenderId: "25667835163",
-  appId: "1:25667835163:web:fafe4897001a75f3822fbe",
-  measurementId: "G-D57PQVJXJW"
+  appId: "1:25667835163:web:2a1f1826ff5de9b8822fbe",
+  measurementId: "G-X458VWZEGW"
 };
 
 // Initialize Firebase for SSR and client-side

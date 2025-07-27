@@ -1,12 +1,12 @@
 
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Building, Star, Phone, Mail, MoreVertical } from "lucide-react";
+import { PlusCircle, Building, Star, Phone, Mail, MoreVertical, Loader } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,21 +18,25 @@ import { useProcurementStore } from "@/hooks/use-procurement-store";
 
 export default function ProcurementPage() {
     const { toast } = useToast();
-    const { suppliers, purchaseOrders, addSupplier } = useProcurementStore();
+    const { suppliers, purchaseOrders, fetchSuppliers, fetchPurchaseOrders, addSupplier, isLoading } = useProcurementStore();
     const [isSupplierDialogOpen, setIsSupplierDialogOpen] = useState(false);
+    
+    useEffect(() => {
+        fetchSuppliers();
+        fetchPurchaseOrders();
+    }, [fetchSuppliers, fetchPurchaseOrders]);
 
-    const handleAddSupplier = (e: React.FormEvent<HTMLFormElement>) => {
+
+    const handleAddSupplier = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const newSupplier = {
-            id: suppliers.length + 1,
+        await addSupplier({
             name: formData.get("s-name") as string,
             specialty: formData.get("s-spec") as string,
             rating: 4.0, // Default rating
             phone: formData.get("s-phone") as string,
             email: formData.get("s-email") as string,
-        };
-        addSupplier(newSupplier);
+        });
         toast({ title: "تمت إضافة المورد بنجاح" });
         setIsSupplierDialogOpen(false);
         e.currentTarget.reset();
@@ -90,7 +94,13 @@ export default function ProcurementPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {purchaseOrders.length > 0 ? purchaseOrders.map((po) => (
+                                {isLoading ? (
+                                     <TableRow>
+                                        <TableCell colSpan={5} className="text-center py-10">
+                                            <Loader className="mx-auto h-8 w-8 animate-spin" />
+                                        </TableCell>
+                                    </TableRow>
+                                ) : purchaseOrders.length > 0 ? purchaseOrders.map((po) => (
                                 <TableRow key={po.id}>
                                     <TableCell className="font-mono">{po.id}</TableCell>
                                     <TableCell className="font-medium">{po.supplier}</TableCell>
@@ -111,47 +121,51 @@ export default function ProcurementPage() {
                 </Card>
             </TabsContent>
             <TabsContent value="suppliers">
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {suppliers.map(supplier => (
-                        <Card key={supplier.id} className="shadow-lg rounded-2xl hover:shadow-2xl transition-shadow duration-300">
-                             <CardHeader className="flex flex-row items-start justify-between">
-                                <div>
-                                    <CardTitle className="text-lg">{supplier.name}</CardTitle>
-                                    <CardDescription className="flex items-center gap-1 mt-1">
-                                        <Building className="h-4 w-4" /> {supplier.specialty}
-                                    </CardDescription>
-                                </div>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                                            <MoreVertical className="h-4 w-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>تعديل</DropdownMenuItem>
-                                        <DropdownMenuItem className="text-destructive">حذف</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                <div className="flex items-center gap-1 text-primary font-bold">
-                                    <Star className="h-5 w-5 fill-current" />
-                                    <span>{supplier.rating.toFixed(1)} / 5.0</span>
-                                </div>
-                                <div className="text-sm text-muted-foreground space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <Phone className="h-4 w-4" />
-                                        <span>{supplier.phone}</span>
+                 {isLoading ? (
+                      <div className="flex justify-center items-center py-20"><Loader className="h-10 w-10 animate-spin text-primary" /></div>
+                 ) : (
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {suppliers.map(supplier => (
+                            <Card key={supplier.id} className="shadow-lg rounded-2xl hover:shadow-2xl transition-shadow duration-300">
+                                <CardHeader className="flex flex-row items-start justify-between">
+                                    <div>
+                                        <CardTitle className="text-lg">{supplier.name}</CardTitle>
+                                        <CardDescription className="flex items-center gap-1 mt-1">
+                                            <Building className="h-4 w-4" /> {supplier.specialty}
+                                        </CardDescription>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Mail className="h-4 w-4" />
-                                        <span>{supplier.email}</span>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                <MoreVertical className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem>تعديل</DropdownMenuItem>
+                                            <DropdownMenuItem className="text-destructive">حذف</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                    <div className="flex items-center gap-1 text-primary font-bold">
+                                        <Star className="h-5 w-5 fill-current" />
+                                        <span>{supplier.rating.toFixed(1)} / 5.0</span>
                                     </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
+                                    <div className="text-sm text-muted-foreground space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <Phone className="h-4 w-4" />
+                                            <span>{supplier.phone}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Mail className="h-4 w-4" />
+                                            <span>{supplier.email}</span>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                 )}
             </TabsContent>
         </Tabs>
     </div>
@@ -180,3 +194,5 @@ export default function ProcurementPage() {
     </>
   );
 }
+
+    

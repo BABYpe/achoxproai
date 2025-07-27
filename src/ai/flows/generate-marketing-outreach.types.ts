@@ -12,7 +12,7 @@ export type GenerateMarketingOutreachInput = z.infer<typeof GenerateMarketingOut
 export const GenerateMarketingOutreachOutputSchema = z.object({
   leads: z.array(z.object({
     companyName: z.string().describe('The name of the potential lead company.'),
-    email: z.string().email().describe('The suggested contact email for the lead.'),
+    email: z.string().describe('The suggested contact email for the lead.'),
     reason: z.string().describe('A brief reason why this company is a good potential lead.'),
   })).describe('A list of generated potential leads.'),
   persuasiveEmail: z.object({

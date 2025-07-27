@@ -4,26 +4,9 @@
 import React, { useEffect } from 'react';
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
-import {
-  LayoutDashboard,
-  FileText,
-  Calculator,
-  ListChecks,
-  Settings,
-  Search,
-  Bell,
-  FilePieChart,
-  Briefcase,
-  CircleDollarSign,
-  ShoppingCart,
-  Warehouse,
-  Wrench,
-  ClipboardType,
-  Send,
-  ShieldAlert,
-  FileSignature,
-  PenRuler,
-} from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { LayoutDashboard, FileText, Calculator, ListChecks, Settings, Search, Bell, FilePieChart, Briefcase, FileSignature, Send, ShieldAlert, Wand2, Warehouse, Wrench, ClipboardType } from 'lucide-react';
+
 import {
   SidebarProvider,
   Sidebar,
@@ -59,6 +42,7 @@ function DashboardLayoutContent({
 }) {
   const pathname = usePathname();
   const fetchProjects = useProjectStore((state) => state.fetchProjects);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchProjects();
@@ -84,81 +68,81 @@ function DashboardLayoutContent({
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard')} tooltip="لوحة التحكم">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard')} tooltip={t('sidebar.dashboard')}>
                   <Link href="/dashboard">
                     <LayoutDashboard />
-                    <span>لوحة التحكم</span>
+                    <span>{t('sidebar.dashboard')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
               <Separator className="my-2" />
-              <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التخطيط</p>
+              <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">{t('sidebar.planning')}</p>
               
                <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/ai-designer')} tooltip="المصمم المعماري الذكي">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/ai-designer')} tooltip={t('sidebar.aiDesigner')}>
                   <Link href="/dashboard/ai-designer">
-                    <PenRuler />
-                    <span>المصمم الذكي</span>
+                    <Wand2 />
+                    <span>{t('sidebar.aiDesigner')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/projects/new')} tooltip="تقدير التكاليف">
+                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/projects/new')} tooltip={t('sidebar.costEstimation')}>
                   <Link href="/dashboard/projects/new">
                     <Calculator />
-                    <span>تقدير التكاليف</span>
+                    <span>{t('sidebar.costEstimation')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
                <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/gantt-charts')} tooltip="مخطط جانت">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/gantt-charts')} tooltip={t('sidebar.ganttChart')}>
                   <Link href="/dashboard/gantt-charts">
                     <GanttChartIcon />
-                    <span>مخطط جانت</span>
+                    <span>{t('sidebar.ganttChart')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/crew-planner')} tooltip="مخطط الطاقم">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/crew-planner')} tooltip={t('sidebar.crewPlanner')}>
                   <Link href="/dashboard/crew-planner">
                     <UsersGroupIcon />
-                    <span>مخطط الطاقم</span>
+                    <span>{t('sidebar.crewPlanner')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               
               <Separator className="my-2" />
-              <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التنفيذ</p>
+              <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">{t('sidebar.execution')}</p>
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isProjectsActive} tooltip="المشاريع">
+                <SidebarMenuButton asChild isActive={isProjectsActive} tooltip={t('sidebar.projects')}>
                   <Link href="/dashboard/projects">
                     <Briefcase />
-                    <span>المشاريع</span>
+                    <span>{t('sidebar.projects')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
                 <SidebarSub>
-                  <SidebarSubTrigger isActive={isProcurementActive || isQuotesActive || pathname.startsWith('/dashboard/financial-intelligence')} tooltip="العقود والماليات">
+                  <SidebarSubTrigger isActive={isProcurementActive || isQuotesActive || pathname.startsWith('/dashboard/financial-intelligence')} tooltip={t('sidebar.contractsAndFinance')}>
                      <FileSignature />
-                    <span>العقود والماليات</span>
+                    <span>{t('sidebar.contractsAndFinance')}</span>
                   </SidebarSubTrigger>
                   <SidebarSubContent>
                       <SidebarMenuSub>
                         <SidebarMenuSubItem>
                             <SidebarMenuSubButton asChild isActive={isProcurementActive}>
-                                <Link href="/dashboard/procurement">أوامر الشراء</Link>
+                                <Link href="/dashboard/procurement">{t('sidebar.procurement')}</Link>
                             </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                              <SidebarMenuSubButton asChild isActive={isQuotesActive}>
-                                <Link href="/dashboard/quotes">عروض الأسعار</Link>
+                                <Link href="/dashboard/quotes">{t('sidebar.quotes')}</Link>
                             </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                          <SidebarMenuSubItem>
                              <SidebarMenuSubButton asChild isActive={isActive('/dashboard/financial-intelligence')}>
-                                <Link href="/dashboard/financial-intelligence">الذكاء المالي</Link>
+                                <Link href="/dashboard/financial-intelligence">{t('sidebar.financialIntelligence')}</Link>
                             </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       </SidebarMenuSub>
@@ -166,73 +150,81 @@ function DashboardLayoutContent({
               </SidebarSub>
               
                <Separator className="my-2" />
-               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">التحليل والنمو</p>
+               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">{t('sidebar.analysisAndGrowth')}</p>
 
                 <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive('/dashboard/reports')} tooltip="التقارير">
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/reports')} tooltip={t('sidebar.reports')}>
                     <Link href="/dashboard/reports">
                         <FilePieChart />
-                        <span>التقارير</span>
+                        <span>{t('sidebar.reports')}</span>
                     </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive('/dashboard/blueprints')} tooltip="تحليل المخططات">
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/blueprints')} tooltip={t('sidebar.blueprintAnalysis')}>
                     <Link href="/dashboard/blueprints">
                         <FileText />
-                        <span>تحليل المخططات</span>
+                        <span>{t('sidebar.blueprintAnalysis')}</span>
                     </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive('/dashboard/risk-analysis')} tooltip="تحليل المخاطر">
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/risk-analysis')} tooltip={t('sidebar.riskAnalysis')}>
                     <Link href="/dashboard/risk-analysis">
                         <ShieldAlert />
-                        <span>تحليل المخاطر</span>
+                        <span>{t('sidebar.riskAnalysis')}</span>
                     </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive('/dashboard/marketing-automations')} tooltip="المسوق الذكي">
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/marketing-automations')} tooltip={t('sidebar.smartMarketer')}>
                     <Link href="/dashboard/marketing-automations">
                         <Send />
-                        <span>المسوق الذكي</span>
+                        <span>{t('sidebar.smartMarketer')}</span>
                     </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                
                <Separator className="my-2" />
-               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">الموارد</p>
+               <p className="text-xs font-semibold text-sidebar-foreground/60 px-3 py-1 group-data-[collapsible=icon]:hidden">{t('sidebar.resources')}</p>
 
                 <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive('/dashboard/inventory')} tooltip="المخزون">
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard/inventory')} tooltip={t('sidebar.inventory')}>
                     <Link href="/dashboard/inventory">
                         <Warehouse />
-                        <span>المخزون</span>
+                        <span>{t('sidebar.inventory')}</span>
                     </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/assets')} tooltip="الأصول والموارد">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/assets')} tooltip={t('sidebar.assets')}>
                   <Link href="/dashboard/assets">
                     <Wrench />
-                    <span>الأصول والموارد</span>
+                    <span>{t('sidebar.assets')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/boq')} tooltip="جداول الكميات">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/boq')} tooltip={t('sidebar.boq')}>
                   <Link href="/dashboard/boq">
                     <ListChecks />
-                    <span>جداول الكميات</span>
+                    <span>{t('sidebar.boq')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
                <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/templates')} tooltip="مكتبة القوالب">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/templates')} tooltip={t('sidebar.templates')}>
                   <Link href="/dashboard/templates">
                     <ClipboardType />
-                    <span>مكتبة القوالب</span>
+                    <span>{t('sidebar.templates')}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/document-control')} tooltip={t('sidebar.documentCenter')}>
+                  <Link href="/dashboard/document-control">
+                    <ClipboardType />
+                    <span>{t('sidebar.documentCenter')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -241,10 +233,10 @@ function DashboardLayoutContent({
           <SidebarFooter>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive('/dashboard/settings')} tooltip="الإعدادات">
+                <SidebarMenuButton asChild isActive={isActive('/dashboard/settings')} tooltip={t('sidebar.settings')}>
                   <Link href="/dashboard/settings">
                     <Settings />
-                    <span>الإعدادات</span>
+                    <span>{t('sidebar.settings')}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -259,7 +251,7 @@ function DashboardLayoutContent({
               <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="بحث..."
+                placeholder={t('searchPlaceholder')}
                 className="w-full rounded-lg bg-secondary pr-8 md:w-[200px] lg:w-[320px]"
               />
             </div>
@@ -267,7 +259,7 @@ function DashboardLayoutContent({
               variant="ghost"
               size="icon"
               className="rounded-full"
-              aria-label="Notifications"
+              aria-label={t('notifications')}
             >
               <Bell className="h-5 w-5" />
             </Button>

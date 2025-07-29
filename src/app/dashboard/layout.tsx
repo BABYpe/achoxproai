@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { LayoutDashboard, FileText, Calculator, ListChecks, Settings, Search, Bell, FilePieChart, Briefcase, FileSignature, Send, ShieldAlert, Wand2, Warehouse, Wrench, ClipboardType } from 'lucide-react';
+import { LayoutDashboard, FileText, Calculator, ListChecks, Settings, Bell, FilePieChart, Briefcase, FileSignature, Send, ShieldAlert, Wand2, Warehouse, Wrench, ClipboardType } from 'lucide-react';
 
 import {
   SidebarProvider,
@@ -25,14 +25,15 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useProjectStore } from '@/hooks/use-project-store';
 import { Separator } from '@/components/ui/separator';
 import { GanttChartIcon } from '@/components/icons/gantt-chart-icon';
 import { UsersGroupIcon } from '@/components/icons/users-group-icon';
+import { SearchCommand } from '@/components/ui/search-command';
+import { NotificationCenter } from '@/components/ui/notification-center';
+import ErrorBoundary from '@/components/ui/error-boundary';
 
 
 function DashboardLayoutContent({
@@ -248,25 +249,15 @@ function DashboardLayoutContent({
           <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <SidebarTrigger className="md:hidden" />
             <div className="relative flex-1 ml-auto md:grow-0">
-              <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder={t('searchPlaceholder')}
-                className="w-full rounded-lg bg-secondary pr-8 md:w-[200px] lg:w-[320px]"
-              />
+             <SearchCommand />
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full"
-              aria-label={t('notifications')}
-            >
-              <Bell className="h-5 w-5" />
-            </Button>
+            <NotificationCenter />
             <UserNav />
           </header>
           <div className="p-4 sm:px-6 sm:py-4">
-            {children}
+             <ErrorBoundary>
+                {children}
+            </ErrorBoundary>
           </div>
         </main>
       </div>

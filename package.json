@@ -40,10 +40,7 @@
     "@vis.gl/react-google-maps": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-<<<<<<< HEAD
-=======
     "compression": "^1.8.1",
->>>>>>> origin/main
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
     "firebase": "^10.12.3",
@@ -54,11 +51,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "lucide-react": "^0.475.0",
-<<<<<<< HEAD
     "next": "^15.4.2",
-=======
-    "next": "14.2.30",
->>>>>>> origin/main
     "next-themes": "^0.3.0",
     "patch-package": "^8.0.0",
     "react": "^18.3.1",

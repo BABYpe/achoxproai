@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useEffect } from 'react';
-import { reportWebVitals, type Metric } from 'web-vitals';
+import { onCLS, onINP, onFCP, onLCP, onTTFB, type Metric } from 'web-vitals';
 
 // A simple in-memory store for performance metrics.
 // In a real app, you'd send this to your analytics service.
@@ -23,7 +24,11 @@ function logMetric(metric: Metric) {
 
 export function PerformanceMonitor() {
   useEffect(() => {
-    reportWebVitals(logMetric);
+    onCLS(logMetric);
+    onINP(logMetric);
+    onFCP(logMetric);
+    onLCP(logMetric);
+    onTTFB(logMetric);
   }, []);
 
   return null;

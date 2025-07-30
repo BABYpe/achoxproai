@@ -7,10 +7,11 @@ interface StatCardProps {
     value: string;
     icon: LucideIcon;
     description?: string;
+    className?: string;
 }
 
-export const StatCard = ({ title, value, icon: Icon, description }: StatCardProps) => (
-    <Card className="shadow-lg rounded-2xl">
+export const StatCard = ({ title, value, icon: Icon, description, className }: StatCardProps) => (
+    <Card className={`shadow-lg rounded-2xl ${className}`}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{title}</CardTitle>
             <Icon className="h-4 w-4 text-muted-foreground" />

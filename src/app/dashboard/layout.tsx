@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +34,7 @@ import { UsersGroupIcon } from '@/components/icons/users-group-icon';
 import { SearchCommand } from '@/components/ui/search-command';
 import { NotificationCenter } from '@/components/ui/notification-center';
 import ErrorBoundary from '@/components/ui/error-boundary';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 function DashboardLayoutContent({
@@ -256,13 +257,35 @@ function DashboardLayoutContent({
           </header>
           <div className="p-4 sm:px-6 sm:py-4">
              <ErrorBoundary>
-                {children}
+                <Suspense fallback={<DashboardSkeleton />}>
+                    {children}
+                </Suspense>
             </ErrorBoundary>
           </div>
         </main>
       </div>
   )
 }
+
+const DashboardSkeleton = () => (
+    <div className="flex flex-col gap-8">
+        <div className="flex items-center justify-between">
+            <Skeleton className="h-9 w-64" />
+            <Skeleton className="h-12 w-48" />
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-2xl" />)}
+        </div>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
+            <Skeleton className="lg:col-span-3 h-[300px] rounded-2xl" />
+            <Skeleton className="lg:col-span-2 h-[300px] rounded-2xl" />
+        </div>
+        <div className="grid gap-8 md:grid-cols-2">
+            <Skeleton className="h-[400px] rounded-2xl" />
+            <Skeleton className="h-[400px] rounded-2xl" />
+        </div>
+    </div>
+);
 
 
 export default function DashboardLayout({

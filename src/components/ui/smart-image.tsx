@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
 import Image, { ImageProps } from 'next/image';
 import { cn } from '@/lib/utils';
 import { Skeleton } from './skeleton';
-import { Image as ImageIcon } from 'lucide-react';
+import { ImageIcon } from 'lucide-react';
 
 type SmartImageProps = ImageProps & {
   fallbackSrc?: string;
@@ -14,7 +15,7 @@ type SmartImageProps = ImageProps & {
 export function SmartImage({
   src,
   alt,
-  fallbackSrc = "https://placehold.co/600x400/222/FFF?text=Error",
+  fallbackSrc = "https://placehold.co/600x400/171717/333333?text=?",
   className,
   containerClassName,
   ...props
@@ -24,10 +25,18 @@ export function SmartImage({
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    setCurrentSrc(src);
-    setIsLoading(true);
-    setHasError(false);
-  }, [src]);
+    // Only update if the src prop actually changes
+    if (src) {
+        setCurrentSrc(src);
+        setIsLoading(true);
+        setHasError(false);
+    } else {
+        // Handle case where src is initially null or undefined
+        setIsLoading(false);
+        setHasError(true);
+        setCurrentSrc(fallbackSrc);
+    }
+  }, [src, fallbackSrc]);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
@@ -36,26 +45,24 @@ export function SmartImage({
   const handleError = () => {
     setIsLoading(false);
     setHasError(true);
-    if (fallbackSrc) {
-        setCurrentSrc(fallbackSrc);
-    }
+    setCurrentSrc(fallbackSrc);
   };
 
   return (
-    <div className={cn("relative w-full h-full bg-secondary/30", containerClassName)}>
+    <div className={cn("relative w-full h-full bg-secondary/30 overflow-hidden", containerClassName)}>
       {isLoading && <Skeleton className="absolute inset-0 w-full h-full" />}
-      {hasError && !fallbackSrc && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-destructive/10">
-            <ImageIcon className="w-8 h-8 text-destructive" />
-            <span className="text-xs mt-1">فشل تحميل الصورة</span>
+      {hasError && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-secondary/50">
+            <ImageIcon className="w-8 h-8 text-muted-foreground/50" />
         </div>
       )}
       <Image
+        key={currentSrc?.toString()} // Add key to force re-render on src change
         src={currentSrc}
         alt={alt}
         className={cn(
           "transition-opacity duration-300",
-          isLoading ? 'opacity-0' : 'opacity-100',
+          isLoading || hasError ? 'opacity-0' : 'opacity-100',
           className
         )}
         onLoadingComplete={handleLoadingComplete}

@@ -1,13 +1,9 @@
 
 "use client"
 
-import { APIProvider, Map, AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
-
-interface Project {
-    title: string;
-    lat: number;
-    lng: number;
-}
+import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow } from "@vis.gl/react-google-maps";
+import { useState } from "react";
+import type { Project } from "@/hooks/use-project-store";
 
 interface ProjectMapProps {
     projects: Project[];
@@ -18,8 +14,10 @@ export default function ProjectMap({ projects }: ProjectMapProps) {
         return <div>Error: Google Maps API key is not configured.</div>
     }
 
-    const center = projects.length > 0 
-        ? { lat: projects[0].lat, lng: projects[0].lng } 
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+    const center = projects.length > 0 && projects[0].latitude && projects[0].longitude
+        ? { lat: projects[0].latitude, lng: projects[0].longitude } 
         : { lat: 24.7136, lng: 46.6753 }; // Default to Riyadh
 
     return (
@@ -32,18 +30,34 @@ export default function ProjectMap({ projects }: ProjectMapProps) {
                 gestureHandling={'greedy'}
                 disableDefaultUI={true}
             >
-                {projects.map((project, index) => (
-                    <AdvancedMarker key={index} position={{ lat: project.lat, lng: project.lng }} title={project.title}>
-                        <Pin
-                            background={'hsl(var(--primary))'}
-                            borderColor={'hsl(var(--primary))'}
-                            glyphColor={'hsl(var(--primary-foreground))'}
-                        />
-                    </AdvancedMarker>
+                {projects.map((project) => (
+                    project.latitude && project.longitude && (
+                        <AdvancedMarker 
+                            key={project.id} 
+                            position={{ lat: project.latitude, lng: project.longitude }} 
+                            title={project.title}
+                            onClick={() => setSelectedProject(project)}
+                        >
+                            <Pin
+                                background={'hsl(var(--primary))'}
+                                borderColor={'hsl(var(--primary))'}
+                                glyphColor={'hsl(var(--primary-foreground))'}
+                            />
+                        </AdvancedMarker>
+                    )
                 ))}
+                {selectedProject && (
+                    <InfoWindow
+                        position={{ lat: selectedProject.latitude!, lng: selectedProject.longitude! }}
+                        onCloseClick={() => setSelectedProject(null)}
+                    >
+                        <div className="p-2">
+                            <h3 className="font-bold">{selectedProject.title}</h3>
+                            <p className="text-sm text-muted-foreground">{selectedProject.location}</p>
+                        </div>
+                    </InfoWindow>
+                )}
             </Map>
         </APIProvider>
     );
 }
-
-    

@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Camera, PlusCircle, Trash2 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
+import { SmartImage } from '@/components/ui/smart-image';
 
 export default function SettingsPage() {
   const { toast } = useToast()
@@ -56,11 +57,18 @@ export default function SettingsPage() {
       {/* Professional Profile Card */}
       <Card className="shadow-xl rounded-2xl overflow-hidden">
         <div className="relative h-40 bg-muted group">
-            <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" data-ai-hint="office desk background" />
+            <SmartImage 
+              src={coverUrl} 
+              alt="Cover" 
+              layout="fill" 
+              objectFit="cover" 
+              className="w-full h-full object-cover" 
+              data-ai-hint="office desk background" 
+            />
             <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <Button size="sm" variant="secondary" className="absolute bottom-4 right-4 gap-1 z-10" onClick={() => coverInputRef.current?.click()}>
+            <Button size="sm" variant="secondary" className="absolute bottom-4 right-4 gap-1 z-10 opacity-80 group-hover:opacity-100 transition-opacity" onClick={() => coverInputRef.current?.click()}>
                 <Camera className="w-4 h-4"/>
-                تغيير الغلاف
+                تغيير صورة الغلاف
             </Button>
             <input 
               type="file" 

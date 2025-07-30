@@ -23,10 +23,10 @@ const documentLog = [
 
 const auditLog = [
     { id: 'AUD-001', icon: FilePlus2, text: "قام <strong>علي محمد</strong> بإنشاء مشروع <strong>بناء فيلا فاخرة</strong>.", timestamp: "2024-07-22T10:00:00Z" },
-    { id: 'AUD-002', icon: FileUp, text: "قام <strong>المستشار الذكي</strong> بتحليل المخطط <strong>'مخطط الواجهة'</strong>.", timestamp: "2024-07-21T14:30:00Z" },
+    { id: 'AUD-002', icon: Bot, text: "قام <strong>المستشار الذكي</strong> بتحليل المخطط <strong>'مخطط الواجهة'</strong>.", timestamp: "2024-07-21T14:30:00Z" },
     { id: 'AUD-003', icon: History, text: "تم تحديث حالة المشروع <strong>تجهيز فعالية</strong> إلى <strong>مكتمل</strong>.", timestamp: "2024-07-21T09:15:00Z" },
     { id: 'AUD-004', icon: CheckCircle, text: "تم اعتماد المستند <strong>'المخططات المعمارية v2'</strong> بواسطة <strong>سارة عبدالله</strong>.", timestamp: "2024-07-20T11:00:00Z" },
-    { id: 'AUD-005', icon: FilePieChart, text: "قام <strong>روبوت التقارير</strong> بتوليد تقرير أسبوعي لمشروع <strong>برج المكاتب</strong>.", timestamp: "2024-07-19T17:00:00Z" },
+    { id: 'AUD-005', icon: Bot, text: "قام <strong>روبوت التقارير</strong> بتوليد تقرير أسبوعي لمشروع <strong>برج المكاتب</strong>.", timestamp: "2024-07-19T17:00:00Z" },
     { id: 'AUD-006', icon: FileSignature, text: "تم إصدار أمر الشراء <strong>PO-2024-002</strong> للمورد <strong>مصنع الخرسانة</strong>.", timestamp: "2024-07-18T16:45:00Z" },
 ];
 

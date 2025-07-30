@@ -2,23 +2,33 @@
 "use client"
 
 import { useMemo, Suspense, useEffect } from "react"
+import dynamic from 'next/dynamic'
+import Link from "next/link"
+import { useProjectStore } from "@/hooks/use-project-store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, Activity, Briefcase, DollarSign, Users, CheckCircle, Loader, TrendingDown, CalendarCheck, Percent } from "lucide-react"
-import Image from "next/image"
-import { AreaChart, PieChart, ResponsiveContainer, Tooltip, Area, Legend, Cell, XAxis, YAxis, CartesianGrid, Pie } from "recharts"
-import { ChartContainer, ChartTooltipContent, ChartLegendContent } from "@/components/ui/chart"
-import Link from "next/link"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useProjectStore } from "@/hooks/use-project-store"
-import React from "react"
-import dynamic from 'next/dynamic'
+import { PlusCircle, Activity, Briefcase, DollarSign, Users, CheckCircle, TrendingDown, CalendarCheck, Percent } from "lucide-react"
+import { StatCard } from "@/components/stat-card"
+import { SmartImage } from "@/components/ui/smart-image"
+import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
 
+// Dynamically import heavy components
 const ProjectMap = dynamic(() => import('@/components/project-map'), {
   ssr: false,
-  loading: () => <Skeleton className="h-full w-full rounded-2xl" />
+  loading: () => <LoadingSkeleton type="card" className="h-full w-full rounded-2xl" />
 });
+
+const BudgetChart = dynamic(() => import('@/components/charts/budget-chart'), {
+    ssr: false,
+    loading: () => <LoadingSkeleton type="card" className="h-[250px] w-full" />
+});
+
+const ProgressChart = dynamic(() => import('@/components/charts/progress-chart'), {
+    ssr: false,
+    loading: () => <LoadingSkeleton type="card" className="h-[250px] w-full" />
+});
+
 
 export default function DashboardPage() {
   const { projects, isLoading, fetchProjects } = useProjectStore();
@@ -33,80 +43,17 @@ export default function DashboardPage() {
 
   const stats = useMemo(() => {
     const totalProjects = projects.length;
-    const totalBudget = projects.reduce((sum, p) => sum + (p.estimatedBudget || 0), 0);
+    const totalBudget = projects.reduce((sum, p) => sum + (p.budget || 0), 0);
     const activeProjects = projects.filter(p => p.status === 'قيد التنفيذ').length;
-    const overdueProjects = projects.filter(p => {
-        try {
-            return new Date(p.endDate!) < new Date() && p.status !== 'مكتمل'
-        } catch {
-            return false;
-        }
-    }).length;
     const nearCompletion = projects.filter(p => (p.progress || 0) >= 90 && p.status !== 'مكتمل').length;
     const averageCompletion = totalProjects > 0 ? projects.reduce((sum, p) => sum + (p.progress || 0), 0) / totalProjects : 0;
-    
-    // In a real app, `totalSpent` would be calculated from a separate transactions collection.
     const totalSpent = projects.reduce((sum, p) => sum + (p.actualBudget || 0), 0);
-
-
-    return { totalProjects, totalBudget, activeProjects, overdueProjects, averageCompletion, totalSpent, nearCompletion };
+    return { totalProjects, totalBudget, activeProjects, averageCompletion, totalSpent, nearCompletion };
   }, [projects]);
-
- const budgetChartData = useMemo(() => {
-    if (stats.totalBudget === 0 && stats.totalSpent === 0) return [{ name: 'لا توجد بيانات', value: 1, fill: 'hsl(var(--muted))' }];
-    const spent = stats.totalSpent;
-    const remaining = stats.totalBudget - spent > 0 ? stats.totalBudget - spent : 0;
-    
-    return [
-      { name: 'المصروفات', value: spent, fill: 'hsl(var(--destructive))' },
-      { name: 'المتبقي', value: remaining, fill: 'hsl(var(--primary))' },
-    ];
-  }, [stats.totalBudget, stats.totalSpent]);
-
-
-  const projectProgressData = useMemo(() => {
-    if (projects.length === 0) return [];
-    
-    const sortedProjects = [...projects].sort((a, b) => {
-        try {
-            const dateA = new Date(a.createdAt).getTime();
-            const dateB = new Date(b.createdAt).getTime();
-            return dateA - dateB;
-        } catch {
-            return 0;
-        }
-    });
-
-    let cumulativeProgress = 0;
-    return sortedProjects.map((p, index) => {
-      cumulativeProgress += (p.progress || 0);
-      let dateString = 'N/A';
-      try {
-        dateString = new Date(p.createdAt).toLocaleDateString('ar-SA');
-      } catch {}
-      
-      return {
-        name: `مشروع ${index + 1}`,
-        date: dateString,
-        progress: cumulativeProgress / (index + 1),
-      }
-    });
-  }, [projects]);
-  
-  const chartConfig = {
-    budget: { label: "الميزانية" },
-    spent: { label: "المصروفات", color: "hsl(var(--destructive))" },
-    remaining: { label: "المتبقي", color: "hsl(var(--primary))" },
-    progress: { label: "التقدم (%)", color: "hsl(var(--primary))" },
-  }
 
 
   if (isLoading && projects.length === 0) {
-    return (
-        <div className="flex items-center justify-center h-[80vh]">
-            <Loader className="h-12 w-12 animate-spin text-primary" />
-        </div>
-    )
+    return <LoadingSkeleton type="card" count={8} className="grid grid-cols-1 md:grid-cols-4 gap-4" />;
   }
 
   return (
@@ -123,60 +70,12 @@ export default function DashboardPage() {
       
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        <Card className="shadow-lg rounded-2xl border-l-4 border-primary">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">إجمالي المشاريع</CardTitle>
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProjects}</div>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">إجمالي الميزانيات</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-             <div className="text-2xl font-bold">{stats.totalBudget.toLocaleString('en-US', { notation: 'compact' })}</div>
-          </CardContent>
-        </Card>
-         <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">إجمالي المصروفات</CardTitle>
-            <TrendingDown className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-             <div className="text-2xl font-bold">{stats.totalSpent.toLocaleString('en-US', { notation: 'compact' })}</div>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">متوسط الإنجاز</CardTitle>
-            <Percent className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.averageCompletion.toFixed(1)}%</div>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">مشاريع نشطة</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeProjects}</div>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">مشاريع قيد التسليم</CardTitle>
-            <CalendarCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.nearCompletion}</div>
-          </CardContent>
-        </Card>
+        <StatCard title="إجمالي المشاريع" value={stats.totalProjects.toString()} icon={Briefcase} />
+        <StatCard title="إجمالي الميزانيات" value={`${stats.totalBudget.toLocaleString('en-US', { notation: 'compact' })} ر.س`} icon={DollarSign} />
+        <StatCard title="إجمالي المصروفات" value={`${stats.totalSpent.toLocaleString('en-US', { notation: 'compact' })} ر.س`} icon={TrendingDown} />
+        <StatCard title="متوسط الإنجاز" value={`${stats.averageCompletion.toFixed(1)}%`} icon={Percent} />
+        <StatCard title="مشاريع نشطة" value={stats.activeProjects.toString()} icon={Activity} />
+        <StatCard title="مشاريع قيد التسليم" value={stats.nearCompletion.toString()} icon={CalendarCheck} />
       </div>
 
       {/* Charts */}
@@ -187,31 +86,9 @@ export default function DashboardPage() {
                 <CardDescription>متوسط نسبة الإنجاز مع مرور الوقت.</CardDescription>
             </CardHeader>
             <CardContent>
-                 <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                    <Suspense fallback={<Skeleton className="h-full w-full" />}>
-                        <AreaChart accessibilityLayer data={projectProgressData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis
-                              dataKey="date"
-                              tickLine={false}
-                              axisLine={false}
-                              tickMargin={8}
-                              tickFormatter={(value) => {
-                                try {
-                                    return new Date(value).toLocaleDateString('ar-SA-u-nu-latn', {month: 'short'})
-                                } catch {
-                                    return value
-                                }
-                              }}
-                            />
-                             <YAxis
-                                tickFormatter={(value) => `${value}%`}
-                            />
-                            <Tooltip content={<ChartTooltipContent indicator="dot" />} />
-                            <Area type="monotone" dataKey="progress" stroke="var(--color-progress)" fill="var(--color-progress)" fillOpacity={0.4} name="متوسط التقدم" />
-                        </AreaChart>
-                    </Suspense>
-                </ChartContainer>
+                <Suspense fallback={<LoadingSkeleton type="card" className="h-[250px] w-full" />}>
+                   <ProgressChart projects={projects} />
+                </Suspense>
             </CardContent>
         </Card>
         <Card className="shadow-xl rounded-2xl lg:col-span-2">
@@ -220,21 +97,9 @@ export default function DashboardPage() {
              <CardDescription>إجمالي المصروفات مقابل الميزانية المعتمدة.</CardDescription>
           </CardHeader>
           <CardContent className="pb-8 flex items-center justify-center">
-            <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
-                <Suspense fallback={<Skeleton className="h-full w-full rounded-full" />}>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Tooltip content={<ChartTooltipContent nameKey="name" hideLabel />} />
-                            <Legend content={<ChartLegendContent nameKey="name" />} />
-                            <Pie data={budgetChartData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={90} strokeWidth={5}>
-                                {budgetChartData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                                ))}
-                            </Pie>
-                        </PieChart>
-                    </ResponsiveContainer>
-                 </Suspense>
-               </ChartContainer>
+             <Suspense fallback={<LoadingSkeleton type="card" className="h-[250px] w-[250px] rounded-full" />}>
+                <BudgetChart totalBudget={stats.totalBudget} totalSpent={stats.totalSpent} />
+            </Suspense>
             </CardContent>
          </Card>
        </div>
@@ -249,11 +114,19 @@ export default function DashboardPage() {
                  <CardContent className="grid gap-4">
                     {projects.slice(0, 4).map((project, index) => (
                       <div key={project.id || index} className="flex items-center gap-4 p-2 rounded-lg hover:bg-secondary/50">
-                          <Image src={project.imageUrl || "https://placehold.co/600x400.png"} alt={project.name} width={80} height={80} className="w-20 h-20 object-cover rounded-md" data-ai-hint={project.imageHint}/>
+                           <SmartImage
+                                src={project.imageUrl || ''}
+                                alt={project.title}
+                                width={80}
+                                height={80}
+                                containerClassName="w-20 h-20 flex-shrink-0"
+                                className="object-cover rounded-md"
+                                data-ai-hint={project.imageHint}
+                            />
                           <div className="flex-1">
                               <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="font-bold">{project.name}</h3>
+                                    <h3 className="font-bold">{project.title}</h3>
                                     <div className="flex items-center text-xs text-muted-foreground gap-1">
                                         <Users className="h-3 w-3" />
                                         <span>{project.location}</span>
@@ -263,7 +136,7 @@ export default function DashboardPage() {
                               </div>
                                <div className="flex items-center gap-4 mt-2 text-xs">
                                     <div className="flex items-center gap-1">
-                                        <DollarSign className="h-3 w-3 text-green-500"/> <span>{project.estimatedBudget?.toLocaleString()} {project.currency}</span>
+                                        <DollarSign className="h-3 w-3 text-green-500"/> <span>{project.budget?.toLocaleString()} {project.currency}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <Activity className="h-3 w-3 text-primary"/> <span>{project.progress}%</span>
@@ -275,13 +148,11 @@ export default function DashboardPage() {
                  </CardContent>
             </Card>
              <Card className="shadow-xl rounded-2xl overflow-hidden h-[600px] md:h-auto">
-                <Suspense fallback={<Skeleton className="h-full w-full" />}>
-                     <ProjectMap projects={projects.map(p => ({ title: p.name, lat: p.latitude || 24.7136, lng: p.longitude || 46.6753 }))} />
+                <Suspense fallback={<LoadingSkeleton type="card" className="h-full w-full" />}>
+                     <ProjectMap projects={projects} />
                 </Suspense>
             </Card>
        </div>
     </div>
   )
 }
-
-    

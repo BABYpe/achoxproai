@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -7,7 +8,15 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from './card';
 
-const notifications = [
+type Notification = {
+  id: number;
+  type: 'project' | 'task' | 'mention' | 'system';
+  text: string;
+  time: string;
+  read: boolean;
+};
+
+const initialNotifications: Notification[] = [
   { id: 1, type: 'project', text: "تم تحديث حالة مشروع 'بناء فيلا الياسمين' إلى مكتمل.", time: 'منذ 5 دقائق', read: false },
   { id: 2, type: 'task', text: "تم تعيين مهمة جديدة لك: 'مراجعة المخططات الكهربائية'.", time: 'منذ 2 ساعة', read: false },
   { id: 3, type: 'mention', text: "علي محمد أشار إليك في تعليق على مشروع 'برج المكاتب'.", time: 'منذ يوم', read: true },
@@ -16,7 +25,17 @@ const notifications = [
 
 export function NotificationCenter() {
   const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
+  
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleMarkAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+
+  const handleMarkOneAsRead = (id: number) => {
+    setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -29,7 +48,7 @@ export function NotificationCenter() {
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
-            <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-destructive text-xs font-bold text-destructive-foreground flex items-center justify-center">
+            <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-destructive text-xs font-bold text-destructive-foreground flex items-center justify-center animate-pulse">
               {unreadCount}
             </span>
           )}
@@ -47,7 +66,7 @@ export function NotificationCenter() {
                     <TabsTrigger value="unread">غير مقروءة ({unreadCount})</TabsTrigger>
                 </TabsList>
                 <div className="max-h-80 overflow-y-auto p-4 space-y-3">
-                    <TabsContent value="all" className="m-0">
+                    <TabsContent value="all" className="m-0 space-y-3">
                         {notifications.map(n => (
                             <div key={n.id} className={`p-2 rounded-md ${!n.read ? 'bg-secondary/50' : ''}`}>
                                 <p className="text-sm">{n.text}</p>
@@ -55,7 +74,7 @@ export function NotificationCenter() {
                             </div>
                         ))}
                     </TabsContent>
-                    <TabsContent value="unread" className="m-0">
+                    <TabsContent value="unread" className="m-0 space-y-3">
                         {notifications.filter(n => !n.read).map(n => (
                              <div key={n.id} className="p-2 rounded-md bg-secondary/50">
                                 <p className="text-sm">{n.text}</p>
@@ -68,7 +87,7 @@ export function NotificationCenter() {
             </Tabs>
           </CardContent>
           <CardFooter className="p-2 border-t">
-              <Button variant="ghost" size="sm" className="w-full gap-2">
+              <Button variant="ghost" size="sm" className="w-full gap-2" onClick={handleMarkAllAsRead} disabled={unreadCount === 0}>
                 <CheckCheck className="w-4 h-4"/>
                 تحديد الكل كمقروء
               </Button>

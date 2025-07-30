@@ -64,25 +64,25 @@ const prompt = ai.definePrompt({
 {{/each}}
 
 **Instructions:**
-1.  **Calculate Key Metrics:**
-    *   Total spending.
-    *   Remaining budget.
-    *   Spending per category.
-    *   Burn rate (spending vs. progress).
+1.  **Calculate Key Metrics (Internal Thought Process):**
+    *   First, calculate the total spending by summing all transaction amounts.
+    *   Then, calculate the remaining budget (Budget - Total Spending).
+    *   Then, calculate the spending per category.
+    *   Finally, calculate the burn rate (Total Spending / Budget) and compare it to the project progress ({{{project.progress}}}%).
 
-2.  **Write an Executive Summary:** Provide a brief, professional summary in Arabic of the project's financial health. Is it on track, over budget, or performing well?
+2.  **Write an Executive Summary:** Based on your calculations, provide a brief, professional summary in Arabic of the project's financial health. Is the spending aligned with the progress? Is it on track, over budget, or performing well?
 
-3.  **Identify Potential Risks:** Based on the data, identify 2-3 key financial risks. Examples could be:
-    *   "معدل الصرف الحالي أعلى من نسبة الإنجاز، مما قد يؤدي إلى نفاذ الميزانية قبل اكتمال المشروع."
-    *   "تركز المصاريف بشكل كبير في فئة 'مواد البناء'، مما قد يشير إلى عدم وجود أسعار تنافسية."
+3.  **Identify Potential Risks:** Based on the data and your calculated metrics, identify 2-3 key financial risks. Examples could be:
+    *   "معدل الصرف الحالي (مثلاً 50%) أعلى من نسبة الإنجاز (مثلاً 30%)، مما قد يؤدي إلى نفاذ الميزانية قبل اكتمال المشروع."
+    *   "تركز المصاريف بشكل كبير في فئة 'مواد البناء'، مما قد يشير إلى عدم وجود أسعار تنافسية أو هدر في المواد."
     *   "عدم وجود معاملات مسجلة لفئة 'أجور العمال' قد يشير إلى تأخر في الدفع أو عدم تسجيل دقيق."
 
-4.  **Provide Actionable Recommendations:** Based on the risks, provide 2-3 concrete recommendations in Arabic. Examples:
+4.  **Provide Actionable Recommendations:** Based on the identified risks, provide 2-3 concrete recommendations in Arabic. Examples:
     *   "مراجعة العقود مع الموردين الرئيسيين للحصول على أسعار أفضل أو البحث عن موردين بدلاء."
     *   "إعادة تقييم الجدول الزمني للمشروع ليتناسب مع الميزانية المتبقية."
     *   "تطبيق نظام أكثر صرامة لتسجيل جميع المصروفات بشكل فوري."
 
-5.  **Output:** Provide the entire analysis in the required JSON format with all text in Arabic. Be professional, data-driven, and concise.
+5.  **Output:** Provide the entire analysis in the required JSON format with all text in Arabic. Be professional, data-driven, and concise. Your analysis must be based on the numbers you calculated.
 `,
 });
 

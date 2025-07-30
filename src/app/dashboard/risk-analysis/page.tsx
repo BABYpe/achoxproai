@@ -70,7 +70,7 @@ export default function RiskAnalysisPage() {
          if (!selectedProject.description) {
              toast({ 
                 title: "بيانات غير كافية", 
-                description: "هذا المشروع لا يحتوي على وصف كافٍ لنطاق العمل لتحليل المخاطر. يرجى تحديث المشروع من صفحة تفاصيله.", 
+                description: "هذا المشروع لا يحتوي على وصف كافٍ لنطاق العمل لتحليل المخاطر. يرجى إنشاء خطة متكاملة له أولاً.", 
                 variant: "destructive",
                 duration: 8000,
              });

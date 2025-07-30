@@ -1,5 +1,5 @@
 
-"use client";
+"use client"
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useProjectStore, Project } from '@/hooks/use-project-store';

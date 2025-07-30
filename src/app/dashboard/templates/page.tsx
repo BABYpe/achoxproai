@@ -23,6 +23,9 @@ export default function TemplatesPage() {
                 // Pass the full plan as a template if it exists
                 ...(template.costEstimation && { costEstimation: template.costEstimation }),
                 ...(template.riskAnalysis && { riskAnalysis: template.riskAnalysis }),
+                projectType: template.projectType,
+                quality: template.quality,
+                scopeOfWork: template.scopeOfWork,
             }),
         }).toString();
 

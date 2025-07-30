@@ -40,7 +40,7 @@ export default function CrewPlannerPage() {
         if (!selectedProject.scopeOfWork || !selectedProject.projectType || !selectedProject.quality) {
              toast({ 
                 title: "بيانات غير كافية", 
-                description: "هذا المشروع لا يحتوي على تفاصيل كافية لتوليد فريق عمل. يرجى استخدام ميزة 'استخدام كقالب' من صفحة القوالب لتحديث المشروع.", 
+                description: "هذا المشروع لا يحتوي على تفاصيل كافية لتوليد فريق عمل. يرجى إنشاء خطة متكاملة له أولاً عبر صفحة 'إنشاء مشروع جديد'.", 
                 variant: "destructive",
                 duration: 8000,
              });

@@ -139,6 +139,10 @@ export default function FinancialIntelligencePage() {
         toast({ title: "خطأ", description: "الرجاء اختيار مشروع أولاً.", variant: "destructive" });
         return;
     }
+    if (projectTransactions.length === 0) {
+        toast({ title: "لا توجد بيانات كافية", description: "يجب تسجيل معاملة مالية واحدة على الأقل لبدء التحليل.", variant: "destructive" });
+        return;
+    }
 
     setIsAnalyzing(true);
     setAnalysisResult(null);

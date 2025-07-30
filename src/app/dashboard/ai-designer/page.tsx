@@ -82,7 +82,7 @@ export default function AiDesignerPage() {
         projectType: 'residential_villa',
         quality: 'premium',
         area: "300",
-        prompt: ""
+        prompt: "فيلا مودرن طابقين مع واجهة زجاجية كبيرة، حديقة خلفية مع مسبح، تصميم داخلي مفتوح يربط بين غرفة المعيشة والطعام، مطبخ أمريكي مع جزيرة، 4 غرف نوم ماستر في الطابق العلوي مع شرفات خاصة."
     }
   });
 

@@ -22,10 +22,10 @@ const architecturalPrompt = ai.definePrompt({
     model: 'googleai/gemini-2.0-flash-preview-image-generation',
     input: { schema: GenerateBlueprintImageInputSchema },
     config: { responseModalities: ['IMAGE', 'TEXT'] },
-    prompt: `Generate a clean, professional, highly-detailed, black and white architectural floor plan for a **{{projectType}}** with a desired quality level of **{{quality}}** and an approximate area of **{{area}} square meters**. The plan should be detailed, with clear labels for rooms and dimensions in meters. The style should be that of a professional architectural drawing.
+    prompt: (input) => `Generate a clean, professional, highly-detailed, black and white architectural floor plan for a **${input.projectType}** with a desired quality level of **${input.quality}** and an approximate area of **${input.area} square meters**. The plan should be detailed, with clear labels for rooms and dimensions in meters. The style should be that of a professional architectural drawing.
     **Crucially, add a professional-looking frame around the entire blueprint image.** Inside the frame, at the bottom, include a title block. In the title block, add the text: "Architectural Plan" and "Designed by: AchoX Pro AI".
     
-    User's Design Details: {{{prompt}}}`,
+    User's Design Details: ${input.prompt}`,
 });
 
 const electricalPrompt = ai.definePrompt({
@@ -33,10 +33,10 @@ const electricalPrompt = ai.definePrompt({
     model: 'googleai/gemini-2.0-flash-preview-image-generation',
     input: { schema: GenerateBlueprintImageInputSchema },
     config: { responseModalities: ['IMAGE', 'TEXT'] },
-    prompt: `Generate a clean, professional, black and white electrical engineering blueprint for a **{{projectType}}** (approx. {{area}} sqm, {{quality}} quality). The plan must overlay on a faint architectural floor plan. Show the layout of lighting fixtures (using standard symbols like circles), power outlets (sockets), switches, and the main electrical panel (distribution board). Use clear lines to indicate wiring paths.
+    prompt: (input) => `Generate a clean, professional, black and white electrical engineering blueprint for a **${input.projectType}** (approx. ${input.area} sqm, ${input.quality} quality). The plan must overlay on a faint architectural floor plan. Show the layout of lighting fixtures (using standard symbols like circles), power outlets (sockets), switches, and the main electrical panel (distribution board). Use clear lines to indicate wiring paths.
     **Add a professional frame and a title block with the text "Electrical Plan" and "Designed by: AchoX Pro AI".**
     
-    Base Architectural Design: {{{prompt}}}`,
+    Base Architectural Design: ${input.prompt}`,
 });
 
 const hvacPrompt = ai.definePrompt({
@@ -44,10 +44,10 @@ const hvacPrompt = ai.definePrompt({
     model: 'googleai/gemini-2.0-flash-preview-image-generation',
     input: { schema: GenerateBlueprintImageInputSchema },
     config: { responseModalities: ['IMAGE', 'TEXT'] },
-    prompt: `Generate a clean, professional, black and white HVAC (Heating, Ventilation, and Air Conditioning) blueprint for a **{{projectType}}** (approx. {{area}} sqm, {{quality}} quality). The plan must overlay on a faint architectural floor plan. Illustrate the layout of the ductwork for supply and return air, the location of indoor AC units (e.g., split or central units based on the quality level), and thermostat locations.
+    prompt: (input) => `Generate a clean, professional, black and white HVAC (Heating, Ventilation, and Air Conditioning) blueprint for a **${input.projectType}** (approx. ${input.area} sqm, ${input.quality} quality). The plan must overlay on a faint architectural floor plan. Illustrate the layout of the ductwork for supply and return air, the location of indoor AC units (e.g., split or central units based on the quality level), and thermostat locations.
     **Add a professional frame and a title block with the text "HVAC Plan" and "Designed by: AchoX Pro AI".**
     
-    Base Architectural Design: {{{prompt}}}`,
+    Base Architectural Design: ${input.prompt}`,
 });
 
 const plumbingPrompt = ai.definePrompt({
@@ -55,10 +55,10 @@ const plumbingPrompt = ai.definePrompt({
     model: 'googleai/gemini-2.0-flash-preview-image-generation',
     input: { schema: GenerateBlueprintImageInputSchema },
     config: { responseModalities: ['IMAGE', 'TEXT'] },
-    prompt: `Generate a clean, professional, black and white plumbing and sanitary blueprint for a **{{projectType}}** (approx. {{area}} sqm, {{quality}} quality). The plan must overlay on a faint architectural floor plan. Show the layout of water supply lines (hot and cold), drainage pipes for sinks, toilets, and showers, and main sewer connections. Use standard plumbing symbols.
+    prompt: (input) => `Generate a clean, professional, black and white plumbing and sanitary blueprint for a **${input.projectType}** (approx. ${input.area} sqm, ${input.quality} quality). The plan must overlay on a faint architectural floor plan. Show the layout of water supply lines (hot and cold), drainage pipes for sinks, toilets, and showers, and main sewer connections. Use standard plumbing symbols.
     **Add a professional frame and a title block with the text "Plumbing & Sanitary Plan" and "Designed by: AchoX Pro AI".**
     
-    Base Architectural Design: {{{prompt}}}`,
+    Base Architectural Design: ${input.prompt}`,
 });
 
 const perspectivePrompt = ai.definePrompt({
@@ -70,7 +70,7 @@ const perspectivePrompt = ai.definePrompt({
     
     Render View: **${input.view}**
     
-    Design Details: {{{prompt}}}`,
+    Design Details: ${input.prompt}`,
 });
 
 

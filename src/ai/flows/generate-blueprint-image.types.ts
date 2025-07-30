@@ -2,7 +2,7 @@
 import {z} from 'zod';
 
 export const GenerateBlueprintImageInputSchema = z.object({
-  projectType: z.enum(['residential_villa', 'commercial_building', 'event_hall', 'office_space', 'restaurant']).describe('The type of the project to be designed.'),
+  projectType: z.enum(['residential_villa', 'commercial_building', 'event_hall', 'office_space', 'restaurant', 'other']).describe('The type of the project to be designed.'),
   quality: z.enum(['standard', 'premium', 'luxury']).describe('The desired quality level for the design and materials.'),
   area: z.string().describe('The approximate area of the project in square meters.'),
   prompt: z.string().describe('A detailed textual description of the desired architectural design.'),

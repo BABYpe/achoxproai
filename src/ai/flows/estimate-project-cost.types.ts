@@ -4,7 +4,7 @@ import {z} from 'zod';
 export const EstimateProjectCostInputSchema = z.object({
   location: z.string().describe('The location of the project (e.g., city).'),
   size: z.string().describe('The size of the project (e.g., in square meters).'),
-  type: z.string().describe('The type of the project (e.g., residential villa, commercial building, event setup).'),
+  type: z.enum(['residential_villa', 'commercial_building', 'interior_finishing', 'event_hall', 'office_space', 'restaurant', 'other']).describe('The type of the project (e.g., residential villa, commercial building, event setup).'),
   quality: z.enum(['standard', 'premium', 'luxury']).describe('The desired quality level for finishing and materials.'),
   scopeOfWork: z.string().describe('A detailed description of the work to be done. This can be from user input or AI analysis of a blueprint.'),
   currentDate: z.string().optional().describe('The current date in YYYY-MM-DD format.'),

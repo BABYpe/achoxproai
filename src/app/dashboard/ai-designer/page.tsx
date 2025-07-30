@@ -22,7 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 const designSchema = z.object({
-  projectType: z.enum(['residential_villa', 'commercial_building', 'event_hall', 'office_space', 'restaurant']),
+  projectType: z.enum(['residential_villa', 'commercial_building', 'event_hall', 'office_space', 'restaurant', 'other']),
   quality: z.enum(['standard', 'premium', 'luxury']),
   area: z.string().min(2, "الرجاء إدخال مساحة صحيحة"),
   prompt: z.string().min(20, "الرجاء كتابة وصف لا يقل عن 20 حرفًا."),
@@ -156,9 +156,11 @@ export default function AiDesignerPage() {
                                             <SelectContent>
                                                 <SelectItem value="residential_villa">فيلا سكنية</SelectItem>
                                                 <SelectItem value="commercial_building">مبنى تجاري</SelectItem>
+                                                <SelectItem value="interior_finishing">تشطيبات داخلية</SelectItem>
                                                 <SelectItem value="event_hall">قاعة مناسبات</SelectItem>
                                                 <SelectItem value="office_space">مساحات مكتبية</SelectItem>
                                                 <SelectItem value="restaurant">مطعم</SelectItem>
+                                                <SelectItem value="other">أخرى</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     )}

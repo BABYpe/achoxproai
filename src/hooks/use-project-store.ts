@@ -31,7 +31,7 @@ export interface Project {
     location: string;
     latitude?: number;
     longitude?: number;
-    projectType?: 'residential_villa' | 'interior_finishing' | 'commercial_building' | 'event_setup' | 'other';
+    projectType?: 'residential_villa' | 'interior_finishing' | 'commercial_building' | 'event_setup' | 'other' | 'event_hall' | 'office_space' | 'restaurant';
     quality?: 'standard' | 'premium' | 'luxury';
     scopeOfWork?: string;
 
@@ -78,20 +78,15 @@ const convertTimestamps = (data: any) => {
 // Helper to parse JSON fields safely
 const parseJsonFields = (project: any): Project => {
     const newProject = { ...project };
-    const fieldsToParse: (keyof Project)[] = ['costEstimation', 'riskAnalysis', 'ganttChartData'];
-    
-    fieldsToParse.forEach(field => {
-        const jsonField = `${String(field)}Json` as keyof typeof newProject;
-        if (newProject[jsonField] && typeof newProject[jsonField] === 'string') {
-            try {
-                newProject[field] = JSON.parse(newProject[jsonField]);
-            } catch (e) {
-                console.error(`Error parsing ${String(jsonField)} for project:`, newProject.id, e);
-                newProject[field] = String(field) === 'ganttChartData' ? [] : {};
-            }
-        }
-    });
-
+    if (newProject.costEstimationJson && typeof newProject.costEstimationJson === 'string') {
+        try { newProject.costEstimation = JSON.parse(newProject.costEstimationJson); } catch (e) { console.error('Failed to parse costEstimationJson', e); }
+    }
+     if (newProject.riskAnalysisJson && typeof newProject.riskAnalysisJson === 'string') {
+        try { newProject.riskAnalysis = JSON.parse(newProject.riskAnalysisJson); } catch (e) { console.error('Failed to parse riskAnalysisJson', e); }
+    }
+     if (newProject.ganttChartDataJson && typeof newProject.ganttChartDataJson === 'string') {
+        try { newProject.ganttChartData = JSON.parse(newProject.ganttChartDataJson); } catch (e) { console.error('Failed to parse ganttChartDataJson', e); }
+    }
     return newProject as Project;
 };
 
@@ -112,11 +107,16 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         console.log('Firebase is empty, seeding with initial projects.');
         const seedingPromises = initialProjects.map(project => {
             const { id, createdAt, updatedAt, ...projectData } = project; 
+            const dbProject: any = { ...projectData };
+            dbProject.costEstimationJson = JSON.stringify(dbProject.costEstimation);
+            dbProject.riskAnalysisJson = JSON.stringify(dbProject.riskAnalysis);
+            dbProject.ganttChartDataJson = JSON.stringify(dbProject.ganttChartData);
+            delete dbProject.costEstimation;
+            delete dbProject.riskAnalysis;
+            delete dbProject.ganttChartData;
+
             return addDoc(projectsCollection, {
-              ...projectData,
-              costEstimationJson: JSON.stringify(projectData.costEstimation),
-              riskAnalysisJson: JSON.stringify(projectData.riskAnalysis),
-              ganttChartDataJson: JSON.stringify(projectData.ganttChartData),
+              ...dbProject,
               createdAt: Timestamp.fromDate(new Date(createdAt as string)),
               updatedAt: Timestamp.fromDate(new Date(updatedAt as string))
             });

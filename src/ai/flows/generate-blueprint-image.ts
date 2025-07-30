@@ -106,16 +106,18 @@ const generateBlueprintImageFlow = ai.defineFlow(
         })))
     ]);
 
-    const perspectiveDataUris = perspectivesResult.map(result => result?.media?.url || placeholderImage);
+    const getUrlOrDefault = (result: any) => result?.media?.url || placeholderImage;
+
+    const perspectiveDataUris = perspectivesResult.map(getUrlOrDefault);
     while (perspectiveDataUris.length < 3) {
         perspectiveDataUris.push(placeholderImage);
     }
     
     return {
-      architecturalBlueprintDataUri: archResult?.media?.url || placeholderImage,
-      electricalBlueprintDataUri: elecResult?.media?.url || placeholderImage,
-      hvacBlueprintDataUri: hvacResult?.media?.url || placeholderImage,
-      plumbingBlueprintDataUri: plumbResult?.media?.url || placeholderImage,
+      architecturalBlueprintDataUri: getUrlOrDefault(archResult),
+      electricalBlueprintDataUri: getUrlOrDefault(elecResult),
+      hvacBlueprintDataUri: getUrlOrDefault(hvacResult),
+      plumbingBlueprintDataUri: getUrlOrDefault(plumbResult),
       perspectiveDataUris: perspectiveDataUris,
     };
   }

@@ -7,7 +7,7 @@ import { getAnalytics, isSupported, type Analytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY, // Use the unified key
+  apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY, // Use the unified key
   authDomain: "achox-pro.firebaseapp.com",
   databaseURL: "https://achox-pro-default-rtdb.firebaseio.com",
   projectId: "achox-pro",

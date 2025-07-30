@@ -197,8 +197,8 @@ function NewProjectPageContent() {
                 progress: 0,
                 budget: parseFloat(generatedPlan.costEstimation.totalEstimatedCost.replace(/[^0-9.]/g, '')),
                 currency: generatedPlan.costEstimation.totalEstimatedCost.replace(/[0-9,.\s]/g, ''),
-                lat: 24.7136,
-                lng: 46.6753,
+                latitude: 24.7136,
+                longitude: 46.6753,
                 manager: "علي محمد",
                 endDate: generatedPlan.costEstimation.ganttChartData.slice(-1)[0]?.end || "",
                 ganttChartData: generatedPlan.costEstimation.ganttChartData,
@@ -532,7 +532,7 @@ function NewProjectPageContent() {
 
 
 export default function NewProjectPage() {
-    if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+    if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
         return (
             <div className="container mx-auto p-4">
                 <Alert variant="destructive">
@@ -547,7 +547,7 @@ export default function NewProjectPage() {
     
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+            <APIProvider apiKey={process.env.NEXT_PUBLIC_GEMINI_API_KEY}>
                 <NewProjectPageContent />
             </APIProvider>
         </Suspense>

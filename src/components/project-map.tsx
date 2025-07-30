@@ -10,7 +10,7 @@ interface ProjectMapProps {
 }
 
 export default function ProjectMap({ projects }: ProjectMapProps) {
-    if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+    if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
         return <div>Error: Google Maps API key is not configured.</div>
     }
 
@@ -21,7 +21,7 @@ export default function ProjectMap({ projects }: ProjectMapProps) {
         : { lat: 24.7136, lng: 46.6753 }; // Default to Riyadh
 
     return (
-        <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+        <APIProvider apiKey={process.env.NEXT_PUBLIC_GEMINI_API_KEY}>
             <Map
                 mapId="achox-pro-map"
                 style={{ width: '100%', height: '100%' }}

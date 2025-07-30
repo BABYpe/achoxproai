@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -29,7 +29,11 @@ export function PlacesAutocomplete({ onPlaceSelect, defaultValue = "" }: PlacesA
             onPlaceSelect(autocomplete.current?.getPlace() ?? null);
         });
 
-        return () => listener.remove();
+        return () => {
+            if (autocomplete.current) {
+                google.maps.event.clearInstanceListeners(autocomplete.current);
+            }
+        };
     }, [places, onPlaceSelect]);
     
      useEffect(() => {

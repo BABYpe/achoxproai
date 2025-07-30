@@ -28,12 +28,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { differenceInDays, format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import type { AnalyzeBlueprintOutput } from "@/ai/flows/analyze-blueprint.types"
+import type { AnalyzeProjectDescriptionOutput } from "@/ai/flows/analyze-project-description.types"
 
 const projectSchema = z.object({
     id: z.string().optional(), // For editing existing projects
     projectName: z.string().min(1, "اسم المشروع مطلوب"),
     projectDescription: z.string().min(10, "يرجى تقديم وصف لا يقل عن 10 أحرف."),
     location: z.string().min(1, "موقع المشروع مطلوب"),
+    // Adding optional template data to the schema
+    projectAnalysis: z.any().optional(),
 });
 
 type ProjectFormData = z.infer<typeof projectSchema>;
@@ -148,6 +151,8 @@ function NewProjectPageContent() {
                 projectDescription: data.projectDescription,
                 location: data.location,
                 blueprintDataUri,
+                // Pass existing project analysis only if it's available from a template
+                projectAnalysis: data.projectAnalysis as AnalyzeProjectDescriptionOutput | undefined,
             });
 
             setGeneratedPlan(result);

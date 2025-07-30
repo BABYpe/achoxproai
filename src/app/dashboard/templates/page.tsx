@@ -15,18 +15,27 @@ export default function TemplatesPage() {
     const router = useRouter();
 
     const handleUseTemplate = (template: Project) => {
-        const query = new URLSearchParams({
-            template: JSON.stringify({
-                projectName: `${template.title} (نسخة)`,
-                location: template.location,
-                projectDescription: template.description || `مشروع جديد مبني على قالب: ${template.title}`,
-                // Pass the full plan as a template if it exists
-                ...(template.costEstimation && { costEstimation: template.costEstimation }),
-                ...(template.riskAnalysis && { riskAnalysis: template.riskAnalysis }),
+        // Construct the template object to be passed in the query
+        const templateData: any = {
+            projectName: `${template.title} (نسخة)`,
+            location: template.location,
+            projectDescription: template.description || `مشروع جديد مبني على قالب: ${template.title}`,
+        };
+
+        // Check if the template has a full plan (costEstimation)
+        // This is crucial to avoid passing incomplete data
+        if (template.costEstimation && template.projectType && template.quality) {
+            templateData.costEstimation = template.costEstimation;
+            templateData.riskAnalysis = template.riskAnalysis;
+            templateData.projectAnalysis = {
                 projectType: template.projectType,
                 quality: template.quality,
-                scopeOfWork: template.scopeOfWork,
-            }),
+                initialBlueprintPrompt: template.scopeOfWork,
+            };
+        }
+
+        const query = new URLSearchParams({
+            template: JSON.stringify(templateData),
         }).toString();
 
         router.push(`/dashboard/projects/new?${query}`);

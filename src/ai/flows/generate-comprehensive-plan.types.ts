@@ -15,6 +15,7 @@ export const GenerateComprehensivePlanInputSchema = z.object({
   blueprintDataUri: z.string().optional().describe(
       "An optional blueprint file (PDF, DWG, etc.), as a data URI. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  projectAnalysis: AnalyzeProjectDescriptionOutputSchema.optional().describe('Optional existing analysis data from a template.'),
 });
 export type GenerateComprehensivePlanInput = z.infer<typeof GenerateComprehensivePlanInputSchema>;
 

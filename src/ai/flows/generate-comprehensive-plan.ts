@@ -14,7 +14,7 @@ import {ai} from '@/ai/genkit';
 import { format, differenceInDays } from 'date-fns';
 
 // Import the flows this orchestrator will use
-import { analyzeProjectDescription } from './analyze-project-description';
+import { analyzeProjectDescription, type AnalyzeProjectDescriptionOutput } from './analyze-project-description';
 import { analyzeBlueprint } from './analyze-blueprint';
 import { estimateProjectCost } from './estimate-project-cost';
 import { analyzeRisks } from './analyze-risks';
@@ -39,8 +39,9 @@ const comprehensivePlanFlow = ai.defineFlow(
     outputSchema: GenerateComprehensivePlanOutputSchema,
   },
   async (input) => {
-    // Step 1: Analyze the initial text description to get project type and quality.
-    const projectAnalysis = await analyzeProjectDescription({ description: input.projectDescription });
+    // Step 1: Use existing analysis if provided from a template, otherwise generate a new one.
+    const projectAnalysis: AnalyzeProjectDescriptionOutput = 
+        input.projectAnalysis || await analyzeProjectDescription({ description: input.projectDescription });
 
     let blueprintAnalysis: AnalyzeBlueprintOutput | undefined = undefined;
     let finalScopeOfWork = input.projectDescription;

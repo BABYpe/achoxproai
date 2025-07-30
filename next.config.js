@@ -11,9 +11,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    ppr: true, // Enable Partial Prerendering
-  },
   images: {
     remotePatterns: [
       {

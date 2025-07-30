@@ -1,16 +1,17 @@
 
 "use client"
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
 interface PlacesAutocompleteProps {
     onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
+    defaultValue?: string;
 }
 
-export function PlacesAutocomplete({ onPlaceSelect }: PlacesAutocompleteProps) {
+export function PlacesAutocomplete({ onPlaceSelect, defaultValue = "" }: PlacesAutocompleteProps) {
     const places = useMapsLibrary('places');
     const inputRef = useRef<HTMLInputElement>(null);
     const autocomplete = useRef<google.maps.places.Autocomplete | null>(null);
@@ -30,6 +31,13 @@ export function PlacesAutocomplete({ onPlaceSelect }: PlacesAutocompleteProps) {
 
         return () => listener.remove();
     }, [places, onPlaceSelect]);
+    
+     useEffect(() => {
+        // Set the input's value if a defaultValue is provided
+        if (inputRef.current && defaultValue) {
+            inputRef.current.value = defaultValue;
+        }
+    }, [defaultValue]);
 
     return (
         <div className="relative">
@@ -40,6 +48,7 @@ export function PlacesAutocomplete({ onPlaceSelect }: PlacesAutocompleteProps) {
                 name="location"
                 placeholder="ابحث عن مدينة أو عنوان..."
                 className="pr-10"
+                defaultValue={defaultValue}
             />
         </div>
     );

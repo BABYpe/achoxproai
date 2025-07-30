@@ -12,6 +12,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {},
   images: {
     remotePatterns: [
       {
@@ -77,6 +78,12 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'randomuser.me',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'maps.googleapis.com',
         port: '',
         pathname: '/**',
       }

@@ -7,18 +7,24 @@ import { getAnalytics, isSupported, type Analytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBmo6oykjhmjq2zKRokuxFj_OAiT7kJfzQ",
+  apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY, // Use the unified key
   authDomain: "achox-pro.firebaseapp.com",
   databaseURL: "https://achox-pro-default-rtdb.firebaseio.com",
   projectId: "achox-pro",
-  storageBucket: "achox-pro.firebasestorage.app",
+  storageBucket: "achox-pro.appspot.com",
   messagingSenderId: "25667835163",
   appId: "1:25667835163:web:2a1f1826ff5de9b8822fbe",
   measurementId: "G-X458VWZEGW"
 };
 
 // Initialize Firebase for SSR and client-side
-const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+let app: FirebaseApp;
+if (!getApps().length) {
+    app = initializeApp(firebaseConfig);
+} else {
+    app = getApp();
+}
+
 const db: Firestore = getFirestore(app);
 const storage: FirebaseStorage = getStorage(app);
 

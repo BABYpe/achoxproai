@@ -283,7 +283,10 @@ function NewProjectPageContent() {
                                     name="location"
                                     control={control}
                                     render={({ field: { onChange, value } }) => (
-                                        <PlacesAutocomplete onPlaceSelect={handlePlaceSelect} />
+                                        <PlacesAutocomplete 
+                                            onPlaceSelect={handlePlaceSelect} 
+                                            defaultValue={value}
+                                        />
                                     )}
                                 />
                                 {errors.location && <p className="text-destructive text-sm mt-1">{errors.location.message}</p>}
